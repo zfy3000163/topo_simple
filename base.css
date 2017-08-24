@@ -1,0 +1,41 @@
+
+body {	
+	margin: auto;
+	background: rgb(7,105,173);
+	font-family: Î¢ÈíÑÅºÚ;
+	font-size: 14px;
+}
+* {
+	padding: 0px;
+	margin: 0px;
+}
+
+#contextmenu {
+    border: 1px solid #aaa;
+    border-bottom: 0;
+    background: #eee;
+    position: absolute;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+	display: none;
+}
+
+#contextmenu ul li,#hoverBox ul li {
+	display: block;
+    padding: 10px;
+    border-bottom: 1px solid #aaa;
+    cursor: pointer;
+}
+
+#contextmenu ul li:hover {
+	background: #fff;
+}
+
+#hoverBox {
+    position: absolute;
+    background: #f1f1f1;
+    border: solid 1px #aaa;
+    line-height: 30px;
+    display: none;
+}
