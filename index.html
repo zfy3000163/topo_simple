@@ -53,11 +53,22 @@ function handler(event){
 }
 
 
-var LINKLINE_NAME = "linkline";
-function get_container_child(container){
+var LINKLINE_NAME_TO = "linkline_top";
+var LINKLINE_NAME_FROM = "linkline_bottom";
+function get_container_child_to(container){
     for (child in container.childs){
         console.log(container.childs[child].text);
-        if (container.childs[child].text == LINKLINE_NAME)
+        if (container.childs[child].text == LINKLINE_NAME_TO)
+            return container.childs[child];
+    }
+
+    return null;
+}
+
+function get_container_child_from(container){
+    for (child in container.childs){
+        console.log(container.childs[child].text);
+        if (container.childs[child].text == LINKLINE_NAME_FROM)
             return container.childs[child];
     }
 
@@ -99,7 +110,7 @@ function create_host_bar(scene, name, x, y, w, h, count){
         container_obj.add(node);
     }
 
-    var text_node = new JTopo.Node(LINKLINE_NAME);
+    var text_node = new JTopo.Node(LINKLINE_NAME_TO);
     //text_node.setSize(62, 15);
     text_node.textPosition = "Middle_Center";
     text_node.textOffsetY = 0;
@@ -120,7 +131,7 @@ function create_host_bar(scene, name, x, y, w, h, count){
 
 function container_sw_create(scene, name, x, y, w, h, number, brand){
     var container_obj = new JTopo.Container();
-    container_obj.layout = JTopo.layout.GridLayout(3, 1);
+    container_obj.layout = JTopo.layout.GridLayout(2, 1);
     container_obj.alpha = 0;
     container_obj.text=name;
     container_obj.font = "12px bold Consolas";
@@ -129,7 +140,7 @@ function container_sw_create(scene, name, x, y, w, h, number, brand){
     container_obj.setBound(x, y, w, h);   
     container_obj.borderRadius = 20;					
     container_obj.shadow = "true";
-    container_obj.zIndex = 15;					
+    container_obj.zIndex = 100;					
     container_obj.mouseover(function(event){
             handler(event);
             });
@@ -172,20 +183,34 @@ function container_sw_create(scene, name, x, y, w, h, number, brand){
 
 
     /*create link_node*/
-    var link_node = new JTopo.Node(LINKLINE_NAME);
+    var link_node = new JTopo.Node(LINKLINE_NAME_TO);
     //link_node.setSize(62, 15);
     link_node.textPosition = "Middle_Center";
     link_node.textOffsetY = -3;
     link_node.font = "15px bold Consolas";
     link_node.fillColor = "35,24,21";
     link_node.zIndex = 14;
-    link_node.setBound(x, y, 68, 25);   
+    link_node.setBound(x, y+10, 68, 15);   
     link_node.borderRadius = 8;
     link_node.alpha = 0;
 
     scene.add(link_node);
     container_obj.add(link_node);
 
+    /*create link_node*/
+    var link_node = new JTopo.Node(LINKLINE_NAME_FROM);
+    //link_node.setSize(62, 15);
+    link_node.textPosition = "Middle_Center";
+    link_node.textOffsetY = -3;
+    link_node.font = "15px bold Consolas";
+    link_node.fillColor = "35,24,21";
+    link_node.zIndex = 12;
+    link_node.setBound(x, y+50, 68, 10);   
+    link_node.borderRadius = 8;
+    link_node.alpha = 0;
+
+    scene.add(link_node);
+    container_obj.add(link_node);
 
 
     return container_obj;
@@ -419,15 +444,15 @@ function init4(){
         }
 
         if(to_node instanceof JTopo.Container){
-            to_link_node = get_container_child(to_node); 
-            //from_link_node = get_container_child(from_node); 
-            if(to_link_node /*&& from_link_node*/){
+            to_link_node = get_container_child_to(to_node); 
+            from_link_node = get_container_child_from(from_node); 
+            if(to_link_node && from_link_node){
                 if (to == "swt3")
-                    addLinkLine(scene, from_node, to_link_node, colors[1], '', 4);
-                //new_link(scene, from_node, to_link_node, color, '', 5);        				
+                    addLinkLine(scene, from_link_node, to_link_node, colors[1], '', 4);
+                    //new_link(scene, from_node, to_link_node, color, '', 5);        				
                 else
-                    addLinkLine(scene, from_node, to_link_node, colors[1], '');
-                //new_link(scene, from_node, to_link_node, color, '');
+                    addLinkLine(scene, from_link_node, to_link_node, colors[1], '');
+                    //new_link(scene, from_node, to_link_node, color, '');
             }
             else
             {
