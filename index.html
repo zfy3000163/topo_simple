@@ -1,301 +1,495 @@
 <!DOCUMENT>
 <html>
-	<head>
-		<title>canvas test</title>
-		<link type="text/css" rel="stylesheet" href="base.css" />
-		<script type="text/javascript" src="jquery-3.2.1.js"></script>
-		<script type="text/javascript" src="jtopo-0.4.8-min.js"></script>
-		<script type="text/javascript">
-						
-			function handler(event){
-				$("#hoverBox").css({
-					top: event.pageY,
-					left: event.pageX
-				}).show();
-			}
-			
-			var step = 0;
-			function create_host_bar(scene, name, x, y, w, h){
-				var container_obj = new JTopo.Container('name');
-				container_obj.layout = JTopo.layout.GridLayout(6, 2);
-				container_obj.alpha = 10;
-				//container_obj.fillColor = '10,10,100';
-				
-				container_obj.setBound(x, y, w, h);   
-				container_obj.borderRadius = 20;					
-				scene.add(container_obj);			
+<head>
+<title>canvas test</title>
+<link type="text/css" rel="stylesheet" href="base.css" />
+<script type="text/javascript" src="jquery-3.2.1.js"></script>
+<script type="text/javascript" src="jtopo-0.4.8-min.js"></script>
+<script type="text/javascript">
 
-								
-				for(var i=0; i<12; i++){
-					var node = new JTopo.Node(name + i);
-					node.mouseover(function(event){
-						handler(event);
-					});
-					node.mouseout(function(event){
-						$("#hoverBox").hide();
-					});
-					node.textPosition = "Middle_Center";
-					node.setImage("./img/img_topology/iserver.png");
-					node.setSize(60,30);
-					//node.setLocation(300+ Math.random() * 300, 200+ Math.random() * 200);
-					scene.add(node);
-					container_obj.add(node);
-				}
-				
-				return container_obj;
-			}
-			
-			
-			function addLinkLine(scene,container_sid_up_child, container_sid_down, color, link_text, link_count){
-                var linkTopo = new JTopo.Link(container_sid_up_child, container_sid_down, link_text);
-				
-				linkTopo.mouseover(function(event){
-						handler(event);
-					});
-				linkTopo.mouseout(function(event){
-					$("#hoverBox").hide();
-				});
-				
-				
-                linkTopo.getStartPosition = function() {
-				var a;
-				return (a = (function(thisl){
-					var b=thisl.nodeA,c=thisl.nodeZ;
-					var d = JTopo.util.lineF(b.cx, b.cy, c.cx, c.cy),
-							e = b.getBound(),
-							f = JTopo.util.intersectionLineBound(d, e);
-					return f
-				})(this)),
-				null == a && (a = {
-					x: this.nodeZ.cx,
-					y: this.nodeZ.cy
-				}),a
 
-				};
+CanvasRenderingContext2D.prototype.wrapText = function(str,x,y){
+    var textArray = str.split('\n');
+    if(textArray==undefined||textArray==null)return false;
 
-                linkTopo.getEndPosition = function() {
-                    var a;
-                    return (a = (function(thisl){
-                        var b=thisl.nodeZ,c=thisl.nodeA;
-                        var d = JTopo.util.lineF(b.cx, b.cy, c.cx, c.cy),
-                                e = b.getBound(),
-                                f = JTopo.util.intersectionLineBound(d, e);
-                        return f
-                    })(this)),
-                    null == a && (a = {
-                        x: this.nodeZ.cx,
-                        y: this.nodeZ.cy
-                    }),a
+    var rowCnt = textArray.length;
+    var i = 0,imax = rowCnt,maxLength = 0;maxText = textArray[0];
+    for(;i<imax;i++){
+        var nowText = textArray[i],textLength = nowText.length;
+        if(textLength >=maxLength){
+            maxLength = textLength;
+            maxText = nowText;
+        }
+    }
+    var maxWidth = this.measureText(maxText).width;
+    var lineHeight = this.measureText("元").width;
+    x-= lineHeight*2;
+    for(var j= 0;j<textArray.length;j++){
+        var words = textArray[j];
+        this.fillText(words,-(maxWidth/2),y-textArray.length*lineHeight/100);
+        y+= lineHeight;
+    }
+};
 
-                };
-                //linkTopo.strokeColor = JTopo.util.randomColor();
-                linkTopo.strokeColor = color;
-				linkTopo.dashedPattern = link_count;
-				linkTopo.bundleGap = 10; //线条间隔
-				linkTopo.bundleOffset =0;	//拐角长度
-				//linkTopo.textOffsetY = 3;
-				linkTopo.lineWidth = 2;
-				
-                scene.add(linkTopo);
-            }
-			
-			function new_sw_node(scene, x, y, text){
-                var node = new JTopo.Node(text);
-				node.textPosition = "Middle_Center";
-				node.setImage("./img/img_topology/switch2.png");
-				node.setSize(70,70);
-				node.mouseover(function(event){
-						handler(event);
-				});
-				node.mouseout(function(event){
-					$("#hoverBox").hide();
-				});
-                node.setLocation(x, y);
-                node.setSize(70, 70);
-                scene.add(node);
-                return node;
-            }
-            
-            // 简单连线
-            function new_link(scene, nodeA, nodeZ, text,dashedPattern){
-                var link = new JTopo.Link(nodeA, nodeZ, text);  
-				link.mouseover(function(event){
-						handler(event);
-				});
-				link.mouseout(function(event){
-					$("#hoverBox").hide();
-				});
-                link.lineWidth = 2; // 线宽
-                link.bundleOffset = 0; // 折线拐角处的长度
-                link.bundleGap = 10; // 线条之间的间隔
-                link.textOffsetY = 3; // 文本偏移量（向下3个像素）
-                link.strokeColor = JTopo.util.randomColor(); // 线条颜色随机
-                link.dashedPattern = dashedPattern; 
-                scene.add(link);
-                return link;
-            }
-			
+JTopo.Node.prototype.paintText = function(a){
+    var b = this.text;
+    if (null != b && "" != b) {
+        a.beginPath(),
+            a.font = this.font;
+        var c = a.measureText(b).width,
+            d = a.measureText("田").width;
+        a.fillStyle = "rgba(" + this.fontColor + ", " + this.alpha + ")";
+        var e = this.getTextPostion(this.textPosition, c, d);
+        a.wrapText(b, e.x, e.y),
+            a.closePath()
+    }
+} 
 
-			$(document).ready(function(){
-				
-				init4();
-			})		
-			
-			
-			
-			function init4(){
-			
-				var FIRST_LAYER_Y = 10, FIRST_LAYER_X = 10;			
-				var SECOND_LAYER_Y = 200, SECOND_LAYER_X = 10;
-				var THREE_LAYER_Y = 400, THREE_LAYER_X = 50;
-				var STEP_X = 100, THREE_STEP_X = 300;
-					  
-				var canvas = document.getElementById('canvas4');
-				var stage = new JTopo.Stage(canvas);
-				//显示工具栏
-				//showJTopoToobar(stage);
-				var scene = new JTopo.Scene();
-				scene.backgroundColor = '255,250,250';
-				scene.alpha = 100;
-				stage.zoomIn(0);
-				stage.add(scene);
-				
-				// 流式布局（水平、垂直间隔均为10)
-				var switch_flowLayout = JTopo.layout.FlowLayout(10, 30);
-				
-				// 网格布局(4行3列)
-				var switch_gridLayout = JTopo.layout.GridLayout(6, 2);
-				var colors=['255,192,203', '0,0,0', '0,200,255', '0,20,255'];
-				
-				//input the topology list
-				var node_map = new Array(
-						{from:'swf1', to:'swt1'},
-						{from:'swf1', to:'swt1'},
-						{from:'swf1', to:'swt1'},
-						{from:'swf1', to:'swt2'},
-						{from:'swf3', to:'swt3'}, 
-						{from:'swf1', to:'swt3'},
-						{from:'swf1', to:'swt4'},
-						{from:'swf2', to:'swt5'},
-						{from:'swf1', to:'Host_C'},
-						{from:'swf2', to:'Host_C'},
-						{from:'swf3', to:'Host_C'},
-						{from:'swf4', to:'Host_C'},
-						{from:'swf1', to:'Host_D'},
-						{from:'swf2', to:'Host_D'},
-						{from:'swf3', to:'Host_D'},
-						{from:'swf1', to:'Host_E'},
-						{from:'swf2', to:'Host_E'},
-						{from:'swf3', to:'Host_E'},
-						{from:'swt2', to:'Host_E'},
-						{from:'swt4', to:'Host_E'},
-						{from:'swt4', to:'Host_E'},
-						{from:'swf4', to:'Host_E'},
-						{from:'swf2', to:'swt3'}
-						);
-						
-						
-						
-				var save_create_node = new Map();
-				var x_first = FIRST_LAYER_X;
-				var x_second = SECOND_LAYER_X;
-				var x_three = THREE_LAYER_X;
-				
-				for(var i=0; i < node_map.length; i++){	
-					
-					var from = node_map[i].from;
-					var to = node_map[i].to;			
-					console.log(from, to, save_create_node.has(from), save_create_node.has(to));
-					//from
-					if ( save_create_node.has(from) == false){
-												
-						if (from.split("_")[0] == "Host"){								
-							from_node = create_host_bar(scene, from, x_three, THREE_LAYER_Y, 200, 300);
-							x_three += THREE_STEP_X;
-						}			
-						else{
-							x_first += STEP_X;
-							from_node = new_sw_node(scene, x_first, FIRST_LAYER_Y, from);
-						}	
-							
-						save_create_node.set(from,from_node);					
-					}
-					else{
-						from_node = save_create_node.get(from);
-					}				
-					
-					//to
-					if (save_create_node.has(to) == false){						
-						
-						if (to.split('_')[0] == "Host"){							
-							to_node = create_host_bar(scene, to, x_three, THREE_LAYER_Y, 200, 300);
-							x_three += THREE_STEP_X;
-						}							
-						else{
-							x_second += STEP_X;
-							to_node = new_sw_node(scene, x_second, SECOND_LAYER_Y, to);
-						}
-						save_create_node.set(to,to_node);
-					}else{
-						to_node = save_create_node.get(to);
-					}
-					
-					if (to == "swt2")
-						addLinkLine(scene, from_node, to_node, colors[2], '', 4);
-					else
-						addLinkLine(scene, from_node, to_node, colors[2], '');
-						
-					//new_link(scene, from_node, to_node, '');        				
-				}
-						
-					
-				/*
-				container2.click(function(){
-					if(container2.layout === switch_flowLayout){
-						container2.layout = switch_gridLayout;
-					}else{
-						container2.layout = switch_flowLayout;
-					}
-				});
-				*/
-			}
-		
-		</script>		
-	</head>
-	
-	
-	
-	
-	
-	<body>
-		<div id="topo" class="jtopo_toolbar">
-			<!--
-			<canvas id="canvas" width="400" height="300" ></canvas>
-			<canvas id="canvas2" width="600" height="300" style="background-color: rgb(238, 238, 238); border: 1px solid rgb(68, 68, 68); cursor: default;"></canvas>
-			<canvas id="canvas3" width="1000" height="400"></canvas>
-			-->
-			<canvas id="canvas4" width="1200" height="800"></canvas>
-		</div>
+function handler(event){
+    $("#hoverBox").css({
+        top: event.pageY,
+        left: event.pageX
+    }).show();
+}
+
+
+var LINKLINE_NAME = "linkline";
+function get_container_child(container){
+    for (child in container.childs){
+        console.log(container.childs[child].text);
+        if (container.childs[child].text == LINKLINE_NAME)
+            return container.childs[child];
+    }
+
+    return null;
+}
+
+
+var colors=['255,192,203', '143,188,143', '0,200,255', '0,20,255'];
+function create_host_bar(scene, name, x, y, w, h, count){
+    var container_obj = new JTopo.Container(name);
+    container_obj.layout = JTopo.layout.GridLayout(count, 1);
+    container_obj.alpha = 2;
+    container_obj.fillColor = colors[1];
+
+    container_obj.setBound(x, y, w, h);   
+    container_obj.borderRadius = 20;					
+    container_obj.zIndex = 11;					
+    scene.add(container_obj);			
+
+
+    for(var i=0; i<count; i++){
+        var node = new JTopo.Node(name + i);
+        node.setImage("./img/img_topology/iserver.png");
+        node.setSize(110,35);
+        node.textPosition = "Middle_Left";
+        node.textOffsetX = 25;
+        node.font = "5px Consolas";
+        node.scaleX = 1;
+        node.zIndex = 12;
+        //node.setLocation(x, y);
+        node.mouseover(function(event){
+                handler(event);
+                });
+        node.mouseout(function(event){
+                $("#hoverBox").hide();
+                });
+
+        scene.add(node);
+        container_obj.add(node);
+    }
+
+    var text_node = new JTopo.Node(LINKLINE_NAME);
+    //text_node.setSize(62, 15);
+    text_node.textPosition = "Middle_Center";
+    text_node.textOffsetY = 0;
+    text_node.font = "15px bold Consolas";
+    text_node.fillColor = colors[1];
+    text_node.setBound(x, y, w, 45);   
+    text_node.borderRadius = 8;
+    text_node.dragable = 0;
+    text_node.alpha = 0;
+    text_node.visible = 0;
+    text_node.zIndex = 13;
+
+    scene.add(text_node);
+    container_obj.add(text_node);
+
+    return container_obj;
+}
+
+function container_sw_create(scene, name, x, y, w, h, number, brand){
+    var container_obj = new JTopo.Container();
+    container_obj.layout = JTopo.layout.GridLayout(3, 1);
+    container_obj.alpha = 0;
+    container_obj.text=name;
+    container_obj.font = "12px bold Consolas";
+    container_obj.fontColor = "0,0,0";
+    container_obj.fillColor = "245,245,225";
+    container_obj.setBound(x, y, w, h);   
+    container_obj.borderRadius = 20;					
+    container_obj.shadow = "true";
+    container_obj.zIndex = 15;					
+    container_obj.mouseover(function(event){
+            handler(event);
+            });
+    container_obj.mouseout(function(event){
+            $("#hoverBox").hide();
+            });
+
+    scene.add(container_obj);			
+
+
+
+    /*create img_node*/
+    var img_node = new JTopo.Node(number);
+    img_node.setImage("./img/img_topology/switch2.png");
+    //img_node.setSize(72,72);
+    img_node.textPosition = "Middle_Center";
+    img_node.textOffsetY = -9;
+    img_node.font = "35px Consolas";
+    img_node.scaleX = 1;
+    img_node.zIndex = 12;
+    img_node.setBound(x, y, 72, 72);   
     
-	<div id="contextmenu">
-        <ul>
-            <li>Add Menu</li>
-            <li>Edit Quota</li>
-            <li>Delete Menu</li>
-            <li>Delete Menu</li>
-            <li>Delete Menu</li>
-            <li>Delete Menu</li>
-        </ul>
-    </div>
-	
-    <div id="hoverBox">
-        <ul>
-            <li><a>查看详细信息>></a></li>
-            <li><button>添加组织</button></li>
-            <li><button>删除组织</button></li>
-            <li><button>添加用户</button></li>
-            <li><button>删除用户</button></li>
-        </ul>
-    </div>
-	</body>
+    scene.add(img_node);
+    container_obj.add(img_node);
+
+
+    /*create text_node*/
+    var text_node = new JTopo.Node(brand);
+    //text_node.setSize(68, 15);
+    text_node.textPosition = "Middle_Center";
+    text_node.textOffsetY = -3;
+    text_node.font = "15px bold Consolas";
+    text_node.fillColor = "35,24,21";
+    text_node.setBound(x, y, 68, 15);   
+    text_node.borderRadius = 8;
+    text_node.zIndex = 13;
+
+    scene.add(text_node);
+    container_obj.add(text_node);
+
+
+    /*create link_node*/
+    var link_node = new JTopo.Node(LINKLINE_NAME);
+    //link_node.setSize(62, 15);
+    link_node.textPosition = "Middle_Center";
+    link_node.textOffsetY = -3;
+    link_node.font = "15px bold Consolas";
+    link_node.fillColor = "35,24,21";
+    link_node.zIndex = 14;
+    link_node.setBound(x, y, 68, 25);   
+    link_node.borderRadius = 8;
+    link_node.alpha = 0;
+
+    scene.add(link_node);
+    container_obj.add(link_node);
+
+
+
+    return container_obj;
+}
+
+
+function addLinkLine(scene,container_sid_up_child, container_sid_down, color, link_text, link_count){
+    var linkTopo = new JTopo.Link(container_sid_up_child, container_sid_down, link_text);
+
+    linkTopo.mouseover(function(event){
+            handler(event);
+            });
+    linkTopo.mouseout(function(event){
+            $("#hoverBox").hide();
+            });
+
+    /*
+       linkTopo.getStartPosition = function() {
+           var a;
+           return (a = (function(thisl){
+           var b=thisl.nodeA,c=thisl.nodeZ;
+           var d = JTopo.util.lineF(b.cx, b.cy, c.cx, c.cy),
+           e = b.getBound(),
+           f = JTopo.util.intersectionLineBound(d, e);
+           return f
+           })(this)),
+           null == a && (a = {
+            x: this.nodeZ.cx,
+            y: this.nodeZ.cy
+            }),a
+
+        };
+
+        linkTopo.getEndPosition = function() {
+            var a;
+            return (a = (function(thisl){
+            var b=thisl.nodeZ,c=thisl.nodeA;
+            var d = JTopo.util.lineF(b.cx, b.cy, c.cx, c.cy),
+            e = b.getBound(),
+            f = JTopo.util.intersectionLineBound(d, e);
+            return f
+            })(this)),
+            null == a && (a = {
+            x: this.nodeZ.cx,
+            y: this.nodeZ.cy
+        }),a
+
+};
+     */
+
+        //linkTopo.strokeColor = JTopo.util.randomColor();
+        linkTopo.strokeColor = color;
+        linkTopo.dashedPattern = link_count;
+        linkTopo.bundleGap = 8; //线条间隔
+        linkTopo.bundleOffset = 0;	//拐角长度
+        linkTopo.textOffsetY = 0;
+        linkTopo.lineWidth = 2;
+
+        scene.add(linkTopo);
+}
+
+function new_sw_node(scene, x, y, text){
+    var node = new JTopo.Node("G8124-3");
+    node.setSize(72,78);
+    node.font = "15px Consolas";
+    node.fontColor = "255,255,0";
+    node.fillColor = "0,0,0";
+    //node.textOffsetY = -9;
+    node.textPosition = "Middle_Center";
+    node.setImage("./img/img_topology/switch2.png");
+    node.mouseover(function(event){
+            handler(event);
+            });
+    node.mouseout(function(event){
+            $("#hoverBox").hide();
+            });
+    node.setLocation(x, y);
+    scene.add(node);
+    return node;
+}
+
+// 简单连线
+function new_link(scene, nodeA, nodeZ, color, text,dashedPattern){
+    var link = new JTopo.Link(nodeA, nodeZ, text);  
+    link.mouseover(function(event){
+            handler(event);
+            });
+    link.mouseout(function(event){
+            $("#hoverBox").hide();
+            });
+
+
+
+    link.lineWidth = 1.5; // 线宽
+    link.bundleOffset = 0; // 折线拐角处的长度
+    link.bundleGap = 8; // 线条之间的间隔
+    link.textOffsetY = 0; // 文本偏移量（向下3个像素）
+    link.strokeColor = color; /*JTopo.util.randomColor();*/ // 线条颜色随机
+    link.dashedPattern = dashedPattern; 
+    scene.add(link);
+    return link;
+}
+
+
+$(document).ready(function(){
+
+        init4();
+        })		
+
+
+
+function init4(){
+
+    var FIRST_LAYER_Y = 10, FIRST_LAYER_X = 10;			
+    var SECOND_LAYER_Y = 200, SECOND_LAYER_X = 10;
+    var THREE_LAYER_Y = 400, THREE_LAYER_X = 90;
+    var STEP_X = 200, THREE_STEP_X = 400;
+
+    var canvas = document.getElementById('canvas4');
+    var stage = new JTopo.Stage(canvas);
+    //显示工具栏
+    //showJTopoToobar(stage);
+    var scene = new JTopo.Scene();
+    scene.backgroundColor = '255,250,250';
+    scene.alpha = 100;
+    //scene.mode = "select"; //"drag"
+    scene.mode = "normal"; //"drag"
+    stage.zoomIn(0);
+    stage.add(scene);
+
+    // 流式布局（水平、垂直间隔均为10)
+    var switch_flowLayout = JTopo.layout.FlowLayout(10, 30);
+
+    // 网格布局(4行3列)
+    var switch_gridLayout = JTopo.layout.GridLayout(6, 2);
+
+    //input the topology list
+    beige="138,43,226";
+    bla="127,255,0";
+    chocolate = "210,105,30";
+    darksalmon = "218,112,214";
+    brand=["Lenovo", "Juniper", "H3c", "Cisco"];
+    var node_map = new Array(
+            {from:'swf1', to:'swt1', color:beige, brand:brand[0]},
+            {from:'swf1', to:'swt1', color:beige, brand:brand[0]},
+            {from:'swf1', to:'swt1', color:beige, brand:brand[0]},
+            {from:'swf1', to:'swt2', color:beige, brand:brand[0]},
+            {from:'swf4', to:'swt2', color:beige, brand:brand[3]},
+            {from:'swf3', to:'swt3', color:bla, brand:brand[2]}, 
+            {from:'swf3', to:'swt1', color:bla, brand:brand[2]}, 
+            {from:'swf1', to:'swt3', color:beige, brand:brand[0]},
+            {from:'swf1', to:'swt4', color:beige, brand:brand[0]},
+            {from:'swf2', to:'swt2', color:chocolate, brand:brand[1]},
+            {from:'swt1', to:'Host_C', color:beige, brand:brand[0]},
+            {from:'swt2', to:'Host_C', color:chocolate, brand:brand[0]},
+            {from:'swt3', to:'Host_C', color:bla, brand:brand[0]},
+            {from:'swt4', to:'Host_C', color:darksalmon, brand:brand[0]},
+            {from:'swf1', to:'swt2', color:beige, brand:brand[0]},
+            {from:'swf1', to:'swt2', color:beige, brand:brand[0]},
+            {from:'swf1', to:'swt2', color:beige, brand:brand[0]},
+            {from:'swf1', to:'swt2', color:beige, brand:brand[0]},
+            {from:'swf2', to:'swt4', color:chocolate, brand:brand[1]},
+            {from:'swf2', to:'swt4', color:chocolate, brand:brand[1]},
+            {from:'swf2', to:'swt4', color:chocolate, brand:brand[1]},
+            {from:'swt3', to:'Host_D', color:bla, brand:brand[0]},
+            {from:'swt1', to:'Host_E', color:beige, brand:brand[0]},
+            {from:'swt3', to:'Host_E', color:bla, brand:brand[0]},
+            {from:'swt2', to:'Host_E', color:"0,250,154", brand:brand[0]},
+            {from:'swt2', to:'Host_E', color:"0,250,154", brand:brand[0]},
+            {from:'swt4', to:'Host_D', color:"46,139,87", brand:brand[0]},
+            {from:'swt4', to:'Host_D', color:darksalmon, brand:brand[0]},
+            {from:'swt4', to:'Host_D', color:darksalmon, brand:brand[0]},
+            {from:'swt4', to:'Host_D', color:darksalmon, brand:brand[0]},
+            {from:'swt4', to:'Host_D', color:darksalmon, brand:brand[0]},
+            {from:'swf2', to:'swt3', color:chocolate, brand:brand[1]}
+    );
+
+
+
+    var save_create_node = new Map();
+    var x_first = FIRST_LAYER_X;
+    var x_second = SECOND_LAYER_X;
+    var x_three = THREE_LAYER_X;
+    var number = 0;
+
+    for(var i=0; i < node_map.length; i++){	
+
+        var from = node_map[i].from;
+        var to = node_map[i].to;			
+        var color = node_map[i].color;
+        console.log(from, to, save_create_node.has(from), save_create_node.has(to));
+        //from
+        if ( save_create_node.has(from) == false){
+
+            if (from.split("_")[0] == "Host"){								
+                from_node = create_host_bar(scene, from, x_three, THREE_LAYER_Y, 150, 400,5);
+                x_three += THREE_STEP_X;
+            }			
+            else{
+                x_first += STEP_X;
+                number++;
+                //from_node = new_sw_node(scene, x_first, FIRST_LAYER_Y, from);
+                from_node = container_sw_create(scene, from, x_first, FIRST_LAYER_Y, 72, 80, number.toString(),node_map[i].brand );
+            }	
+
+            save_create_node.set(from,from_node);					
+        }
+        else{
+            from_node = save_create_node.get(from);
+        }				
+
+        //to
+        if (save_create_node.has(to) == false){						
+
+            if (to.split('_')[0] == "Host"){							
+                if (i % 2)
+                    to_node = create_host_bar(scene, to, x_three, THREE_LAYER_Y, 150, 400, 4);
+                else
+                    to_node = create_host_bar(scene, to, x_three, THREE_LAYER_Y, 150, 400, 8);
+                x_three += THREE_STEP_X;
+            }							
+            else{
+                x_second += STEP_X;
+                //to_node = new_sw_node(scene, x_second, SECOND_LAYER_Y, to);
+                number++;
+                to_node = container_sw_create(scene, to, x_second, SECOND_LAYER_Y, 72, 80, number.toString(), node_map[i].brand);
+            }
+            save_create_node.set(to,to_node);
+        }else{
+            to_node = save_create_node.get(to);
+        }
+
+        if(to_node instanceof JTopo.Container){
+            to_link_node = get_container_child(to_node); 
+            //from_link_node = get_container_child(from_node); 
+            if(to_link_node /*&& from_link_node*/){
+                if (to == "swt3")
+                    addLinkLine(scene, from_node, to_link_node, colors[1], '', 4);
+                //new_link(scene, from_node, to_link_node, color, '', 5);        				
+                else
+                    addLinkLine(scene, from_node, to_link_node, colors[1], '');
+                //new_link(scene, from_node, to_link_node, color, '');
+            }
+            else
+            {
+                if (to == "swt3")
+                    addLinkLine(scene, from_node, to_node, colors[1], '', 4);
+                //new_link(scene, from_node, to_node, color, '', 5);        				
+                else
+                    addLinkLine(scene, from_node, to_node, colors[1], '');
+                //new_link(scene, from_node, to_node, color, '');
+            }
+
+        }
+    }
+
+
+    /*
+       container2.click(function(){
+       if(container2.layout === switch_flowLayout){
+       container2.layout = switch_gridLayout;
+       }else{
+       container2.layout = switch_flowLayout;
+       }
+       });
+     */
+}
+
+</script>		
+</head>
+
+
+
+
+
+<body>
+<div id="topo" class="jtopo_toolbar">
+    <!--
+                        <canvas id="canvas" width="400" height="300" ></canvas>
+                        <canvas id="canvas2" width="600" height="300" style="background-color: rgb(238, 238, 238); border: 1px solid rgb(68, 68, 68); cursor: default;"></canvas>
+                        <canvas id="canvas3" width="1000" height="400"></canvas>
+                        -->
+    <canvas id="canvas4" width="1200" height="900"></canvas>
+</div>
+
+<div id="contextmenu">
+    <ul>
+        <li>Add Menu</li>
+        <li>Edit Quota</li>
+        <li>Delete Menu</li>
+        <li>Delete Menu</li>
+        <li>Delete Menu</li>
+        <li>Delete Menu</li>
+    </ul>
+</div>
+
+<div id="hoverBox">
+    <ul>
+        <li><a>查看详细信息>></a></li>
+        <li><button>添加组织</button></li>
+        <li><button>删除组织</button></li>
+        <li><button>添加用户</button></li>
+        <li><button>删除用户</button></li>
+    </ul>
+</div>
+</body>
 </html>
