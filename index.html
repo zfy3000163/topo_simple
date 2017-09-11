@@ -76,12 +76,14 @@ function get_container_child_from(container){
 }
 
 
-var colors=['255,192,203', '143,188,143', '0,200,255', '0,20,255'];
 function create_host_bar(scene, name, x, y, w, h, count){
-    var container_obj = new JTopo.Container(name);
+    var container_obj = new JTopo.Container();
     container_obj.layout = JTopo.layout.GridLayout(count, 1);
-    container_obj.alpha = 2;
-    container_obj.fillColor = colors[1];
+    container_obj.alpha = 1;
+    container_obj.text = name;
+    container_obj.font = "13px bold Consolas";
+    container_obj.fontColor = "0,0,0";
+    container_obj.fillColor = "211,211,211";
 
     container_obj.setBound(x, y, w, h);   
     container_obj.borderRadius = 20;					
@@ -115,11 +117,11 @@ function create_host_bar(scene, name, x, y, w, h, count){
     text_node.textPosition = "Middle_Center";
     text_node.textOffsetY = 0;
     text_node.font = "15px bold Consolas";
-    text_node.fillColor = colors[1];
+    text_node.fillColor = "143,188,143";
     text_node.setBound(x, y, w, 45);   
     text_node.borderRadius = 8;
     text_node.dragable = 0;
-    text_node.alpha = 0;
+    text_node.alpha = 1;
     text_node.visible = 0;
     text_node.zIndex = 13;
 
@@ -130,17 +132,19 @@ function create_host_bar(scene, name, x, y, w, h, count){
 }
 
 function container_sw_create(scene, name, x, y, w, h, number, brand){
+    var container_fillcolor = "230,230,250";
     var container_obj = new JTopo.Container();
     container_obj.layout = JTopo.layout.GridLayout(2, 1);
     container_obj.alpha = 0;
     container_obj.text=name;
-    container_obj.font = "12px bold Consolas";
+    container_obj.font = "13px bold Consolas";
     container_obj.fontColor = "0,0,0";
-    container_obj.fillColor = "245,245,225";
+    container_obj.fillColor = container_fillcolor;
     container_obj.setBound(x, y, w, h);   
     container_obj.borderRadius = 20;					
-    container_obj.shadow = "true";
-    container_obj.zIndex = 100;					
+    container_obj.shadow = 0;
+    container_obj.zIndex = 29;					
+
     container_obj.mouseover(function(event){
             handler(event);
             });
@@ -149,6 +153,24 @@ function container_sw_create(scene, name, x, y, w, h, number, brand){
             });
 
     scene.add(container_obj);			
+
+
+    /*create the dummy container*/
+    var container_obj_1 = new JTopo.Container();
+    //container_obj_1.layout = JTopo.layout.GridLayout(2, 1);
+    container_obj_1.alpha = 1;
+    container_obj_1.text=name;
+    container_obj_1.font = "13px bold Consolas";
+    container_obj_1.fontColor = "0,0,0";
+    container_obj_1.fillColor = container_fillcolor;
+    container_obj_1.setBound(x, y, w, h);   
+    container_obj_1.borderRadius = 20;					
+    container_obj_1.shadow = 0;
+    container_obj_1.zIndex = 19;					
+
+    scene.add(container_obj_1);	
+
+    container_obj_1.add(container_obj);
 
 
 
@@ -160,8 +182,9 @@ function container_sw_create(scene, name, x, y, w, h, number, brand){
     img_node.textOffsetY = -9;
     img_node.font = "35px Consolas";
     img_node.scaleX = 1;
-    img_node.zIndex = 12;
+    img_node.zIndex = 28;
     img_node.setBound(x, y, 72, 72);   
+
     
     scene.add(img_node);
     container_obj.add(img_node);
@@ -169,6 +192,7 @@ function container_sw_create(scene, name, x, y, w, h, number, brand){
 
     /*create text_node*/
     var text_node = new JTopo.Node(brand);
+    text_node.alpha = 1;
     //text_node.setSize(68, 15);
     text_node.textPosition = "Middle_Center";
     text_node.textOffsetY = -3;
@@ -176,7 +200,7 @@ function container_sw_create(scene, name, x, y, w, h, number, brand){
     text_node.fillColor = "35,24,21";
     text_node.setBound(x, y, 68, 15);   
     text_node.borderRadius = 8;
-    text_node.zIndex = 13;
+    text_node.zIndex = 30;
 
     scene.add(text_node);
     container_obj.add(text_node);
@@ -211,7 +235,6 @@ function container_sw_create(scene, name, x, y, w, h, number, brand){
 
     scene.add(link_node);
     container_obj.add(link_node);
-
 
     return container_obj;
 }
@@ -348,44 +371,41 @@ function init4(){
     var switch_gridLayout = JTopo.layout.GridLayout(6, 2);
 
     //input the topology list
-    beige="138,43,226";
-    bla="127,255,0";
-    chocolate = "210,105,30";
-    darksalmon = "218,112,214";
-    brand=["Lenovo", "Juniper", "H3c", "Cisco"];
+    var colors = ["138,43,226","127,255,0","210,105,30","218,112,214","94,94,94"];
+    var brand=["Lenovo", "Juniper", "H3c", "Cisco"];
     var node_map = new Array(
-            {from:'swf1', to:'swt1', color:beige, brand:brand[0]},
-            {from:'swf1', to:'swt1', color:beige, brand:brand[0]},
-            {from:'swf1', to:'swt1', color:beige, brand:brand[0]},
-            {from:'swf1', to:'swt2', color:beige, brand:brand[0]},
-            {from:'swf4', to:'swt2', color:beige, brand:brand[3]},
-            {from:'swf3', to:'swt3', color:bla, brand:brand[2]}, 
-            {from:'swf3', to:'swt1', color:bla, brand:brand[2]}, 
-            {from:'swf1', to:'swt3', color:beige, brand:brand[0]},
-            {from:'swf1', to:'swt4', color:beige, brand:brand[0]},
-            {from:'swf2', to:'swt2', color:chocolate, brand:brand[1]},
-            {from:'swt1', to:'Host_C', color:beige, brand:brand[0]},
-            {from:'swt2', to:'Host_C', color:chocolate, brand:brand[0]},
-            {from:'swt3', to:'Host_C', color:bla, brand:brand[0]},
-            {from:'swt4', to:'Host_C', color:darksalmon, brand:brand[0]},
-            {from:'swf1', to:'swt2', color:beige, brand:brand[0]},
-            {from:'swf1', to:'swt2', color:beige, brand:brand[0]},
-            {from:'swf1', to:'swt2', color:beige, brand:brand[0]},
-            {from:'swf1', to:'swt2', color:beige, brand:brand[0]},
-            {from:'swf2', to:'swt4', color:chocolate, brand:brand[1]},
-            {from:'swf2', to:'swt4', color:chocolate, brand:brand[1]},
-            {from:'swf2', to:'swt4', color:chocolate, brand:brand[1]},
-            {from:'swt3', to:'Host_D', color:bla, brand:brand[0]},
-            {from:'swt1', to:'Host_E', color:beige, brand:brand[0]},
-            {from:'swt3', to:'Host_E', color:bla, brand:brand[0]},
-            {from:'swt2', to:'Host_E', color:"0,250,154", brand:brand[0]},
-            {from:'swt2', to:'Host_E', color:"0,250,154", brand:brand[0]},
-            {from:'swt4', to:'Host_D', color:"46,139,87", brand:brand[0]},
-            {from:'swt4', to:'Host_D', color:darksalmon, brand:brand[0]},
-            {from:'swt4', to:'Host_D', color:darksalmon, brand:brand[0]},
-            {from:'swt4', to:'Host_D', color:darksalmon, brand:brand[0]},
-            {from:'swt4', to:'Host_D', color:darksalmon, brand:brand[0]},
-            {from:'swf2', to:'swt3', color:chocolate, brand:brand[1]}
+            {from:'swf1', to:'swt1', color:colors[0], brand:brand[0]},
+            {from:'swf1', to:'swt1', color:colors[0], brand:brand[0]},
+            {from:'swf1', to:'swt1', color:colors[0], brand:brand[0]},
+            {from:'swf1', to:'swt2', color:colors[0], brand:brand[0]},
+            {from:'swf4', to:'swt2', color:colors[3], brand:brand[3]},
+            {from:'swf3', to:'swt3', color:colors[2], brand:brand[2]}, 
+            {from:'swf3', to:'swt1', color:colors[2], brand:brand[2]}, 
+            {from:'swf1', to:'swt3', color:colors[0], brand:brand[0]},
+            {from:'swf1', to:'swt4', color:colors[0], brand:brand[0]},
+            {from:'swf2', to:'swt2', color:colors[1], brand:brand[1]},
+            {from:'swt1', to:'Host_C', color:colors[0], brand:brand[0]},
+            {from:'swt2', to:'Host_C', color:colors[1], brand:brand[1]},
+            {from:'swt3', to:'Host_C', color:colors[2], brand:brand[2]},
+            {from:'swt4', to:'Host_C', color:colors[3], brand:brand[3]},
+            {from:'swf1', to:'swt2', color:colors[0], brand:brand[0]},
+            {from:'swf1', to:'swt2', color:colors[0], brand:brand[0]},
+            {from:'swf1', to:'swt2', color:colors[0], brand:brand[0]},
+            {from:'swf1', to:'swt2', color:colors[0], brand:brand[0]},
+            {from:'swf2', to:'swt4', color:colors[1], brand:brand[1]},
+            {from:'swf2', to:'swt4', color:colors[1], brand:brand[1]},
+            {from:'swf2', to:'swt4', color:colors[1], brand:brand[1]},
+            {from:'swt3', to:'Host_D', color:colors[2], brand:brand[2]},
+            {from:'swt1', to:'Host_E', color:colors[0], brand:brand[0]},
+            {from:'swt3', to:'Host_E', color:colors[2], brand:brand[2]},
+            {from:'swt2', to:'Host_E', color:colors[1], brand:brand[1]},
+            {from:'swt2', to:'Host_E', color:colors[1], brand:brand[1]},
+            {from:'swt4', to:'Host_D', color:colors[3], brand:brand[3]},
+            {from:'swt4', to:'Host_D', color:colors[3], brand:brand[3]},
+            {from:'swt4', to:'Host_D', color:colors[3], brand:brand[3]},
+            {from:'swt4', to:'Host_D', color:colors[3], brand:brand[3]},
+            {from:'swt4', to:'Host_D', color:colors[3], brand:brand[3]},
+            {from:'swf2', to:'swt3', color:colors[1], brand:brand[1]}
     );
 
 
@@ -413,7 +433,7 @@ function init4(){
                 x_first += STEP_X;
                 number++;
                 //from_node = new_sw_node(scene, x_first, FIRST_LAYER_Y, from);
-                from_node = container_sw_create(scene, from, x_first, FIRST_LAYER_Y, 72, 80, number.toString(),node_map[i].brand );
+                from_node = container_sw_create(scene, from, x_first, FIRST_LAYER_Y, 72, 72, number.toString(),node_map[i].brand );
             }	
 
             save_create_node.set(from,from_node);					
@@ -436,7 +456,7 @@ function init4(){
                 x_second += STEP_X;
                 //to_node = new_sw_node(scene, x_second, SECOND_LAYER_Y, to);
                 number++;
-                to_node = container_sw_create(scene, to, x_second, SECOND_LAYER_Y, 72, 80, number.toString(), node_map[i].brand);
+                to_node = container_sw_create(scene, to, x_second, SECOND_LAYER_Y, 72, 72, number.toString(), node_map[i].brand);
             }
             save_create_node.set(to,to_node);
         }else{
@@ -448,20 +468,20 @@ function init4(){
             from_link_node = get_container_child_from(from_node); 
             if(to_link_node && from_link_node){
                 if (to == "swt3")
-                    addLinkLine(scene, from_link_node, to_link_node, colors[1], '', 4);
+                    addLinkLine(scene, from_link_node, to_link_node, colors[4], '', 4);
                     //new_link(scene, from_node, to_link_node, color, '', 5);        				
                 else
-                    addLinkLine(scene, from_link_node, to_link_node, colors[1], '');
+                    addLinkLine(scene, from_link_node, to_link_node, colors[4], '');
                     //new_link(scene, from_node, to_link_node, color, '');
             }
             else
             {
                 if (to == "swt3")
-                    addLinkLine(scene, from_node, to_node, colors[1], '', 4);
-                //new_link(scene, from_node, to_node, color, '', 5);        				
+                    addLinkLine(scene, from_node, to_node, colors[4], '', 4);
+                    //new_link(scene, from_node, to_node, color, '', 5);        				
                 else
-                    addLinkLine(scene, from_node, to_node, colors[1], '');
-                //new_link(scene, from_node, to_node, color, '');
+                    addLinkLine(scene, from_node, to_node, colors[4], '');
+                    //new_link(scene, from_node, to_node, color, '');
             }
 
         }
