@@ -94,13 +94,14 @@ function create_host_bar(scene, name, x, y, w, h, count){
     for(var i=0; i<count; i++){
         var node = new JTopo.Node(name + i);
         node.setImage("./img/img_topology/iserver.png");
-        node.setSize(110,35);
+        //node.setSize(110,35);
         node.textPosition = "Middle_Left";
-        node.textOffsetX = 25;
-        node.font = "5px Consolas";
-        node.scaleX = 1;
+        //node.textOffsetX = 5;
+        node.font = "5px bold Consolas";
+        node.fillColor = "35,24,21";
+        //node.scaleX = 1;
         node.zIndex = 12;
-        //node.setLocation(x, y);
+        node.setBound(x, y, 120, 35);
         node.mouseover(function(event){
                 handler(event);
                 });
@@ -116,7 +117,7 @@ function create_host_bar(scene, name, x, y, w, h, count){
     //text_node.setSize(62, 15);
     text_node.textPosition = "Middle_Center";
     text_node.textOffsetY = 0;
-    text_node.font = "15px bold Consolas";
+    text_node.font = "1px bold Consolas";
     text_node.fillColor = "143,188,143";
     text_node.setBound(x, y, w, 45);   
     text_node.borderRadius = 8;
@@ -131,7 +132,7 @@ function create_host_bar(scene, name, x, y, w, h, count){
     return container_obj;
 }
 
-function container_sw_create(scene, name, x, y, w, h, number, brand){
+function create_container_sw(scene, name, x, y, w, h, number, brand){
     var container_fillcolor = "230,230,250";
     var container_obj = new JTopo.Container();
     container_obj.layout = JTopo.layout.GridLayout(2, 1);
@@ -315,7 +316,6 @@ function new_sw_node(scene, x, y, text){
     return node;
 }
 
-// 简单连线
 function new_link(scene, nodeA, nodeZ, color, text,dashedPattern){
     var link = new JTopo.Link(nodeA, nodeZ, text);  
     link.mouseover(function(event){
@@ -327,11 +327,11 @@ function new_link(scene, nodeA, nodeZ, color, text,dashedPattern){
 
 
 
-    link.lineWidth = 1.5; // 线宽
-    link.bundleOffset = 0; // 折线拐角处的长度
-    link.bundleGap = 8; // 线条之间的间隔
-    link.textOffsetY = 0; // 文本偏移量（向下3个像素）
-    link.strokeColor = color; /*JTopo.util.randomColor();*/ // 线条颜色随机
+    link.lineWidth = 1.5;
+    link.bundleOffset = 0; 
+    link.bundleGap = 8; 
+    link.textOffsetY = 0;
+    link.strokeColor = color; /*JTopo.util.randomColor();*/
     link.dashedPattern = dashedPattern; 
     scene.add(link);
     return link;
@@ -354,7 +354,6 @@ function init4(){
 
     var canvas = document.getElementById('canvas4');
     var stage = new JTopo.Stage(canvas);
-    //显示工具栏
     //showJTopoToobar(stage);
     var scene = new JTopo.Scene();
     scene.backgroundColor = '255,250,250';
@@ -364,10 +363,8 @@ function init4(){
     stage.zoomIn(0);
     stage.add(scene);
 
-    // 流式布局（水平、垂直间隔均为10)
     var switch_flowLayout = JTopo.layout.FlowLayout(10, 30);
 
-    // 网格布局(4行3列)
     var switch_gridLayout = JTopo.layout.GridLayout(6, 2);
 
     //input the topology list
@@ -433,7 +430,7 @@ function init4(){
                 x_first += STEP_X;
                 number++;
                 //from_node = new_sw_node(scene, x_first, FIRST_LAYER_Y, from);
-                from_node = container_sw_create(scene, from, x_first, FIRST_LAYER_Y, 72, 72, number.toString(),node_map[i].brand );
+                from_node = create_container_sw(scene, from, x_first, FIRST_LAYER_Y, 72, 72, number.toString(),node_map[i].brand );
             }	
 
             save_create_node.set(from,from_node);					
@@ -456,7 +453,7 @@ function init4(){
                 x_second += STEP_X;
                 //to_node = new_sw_node(scene, x_second, SECOND_LAYER_Y, to);
                 number++;
-                to_node = container_sw_create(scene, to, x_second, SECOND_LAYER_Y, 72, 72, number.toString(), node_map[i].brand);
+                to_node = create_container_sw(scene, to, x_second, SECOND_LAYER_Y, 72, 72, number.toString(), node_map[i].brand);
             }
             save_create_node.set(to,to_node);
         }else{
