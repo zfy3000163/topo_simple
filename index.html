@@ -75,6 +75,69 @@ function get_container_child_from(container){
     return null;
 }
 
+function draw_container_lamplet(scene, container, portlist, x, y){
+    for (var m = 0; m < 4; m++) {
+        if(portlist[m] < 4){
+            var x1 = x + 50 + (portlist[m] * 6) + 1;
+            var y1 = y + 5 + 4; 
+        }
+        else{
+            var x1 = x + 50 + ((portlist[m] - 4) * 6) + 1; 
+            var y1 = y + 10 + 9 + 4;
+        }
+
+        var text_node = new JTopo.Node();
+        text_node.fillColor = "139,137,137";
+        text_node.setBound(x1, y1, 4, 4);   
+        //text_node.borderRadius = 8;
+        text_node.dragable = 0;
+        text_node.alpha = 1;
+        text_node.visible = 1;
+        text_node.zIndex = 94;
+
+        scene.add(text_node);
+        container.add(text_node);
+    }
+
+    for (var m = 0; m < 4; m++) {
+        var id = 0;
+        for (var t = 0; t < portlist.length; t++) {
+            if (m == portlist[t]) {
+                id = 1;
+            }
+
+        }
+        if (id == 0) {
+            /*
+            cxt.rect(x + 50 + (m * 6) + 1, y + 5 + 4, 4, 4).attr({
+                    "fill": "#8B8989",
+                    "stroke": "white",
+                    "stroke-width": 0
+                    });
+            cxt.rect(x + 50, y + 10 + 3 + 4, 26, 2).attr({
+                    "fill": "#121217",
+                    "stroke": "white",
+                    "stroke-width": 0
+                    });
+            */
+
+            var text_node = new JTopo.Node();
+            text_node.fillColor = "139,137,137";
+            text_node.setBound(x + 50 + (m * 6) + 1, y + 5 + 4, 4, 4);   
+            //text_node.borderRadius = 8;
+            text_node.dragable = 0;
+            text_node.alpha = 1;
+            text_node.visible = 1;
+            text_node.zIndex = 94;
+
+            scene.add(text_node);
+            container.add(text_node);
+
+        }
+    }
+
+}
+
 
 function create_host_bar(scene, name, x, y, w, h, count){
     var container_obj = new JTopo.Container();
@@ -83,48 +146,61 @@ function create_host_bar(scene, name, x, y, w, h, count){
     container_obj.text = name;
     container_obj.font = "13px bold Consolas";
     container_obj.fontColor = "0,0,0";
-    container_obj.fillColor = "211,211,211";
+    container_obj.fillColor = "234,232,232";
 
     container_obj.setBound(x, y, w, h);   
-    container_obj.borderRadius = 20;					
-    container_obj.zIndex = 11;					
+    container_obj.borderRadius = 0;					
+    container_obj.borderWidth= 2;
+    container_obj.borderColor= "142,157,173";
+    container_obj.zIndex = 18;					
+    container_obj.showSelected = false;					
+    //container_obj.shadow= 1;					
     scene.add(container_obj);			
 
-
+    
     for(var i=0; i<count; i++){
-        var node = new JTopo.Node(name + i);
-        node.setImage("./img/img_topology/iserver.png");
-        //node.setSize(110,35);
-        node.textPosition = "Middle_Left";
-        //node.textOffsetX = 5;
-        node.font = "5px bold Consolas";
-        node.fillColor = "35,24,21";
-        //node.scaleX = 1;
-        node.zIndex = 12;
-        node.setBound(x, y, 120, 35);
-        node.mouseover(function(event){
+        var container_1 = new JTopo.Container();
+        container_1.layout = JTopo.layout.GridLayout(2, 1);
+        container_1.alpha = 1;
+        container_1.text = "node-5";
+        container_1.textPosition = "Middle_Left";
+        container_1.textOffsetY = -9;
+        container_1.font = "1px Consolas";
+        container_1.fontColor = "0,0,0";
+        container_1.fillColor = "188,211,229";
+        container_1.borderWidth= 3;
+        container_1.borderColor= "170,193,214";
+        container_1.showSelected = false;					
+        container_1.zIndex = 19;
+        //container_1.shadow = 1;
+        container_1.setBound(x, y, 98, 35);
+        container_1.mouseover(function(event){
                 handler(event);
                 });
-        node.mouseout(function(event){
+        container_1.mouseout(function(event){
                 $("#hoverBox").hide();
                 });
 
-        scene.add(node);
-        container_obj.add(node);
+        scene.add(container_1);
+        container_obj.add(container_1);
+
+        port = [1,2,4,5];
+        draw_container_lamplet(scene, container_1, port, x, y);
+
     }
 
     var text_node = new JTopo.Node(LINKLINE_NAME_TO);
-    //text_node.setSize(62, 15);
     text_node.textPosition = "Middle_Center";
     text_node.textOffsetY = 0;
     text_node.font = "1px bold Consolas";
     text_node.fillColor = "143,188,143";
     text_node.setBound(x, y, w, 45);   
     text_node.borderRadius = 8;
+    text_node.borderWidth= 2;
     text_node.dragable = 0;
     text_node.alpha = 1;
     text_node.visible = 0;
-    text_node.zIndex = 13;
+    text_node.zIndex = 14;
 
     scene.add(text_node);
     container_obj.add(text_node);
@@ -134,6 +210,7 @@ function create_host_bar(scene, name, x, y, w, h, count){
 
 function create_container_sw(scene, name, x, y, w, h, number, brand){
     var container_fillcolor = "230,230,250";
+
     var container_obj = new JTopo.Container();
     container_obj.layout = JTopo.layout.GridLayout(2, 1);
     container_obj.alpha = 0;
@@ -184,9 +261,10 @@ function create_container_sw(scene, name, x, y, w, h, number, brand){
     img_node.font = "35px Consolas";
     img_node.scaleX = 1;
     img_node.zIndex = 28;
+    img_node.shadow = 0;
     img_node.setBound(x, y, 72, 72);   
 
-    
+
     scene.add(img_node);
     container_obj.add(img_node);
 
@@ -253,47 +331,47 @@ function addLinkLine(scene,container_sid_up_child, container_sid_down, color, li
 
     /*
        linkTopo.getStartPosition = function() {
-           var a;
-           return (a = (function(thisl){
-           var b=thisl.nodeA,c=thisl.nodeZ;
-           var d = JTopo.util.lineF(b.cx, b.cy, c.cx, c.cy),
-           e = b.getBound(),
-           f = JTopo.util.intersectionLineBound(d, e);
-           return f
-           })(this)),
-           null == a && (a = {
-            x: this.nodeZ.cx,
-            y: this.nodeZ.cy
-            }),a
+       var a;
+       return (a = (function(thisl){
+       var b=thisl.nodeA,c=thisl.nodeZ;
+       var d = JTopo.util.lineF(b.cx, b.cy, c.cx, c.cy),
+       e = b.getBound(),
+       f = JTopo.util.intersectionLineBound(d, e);
+       return f
+       })(this)),
+       null == a && (a = {
+x: this.nodeZ.cx,
+y: this.nodeZ.cy
+}),a
 
-        };
+};
 
-        linkTopo.getEndPosition = function() {
-            var a;
-            return (a = (function(thisl){
-            var b=thisl.nodeZ,c=thisl.nodeA;
-            var d = JTopo.util.lineF(b.cx, b.cy, c.cx, c.cy),
-            e = b.getBound(),
-            f = JTopo.util.intersectionLineBound(d, e);
-            return f
-            })(this)),
-            null == a && (a = {
-            x: this.nodeZ.cx,
-            y: this.nodeZ.cy
-        }),a
+linkTopo.getEndPosition = function() {
+var a;
+return (a = (function(thisl){
+var b=thisl.nodeZ,c=thisl.nodeA;
+var d = JTopo.util.lineF(b.cx, b.cy, c.cx, c.cy),
+e = b.getBound(),
+f = JTopo.util.intersectionLineBound(d, e);
+return f
+})(this)),
+null == a && (a = {
+x: this.nodeZ.cx,
+y: this.nodeZ.cy
+}),a
 
 };
      */
 
-        //linkTopo.strokeColor = JTopo.util.randomColor();
-        linkTopo.strokeColor = color;
-        linkTopo.dashedPattern = link_count;
-        linkTopo.bundleGap = 8; //线条间隔
-        linkTopo.bundleOffset = 0;	//拐角长度
-        linkTopo.textOffsetY = 0;
-        linkTopo.lineWidth = 2;
+//linkTopo.strokeColor = JTopo.util.randomColor();
+linkTopo.strokeColor = color;
+linkTopo.dashedPattern = link_count;
+linkTopo.bundleGap = 8; //线条间隔
+linkTopo.bundleOffset = 0;	//拐角长度
+linkTopo.textOffsetY = 0;
+linkTopo.lineWidth = 2;
 
-        scene.add(linkTopo);
+scene.add(linkTopo);
 }
 
 function new_sw_node(scene, x, y, text){
@@ -317,7 +395,7 @@ function new_sw_node(scene, x, y, text){
 }
 
 function new_link(scene, nodeA, nodeZ, color, text,dashedPattern){
-    var link = new JTopo.Link(nodeA, nodeZ, text);  
+    var link = new JTopo.FoldLink(nodeA, nodeZ, text);  
     link.mouseover(function(event){
             handler(event);
             });
@@ -326,9 +404,10 @@ function new_link(scene, nodeA, nodeZ, color, text,dashedPattern){
             });
 
 
-
-    link.lineWidth = 1.5;
-    link.bundleOffset = 0; 
+    //link.direction = 'vertical' || 'horizontal';
+    link.direction = 'vertical'; 
+    link.lineWidth = 2;
+    link.bundleOffset = 30; 
     link.bundleGap = 8; 
     link.textOffsetY = 0;
     link.strokeColor = color; /*JTopo.util.randomColor();*/
@@ -352,9 +431,17 @@ function init4(){
     var THREE_LAYER_Y = 400, THREE_LAYER_X = 90;
     var STEP_X = 200, THREE_STEP_X = 400;
 
+    //document.getElementById('topo').scrollTop = 150;
+    //document.getElementById('topo').scrollLeft = 200;
     var canvas = document.getElementById('canvas4');
+    canvas.height = 900 /*window.innerHeight*0.9*/;
+    canvas.width = window.innerWidth*0.9;
+
+
     var stage = new JTopo.Stage(canvas);
     //showJTopoToobar(stage);
+    //stage.width = 1300;
+    //stage.height = 1000;
     var scene = new JTopo.Scene();
     scene.backgroundColor = '255,250,250';
     scene.alpha = 100;
@@ -362,6 +449,7 @@ function init4(){
     scene.mode = "normal"; //"drag"
     stage.zoomIn(0);
     stage.add(scene);
+
 
     var switch_flowLayout = JTopo.layout.FlowLayout(10, 30);
 
@@ -371,9 +459,9 @@ function init4(){
     var colors = ["138,43,226","127,255,0","210,105,30","218,112,214","94,94,94"];
     var brand=["Lenovo", "Juniper", "H3c", "Cisco"];
     var node_map = new Array(
-            {from:'swf1', to:'swt1', color:colors[0], brand:brand[0]},
-            {from:'swf1', to:'swt1', color:colors[0], brand:brand[0]},
-            {from:'swf1', to:'swt1', color:colors[0], brand:brand[0]},
+            {from:'swt3', to:'swt2', color:colors[0], brand:brand[0]},
+            {from:'swt3', to:'swt2', color:colors[0], brand:brand[0]},
+            {from:'swt3', to:'swt2', color:colors[0], brand:brand[0]},
             {from:'swf1', to:'swt2', color:colors[0], brand:brand[0]},
             {from:'swf4', to:'swt2', color:colors[3], brand:brand[3]},
             {from:'swf3', to:'swt3', color:colors[2], brand:brand[2]}, 
@@ -423,7 +511,7 @@ function init4(){
         if ( save_create_node.has(from) == false){
 
             if (from.split("_")[0] == "Host"){								
-                from_node = create_host_bar(scene, from, x_three, THREE_LAYER_Y, 150, 400,5);
+                from_node = create_host_bar(scene, from, x_three, THREE_LAYER_Y, 120, 442,5);
                 x_three += THREE_STEP_X;
             }			
             else{
@@ -444,9 +532,9 @@ function init4(){
 
             if (to.split('_')[0] == "Host"){							
                 if (i % 2)
-                    to_node = create_host_bar(scene, to, x_three, THREE_LAYER_Y, 150, 400, 4);
+                    to_node = create_host_bar(scene, to, x_three, THREE_LAYER_Y, 120, 442, 4);
                 else
-                    to_node = create_host_bar(scene, to, x_three, THREE_LAYER_Y, 150, 400, 8);
+                    to_node = create_host_bar(scene, to, x_three, THREE_LAYER_Y, 120, 442, 8);
                 x_three += THREE_STEP_X;
             }							
             else{
@@ -465,20 +553,20 @@ function init4(){
             from_link_node = get_container_child_from(from_node); 
             if(to_link_node && from_link_node){
                 if (to == "swt3")
-                    addLinkLine(scene, from_link_node, to_link_node, colors[4], '', 4);
-                    //new_link(scene, from_node, to_link_node, color, '', 5);        				
+                    //addLinkLine(scene, from_link_node, to_link_node, colors[4], '', 4);
+                    new_link(scene, from_link_node, to_link_node, colors[4], '');        				
                 else
                     addLinkLine(scene, from_link_node, to_link_node, colors[4], '');
-                    //new_link(scene, from_node, to_link_node, color, '');
+                //new_link(scene, from_node, to_link_node, color, '');
             }
             else
             {
                 if (to == "swt3")
                     addLinkLine(scene, from_node, to_node, colors[4], '', 4);
-                    //new_link(scene, from_node, to_node, color, '', 5);        				
+                //new_link(scene, from_node, to_node, color, '', 5);        				
                 else
                     addLinkLine(scene, from_node, to_node, colors[4], '');
-                    //new_link(scene, from_node, to_node, color, '');
+                //new_link(scene, from_node, to_node, color, '');
             }
 
         }
@@ -504,13 +592,23 @@ function init4(){
 
 
 <body>
-<div id="topo" class="jtopo_toolbar">
+<div id="topo" class="jtopo_toolbar" style="
+    position:absolute;
+    left:10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 95%;
+    height: 900px;
+    overflow:auto;
+    background: #efefef;" >
     <!--
                         <canvas id="canvas" width="400" height="300" ></canvas>
                         <canvas id="canvas2" width="600" height="300" style="background-color: rgb(238, 238, 238); border: 1px solid rgb(68, 68, 68); cursor: default;"></canvas>
                         <canvas id="canvas3" width="1000" height="400"></canvas>
-                        -->
     <canvas id="canvas4" width="1200" height="900"></canvas>
+    -->
+    <canvas id="canvas4" ></canvas>
 </div>
 
 <div id="contextmenu">

@@ -1,0 +1,165 @@
+<!DOCTYPE html> 
+<html> 
+<head lang="en"> 
+<meta charset="UTF-8"> 
+<title>JTopo 教程</title> 
+<script src="jtopo-0.4.8-min.js" type="text/javascript"></script>
+</head> 
+<body> 
+<canvas width="910" height="800" id="canvas"></canvas>
+<script>
+canvas = document.getElementById('canvas');
+stage = new JTopo.Stage(canvas); // 创建一个舞台对象
+scene = new JTopo.Scene(stage); // 创建一个场景对象
+scene.background = './img/bg.jpg'
+
+node = new JTopo.Node("Hello"); // 创建一个节点
+node.setLocation(400,200); // 设置节点坐标 
+/* node.rotate = Math.random(); // 旋转角度
+   node.scaleX = Math.random(); // 水平方向的缩放
+   node.scaleY = Math.random(); // 垂直方向的缩放
+   node.alpha = Math.random(); // 透明度 */
+//node.setImage('img/ne.png'); // 设置图片
+node.fontColor ="0,0,0"; // 设置文字颜色
+node.setSize(100, 60);
+node.font = '14px 微软雅黑';
+node.textPosition = 'Middle_Center';
+node.borderColor = '255,255,255';
+node.borderRadius = 5; //圆角
+node.borderWidth = 2;
+node.alpha = 0.7; //透明度
+node.showSelected = false;
+
+scene.add(node); // 放入到场景中
+var nodeFrom = new JTopo.Node("from");
+nodeFrom.setLocation(200,200);
+scene.add(nodeFrom);
+
+var nodeTo = new JTopo.Node("To");
+nodeTo.setLocation(300,200);
+scene.add(nodeTo);
+
+var link = new JTopo.Link(nodeFrom, nodeTo); // 增加连线
+scene.add(link); 
+
+
+
+var appleNode = new JTopo.Node();
+appleNode.alpha = 0.7;
+appleNode.setImage('./img/OS_Apple.png', true);
+appleNode.setLocation(320, 80);
+appleNode.showSelected = false; // 不显示选中矩形
+scene.add(appleNode);
+
+var circleNode = new JTopo.CircleNode("node");
+circleNode.radius = 24;//半径
+circleNode.alpha = 0.7;//透明度
+circleNode.fillColor = '0, 255, 0';
+circleNode.setLocation(508, 100);
+circleNode.textLocation = 'Middle_Center';
+scene.add(circleNode);
+
+nodeTo.mousedown(function(event){
+        if(event.button == 2){
+        nodeTo.text = '按下右键'; 
+        }else if(event.button == 1){
+        node.text = '按下中键'; 
+        }else if(event.button == 0){
+        node.text = '按下左键'; 
+        } 
+        });
+
+node.click(function(event){
+        console.log("单击");
+
+        });
+
+node.dbclick(function(event){
+        console.log("双击"); 
+        });
+
+
+node.mousedrag(function(event){ 
+        console.log("拖拽");
+        }); 
+node.mouseover(function(event){ 
+        console.log("mouseover"); 
+        });
+node.mousemove(function(event){ 
+        console.log("mousemove"); 
+        }); 
+node.mouseout(function(event){ 
+        console.log("mouseout"); 
+        });
+
+
+
+
+
+
+
+
+// 节点
+function newNode(x, y, w, h, text){
+    var node = new JTopo.Node(text);
+    node.setLocation(x, y);
+    node.setSize(w, h);
+    scene.add(node);
+    return node;
+}
+
+
+function newFoldLink(nodeA, nodeZ, text, direction, dashedPattern){
+    var link = new JTopo.FoldLink(nodeA, nodeZ, text);
+    link.direction = direction || 'horizontal';
+    link.arrowsRadius = 15; //箭头大小
+    link.lineWidth = 3; // 线宽
+    link.bundleOffset = 60; // 折线拐角处的长度
+    link.bundleGap = 20; // 线条之间的间隔
+    link.textOffsetY = 3; // 文本偏移量（向下3个像素）
+    link.strokeColor = JTopo.util.randomColor(); // 线条颜色随机
+    link.dashedPattern = dashedPattern;//虚线的间隔长度，是一个数值
+    scene.add(link);
+    return link;
+}
+
+var link = newFoldLink(appleNode, circleNode, "up");
+var link = newFoldLink(circleNode, appleNode, "down");
+
+
+
+var from = newNode(100, 200, 30, 30);
+var to = newNode(200, 300, 30, 30);
+var link = newFoldLink(from, to, 'FoldLink');
+var link = newFoldLink(to, from,'FoldLink', 'vertical', 5);
+var link = newFoldLink(from,from,'FoldLink');
+var link = newFoldLink(from,from,'FoldLink');
+var link = newFoldLink(from,from,'FoldLink');
+var link = newFoldLink(from,from,'FoldLink');
+var link = newFoldLink(from,from,'FoldLink');
+var link = newFoldLink(from,from,'FoldLink');
+var link = newFoldLink(from,from,'FoldLink');
+
+
+// --------- loop
+var loopNode = new JTopo.Node("loop"); 
+loopNode.setLocation(600, 400);
+scene.add(loopNode);
+for(var i=0; i<5; i++){
+    var link = new JTopo.Link(loopNode, loopNode);
+    link.text = 'L'+i;
+    link.lineWidth = 3; // 线宽
+    link.bundleGap = 30; // 线条之间的间隔
+    link.textOffsetY = 3; // 文本偏移量（向下3个像素）
+    link.strokeColor = JTopo.util.randomColor(); // 线条颜色随机
+    //link.type = 'loop'; // 自定义属性
+    scene.add(link);
+}
+
+</script> 
+
+
+
+
+</body> 
+</html>
