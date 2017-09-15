@@ -141,7 +141,7 @@ function draw_container_lamplet(scene, container, portlist, x, y){
 
 function create_host_bar(scene, name, x, y, w, h, count){
     var container_obj = new JTopo.Container();
-    container_obj.layout = JTopo.layout.GridLayout(count, 1);
+    //container_obj.layout = JTopo.layout.GridLayout(count, 1);
     container_obj.alpha = 1;
     container_obj.text = name;
     container_obj.font = "13px bold Consolas";
@@ -154,7 +154,8 @@ function create_host_bar(scene, name, x, y, w, h, count){
     container_obj.borderColor= "142,157,173";
     container_obj.zIndex = 18;					
     container_obj.showSelected = false;					
-    //container_obj.shadow= 1;					
+    //container_obj.shadow = 1;					
+    container_obj.childDragble = 0;					
     scene.add(container_obj);			
 
     
@@ -171,9 +172,10 @@ function create_host_bar(scene, name, x, y, w, h, count){
         container_1.borderWidth= 3;
         container_1.borderColor= "170,193,214";
         container_1.showSelected = false;					
+        container_1.dragable = 0;					
         container_1.zIndex = 19;
         //container_1.shadow = 1;
-        container_1.setBound(x, y, 98, 35);
+        container_1.setBound(x+19, y+(45*i)+10, 98, 35);
         container_1.mouseover(function(event){
                 handler(event);
                 });
@@ -532,7 +534,7 @@ function init4(){
 
             if (to.split('_')[0] == "Host"){							
                 if (i % 2)
-                    to_node = create_host_bar(scene, to, x_three, THREE_LAYER_Y, 120, 442, 4);
+                    to_node = create_host_bar(scene, to, x_three, THREE_LAYER_Y, 120, 442, 1);
                 else
                     to_node = create_host_bar(scene, to, x_three, THREE_LAYER_Y, 120, 442, 8);
                 x_three += THREE_STEP_X;
