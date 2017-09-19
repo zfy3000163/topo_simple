@@ -57,7 +57,6 @@ var LINKLINE_NAME_TO = "linkline_top";
 var LINKLINE_NAME_FROM = "linkline_bottom";
 function get_container_child_to(container){
     for (child in container.childs){
-        console.log(container.childs[child].text);
         if (container.childs[child].text == LINKLINE_NAME_TO)
             return container.childs[child];
     }
@@ -67,7 +66,6 @@ function get_container_child_to(container){
 
 function get_container_child_from(container){
     for (child in container.childs){
-        console.log(container.childs[child].text);
         if (container.childs[child].text == LINKLINE_NAME_FROM)
             return container.childs[child];
     }
@@ -75,17 +73,10 @@ function get_container_child_from(container){
     return null;
 }
 
-function draw_container_lamplet(scene, container, portlist, x, y){
+function draw_container_lamplet(scene, container, x, y){
+        y1 = y + 8;
     for (var m = 0; m < 4; m++) {
-        if(portlist[m] < 4){
-            var x1 = x + 50 + (portlist[m] * 6) + 1;
-            var y1 = y + 5 + 4; 
-        }
-        else{
-            var x1 = x + 50 + ((portlist[m] - 4) * 6) + 1; 
-            var y1 = y + 10 + 9 + 4;
-        }
-
+        x1 = x + 45 + (m * 10); 
         var text_node = new JTopo.Node();
         text_node.fillColor = "139,137,137";
         text_node.setBound(x1, y1, 4, 4);   
@@ -99,49 +90,30 @@ function draw_container_lamplet(scene, container, portlist, x, y){
         container.add(text_node);
     }
 
+        y1 = y + 15;
     for (var m = 0; m < 4; m++) {
-        var id = 0;
-        for (var t = 0; t < portlist.length; t++) {
-            if (m == portlist[t]) {
-                id = 1;
-            }
+        x1 = x + 45 + (m * 10); 
+        var text_node = new JTopo.Node();
+        text_node.fillColor = "139,137,137";
+        text_node.setBound(x1, y1, 4, 4);   
+        //text_node.borderRadius = 8;
+        text_node.dragable = 0;
+        text_node.alpha = 1;
+        text_node.visible = 1;
+        text_node.zIndex = 94;
 
-        }
-        if (id == 0) {
-            /*
-            cxt.rect(x + 50 + (m * 6) + 1, y + 5 + 4, 4, 4).attr({
-                    "fill": "#8B8989",
-                    "stroke": "white",
-                    "stroke-width": 0
-                    });
-            cxt.rect(x + 50, y + 10 + 3 + 4, 26, 2).attr({
-                    "fill": "#121217",
-                    "stroke": "white",
-                    "stroke-width": 0
-                    });
-            */
-
-            var text_node = new JTopo.Node();
-            text_node.fillColor = "139,137,137";
-            text_node.setBound(x + 50 + (m * 6) + 1, y + 5 + 4, 4, 4);   
-            //text_node.borderRadius = 8;
-            text_node.dragable = 0;
-            text_node.alpha = 1;
-            text_node.visible = 1;
-            text_node.zIndex = 94;
-
-            scene.add(text_node);
-            container.add(text_node);
-
-        }
+        scene.add(text_node);
+        container.add(text_node);
     }
+
+    return container;
 
 }
 
 
 function create_host_bar(scene, name, x, y, w, h, count){
     var container_obj = new JTopo.Container();
-    //container_obj.layout = JTopo.layout.GridLayout(count, 1);
+    container_obj.layout = JTopo.layout.GridLayout(0, 1);
     container_obj.alpha = 1;
     container_obj.text = name;
     container_obj.font = "13px bold Consolas";
@@ -161,7 +133,7 @@ function create_host_bar(scene, name, x, y, w, h, count){
     
     for(var i=0; i<count; i++){
         var container_1 = new JTopo.Container();
-        container_1.layout = JTopo.layout.GridLayout(2, 1);
+        container_1.layout = JTopo.layout.GridLayout(0, 4);
         container_1.alpha = 1;
         container_1.text = "node-5";
         container_1.textPosition = "Middle_Left";
@@ -175,7 +147,7 @@ function create_host_bar(scene, name, x, y, w, h, count){
         container_1.dragable = 0;					
         container_1.zIndex = 19;
         //container_1.shadow = 1;
-        container_1.setBound(x+19, y+(45*i)+10, 98, 35);
+        container_1.setBound(x+8, y+(45*i)+10, 85, 28);
         container_1.mouseover(function(event){
                 handler(event);
                 });
@@ -186,8 +158,8 @@ function create_host_bar(scene, name, x, y, w, h, count){
         scene.add(container_1);
         container_obj.add(container_1);
 
-        port = [1,2,4,5];
-        draw_container_lamplet(scene, container_1, port, x, y);
+        draw_container_lamplet(scene, container_1, x+8, y+(45*i)+10);
+
 
     }
 
@@ -418,6 +390,14 @@ function new_link(scene, nodeA, nodeZ, color, text,dashedPattern){
     return link;
 }
 
+function full(stage){
+    $('#fullScreenButton').click(function(){  
+                runPrefixMethod(stage.canvas, "RequestFullScreen")  
+                    });
+
+
+}
+
 
 $(document).ready(function(){
 
@@ -451,6 +431,7 @@ function init4(){
     scene.mode = "normal"; //"drag"
     stage.zoomIn(0);
     stage.add(scene);
+
 
 
     var switch_flowLayout = JTopo.layout.FlowLayout(10, 30);
@@ -508,12 +489,11 @@ function init4(){
         var from = node_map[i].from;
         var to = node_map[i].to;			
         var color = node_map[i].color;
-        console.log(from, to, save_create_node.has(from), save_create_node.has(to));
         //from
         if ( save_create_node.has(from) == false){
 
             if (from.split("_")[0] == "Host"){								
-                from_node = create_host_bar(scene, from, x_three, THREE_LAYER_Y, 120, 442,5);
+                from_node = create_host_bar(scene, from, x_three, THREE_LAYER_Y, 100, 442,5);
                 x_three += THREE_STEP_X;
             }			
             else{
@@ -534,9 +514,9 @@ function init4(){
 
             if (to.split('_')[0] == "Host"){							
                 if (i % 2)
-                    to_node = create_host_bar(scene, to, x_three, THREE_LAYER_Y, 120, 442, 1);
+                    to_node = create_host_bar(scene, to, x_three, THREE_LAYER_Y, 100, 442, 3);
                 else
-                    to_node = create_host_bar(scene, to, x_three, THREE_LAYER_Y, 120, 442, 8);
+                    to_node = create_host_bar(scene, to, x_three, THREE_LAYER_Y, 100, 442, 8);
                 x_three += THREE_STEP_X;
             }							
             else{
@@ -586,6 +566,9 @@ function init4(){
      */
 }
 
+
+
+
 </script>		
 </head>
 
@@ -605,6 +588,7 @@ function init4(){
     overflow:auto;
     background: #efefef;" >
     <!--
+    <input type="button" id="fullScreenButton" value="È«ÆÁÏÔÊ¾"/>
                         <canvas id="canvas" width="400" height="300" ></canvas>
                         <canvas id="canvas2" width="600" height="300" style="background-color: rgb(238, 238, 238); border: 1px solid rgb(68, 68, 68); cursor: default;"></canvas>
                         <canvas id="canvas3" width="1000" height="400"></canvas>
