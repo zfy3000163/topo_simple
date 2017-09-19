@@ -8,47 +8,10 @@
 <script type="text/javascript">
 
 
-CanvasRenderingContext2D.prototype.wrapText = function(str,x,y){
-    var textArray = str.split('\n');
-    if(textArray==undefined||textArray==null)return false;
-
-    var rowCnt = textArray.length;
-    var i = 0,imax = rowCnt,maxLength = 0;maxText = textArray[0];
-    for(;i<imax;i++){
-        var nowText = textArray[i],textLength = nowText.length;
-        if(textLength >=maxLength){
-            maxLength = textLength;
-            maxText = nowText;
-        }
-    }
-    var maxWidth = this.measureText(maxText).width;
-    var lineHeight = this.measureText("元").width;
-    x-= lineHeight*2;
-    for(var j= 0;j<textArray.length;j++){
-        var words = textArray[j];
-        this.fillText(words,-(maxWidth/2),y-textArray.length*lineHeight/100);
-        y+= lineHeight;
-    }
-};
-
-JTopo.Node.prototype.paintText = function(a){
-    var b = this.text;
-    if (null != b && "" != b) {
-        a.beginPath(),
-            a.font = this.font;
-        var c = a.measureText(b).width,
-            d = a.measureText("田").width;
-        a.fillStyle = "rgba(" + this.fontColor + ", " + this.alpha + ")";
-        var e = this.getTextPostion(this.textPosition, c, d);
-        a.wrapText(b, e.x, e.y),
-            a.closePath()
-    }
-} 
-
 function handler(event){
     $("#hoverBox").css({
-        top: event.pageY,
-        left: event.pageX
+    top: event.pageY,
+    left: event.pageX
     }).show();
 }
 
@@ -74,7 +37,7 @@ function get_container_child_from(container){
 }
 
 function draw_container_lamplet(scene, container, x, y){
-        y1 = y + 8;
+    y1 = y + 8;
     for (var m = 0; m < 4; m++) {
         x1 = x + 45 + (m * 10); 
         var text_node = new JTopo.Node();
@@ -90,7 +53,7 @@ function draw_container_lamplet(scene, container, x, y){
         container.add(text_node);
     }
 
-        y1 = y + 15;
+    y1 = y + 15;
     for (var m = 0; m < 4; m++) {
         x1 = x + 45 + (m * 10); 
         var text_node = new JTopo.Node();
@@ -130,7 +93,7 @@ function create_host_bar(scene, name, x, y, w, h, count){
     container_obj.childDragble = 0;					
     scene.add(container_obj);			
 
-    
+
     for(var i=0; i<count; i++){
         var container_1 = new JTopo.Container();
         container_1.layout = JTopo.layout.GridLayout(0, 4);
@@ -186,7 +149,7 @@ function create_container_sw(scene, name, x, y, w, h, number, brand){
     var container_fillcolor = "230,230,250";
 
     var container_obj = new JTopo.Container();
-    container_obj.layout = JTopo.layout.GridLayout(2, 1);
+    container_obj.layout = JTopo.layout.GridLayout(0, 1);
     container_obj.alpha = 0;
     container_obj.text=name;
     container_obj.font = "13px bold Consolas";
@@ -231,7 +194,7 @@ function create_container_sw(scene, name, x, y, w, h, number, brand){
     img_node.setImage("./img/img_topology/switch2.png");
     //img_node.setSize(72,72);
     img_node.textPosition = "Middle_Center";
-    img_node.textOffsetY = -9;
+    img_node.textOffsetY = -23;
     img_node.font = "35px Consolas";
     img_node.scaleX = 1;
     img_node.zIndex = 28;
@@ -248,10 +211,10 @@ function create_container_sw(scene, name, x, y, w, h, number, brand){
     text_node.alpha = 1;
     //text_node.setSize(68, 15);
     text_node.textPosition = "Middle_Center";
-    text_node.textOffsetY = -3;
+    text_node.textOffsetY = -9;
     text_node.font = "15px bold Consolas";
     text_node.fillColor = "35,24,21";
-    text_node.setBound(x, y, 68, 15);   
+    text_node.setBound(x+7, y+55, 60, 15);   
     text_node.borderRadius = 8;
     text_node.zIndex = 30;
 
@@ -314,38 +277,38 @@ function addLinkLine(scene,container_sid_up_child, container_sid_down, color, li
        return f
        })(this)),
        null == a && (a = {
-x: this.nodeZ.cx,
-y: this.nodeZ.cy
-}),a
+        x: this.nodeZ.cx,
+        y: this.nodeZ.cy
+        }),a
 
-};
+        };
 
-linkTopo.getEndPosition = function() {
-var a;
-return (a = (function(thisl){
-var b=thisl.nodeZ,c=thisl.nodeA;
-var d = JTopo.util.lineF(b.cx, b.cy, c.cx, c.cy),
-e = b.getBound(),
-f = JTopo.util.intersectionLineBound(d, e);
-return f
-})(this)),
-null == a && (a = {
-x: this.nodeZ.cx,
-y: this.nodeZ.cy
-}),a
+        linkTopo.getEndPosition = function() {
+        var a;
+        return (a = (function(thisl){
+        var b=thisl.nodeZ,c=thisl.nodeA;
+        var d = JTopo.util.lineF(b.cx, b.cy, c.cx, c.cy),
+        e = b.getBound(),
+        f = JTopo.util.intersectionLineBound(d, e);
+        return f
+        })(this)),
+        null == a && (a = {
+        x: this.nodeZ.cx,
+        y: this.nodeZ.cy
+        }),a
 
-};
-     */
+        };
+             */
 
-//linkTopo.strokeColor = JTopo.util.randomColor();
-linkTopo.strokeColor = color;
-linkTopo.dashedPattern = link_count;
-linkTopo.bundleGap = 8; //线条间隔
-linkTopo.bundleOffset = 0;	//拐角长度
-linkTopo.textOffsetY = 0;
-linkTopo.lineWidth = 2;
+        //linkTopo.strokeColor = JTopo.util.randomColor();
+        linkTopo.strokeColor = color;
+        linkTopo.dashedPattern = link_count;
+        linkTopo.bundleGap = 8; //线条间隔
+        linkTopo.bundleOffset = 0;	//拐角长度
+        linkTopo.textOffsetY = 0;
+        linkTopo.lineWidth = 2;
 
-scene.add(linkTopo);
+        scene.add(linkTopo);
 }
 
 function new_sw_node(scene, x, y, text){
@@ -392,8 +355,8 @@ function new_link(scene, nodeA, nodeZ, color, text,dashedPattern){
 
 function full(stage){
     $('#fullScreenButton').click(function(){  
-                runPrefixMethod(stage.canvas, "RequestFullScreen")  
-                    });
+            runPrefixMethod(stage.canvas, "RequestFullScreen")  
+            });
 
 
 }
@@ -433,7 +396,6 @@ function init4(){
     stage.add(scene);
 
 
-
     var switch_flowLayout = JTopo.layout.FlowLayout(10, 30);
 
     var switch_gridLayout = JTopo.layout.GridLayout(6, 2);
@@ -442,13 +404,13 @@ function init4(){
     var colors = ["138,43,226","127,255,0","210,105,30","218,112,214","94,94,94"];
     var brand=["Lenovo", "Juniper", "H3c", "Cisco"];
     var node_map = new Array(
-            {from:'swt3', to:'swt2', color:colors[0], brand:brand[0]},
+            {from:'swt1', to:'swt3', color:colors[0], brand:brand[0]},
             {from:'swt3', to:'swt2', color:colors[0], brand:brand[0]},
             {from:'swt3', to:'swt2', color:colors[0], brand:brand[0]},
             {from:'swf1', to:'swt2', color:colors[0], brand:brand[0]},
             {from:'swf4', to:'swt2', color:colors[3], brand:brand[3]},
             {from:'swf3', to:'swt3', color:colors[2], brand:brand[2]}, 
-            {from:'swf3', to:'swt1', color:colors[2], brand:brand[2]}, 
+            {from:'swf3', to:'swf3', color:colors[2], brand:brand[2]}, 
             {from:'swf1', to:'swt3', color:colors[0], brand:brand[0]},
             {from:'swf1', to:'swt4', color:colors[0], brand:brand[0]},
             {from:'swf2', to:'swt2', color:colors[1], brand:brand[1]},
@@ -535,8 +497,8 @@ function init4(){
             from_link_node = get_container_child_from(from_node); 
             if(to_link_node && from_link_node){
                 if (to == "swt3")
-                    //addLinkLine(scene, from_link_node, to_link_node, colors[4], '', 4);
-                    new_link(scene, from_link_node, to_link_node, colors[4], '');        				
+                    addLinkLine(scene, from_link_node, to_link_node, colors[4], '', 4);
+                //new_link(scene, from_link_node, to_link_node, colors[4], '');        				
                 else
                     addLinkLine(scene, from_link_node, to_link_node, colors[4], '');
                 //new_link(scene, from_node, to_link_node, color, '');

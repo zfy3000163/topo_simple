@@ -258,13 +258,6 @@
 
 
             if (server_details["status"] == 1) {
-                /*
-                   var server = cxt.rect(x, y + 4, 85, 28).attr({
-                   "stroke": "#AAC1D6",
-                   "stroke-width": 3,
-                   fill: "#BCD3E5"
-                   });
-                   */
                 var conf={'x':x,
                     'y':y + 4,
                     'w':85,
@@ -275,14 +268,6 @@
                 container_server = create_rack_server(scene, container_rack, names, chassisid, server_details, conf);
             }
             if (server_details["status"] == 3) {
-                /*
-                   var server = cxt.rect(x, y + 4, 85, 28).attr({
-                   "stroke": "#8EAAC1",
-                   "stroke-width": 1,
-                   "stroke-dasharray": "--",
-                   fill: "#BCD3E5"
-                   });
-                   */
                 var conf={'x':x,
                     'y':y + 4,
                     'w':85,
@@ -904,10 +889,10 @@
 
 
 
-        function create_container_sw(scene, switch_details, x, y, w, h, number){
+        function create_container_sw(scene, switch_details, x, y, w, h, floor1_number, floor2_number, floor1){
             var container_fillcolor = "230,230,250";
             var container_obj = new JTopo.Container();
-            container_obj.layout = JTopo.layout.GridLayout(2, 1);
+            container_obj.layout = JTopo.layout.GridLayout(0, 1);
             container_obj.alpha = 0;
             container_obj.text= switch_details["sysname"];
             container_obj.font = "13px bold Consolas";
@@ -943,9 +928,24 @@
 
 
             /*create img_node*/
-            var img_node = new JTopo.Node(number);
-            img_node.setImage(window.STATIC_URL + "dashboard/img/img_topology/switch2.png");
-            //img_node.setSize(72,72);
+            var img_node = new JTopo.Node();
+            var lenvel = 0;
+            for (var n = 0; n < floor1.length; n++) {
+                if (switch_details["sysname"] == floor1[n].switch_details["sysname"]) {
+                    lenvel = 1;
+                    break;
+                }
+            }
+            if (lenvel == 1) {
+                number = floor1_number;
+                var img_path = "dashboard/img/img_topology/switch1.png";
+            } else {
+                number = floor2_number;
+                var img_path = "dashboard/img/img_topology/switch2.png";
+            }
+
+            img_node.setImage(window.STATIC_URL + img_path);
+            img_node.text = number;
             img_node.textPosition = "Middle_Center";
             img_node.textOffsetY = -9;
             img_node.font = "35px Consolas";
@@ -976,7 +976,7 @@
             text_node.textOffsetY = -3;
             text_node.font = "15px bold Consolas";
             text_node.fillColor = "35,24,21";
-            text_node.setBound(x, y, 68, 15);   
+            text_node.setBound(x+7, y+57, 60, 15);   
             text_node.borderRadius = 8;
             text_node.zIndex = 30;
             text_node.showSelected = false;					
@@ -2712,9 +2712,8 @@
                     switch_num2--;
                     floorlist2[i]["x"] = orign + 72 * i + 100 * i;
                     floorlist2[i]["y"] = 100 + 30 * 2 + 30;
-                    //node(cxt, floorlist2[i]["x"], floorlist2[i]["y"], floorlist2[i]["switch_details"], switch_num1, switch_num2);
 
-                    from_node = create_container_sw(scene, floorlist2[i]["switch_details"],floorlist2[i]["x"],floorlist2[i]["y"], 72, 72, switch_num1 );
+                    from_node = create_container_sw(scene, floorlist2[i]["switch_details"],floorlist2[i]["x"],floorlist2[i]["y"], 72, 72, switch_num1, switch_num2, floor1);
                     floorlist2[i]["node"] = from_node;
 
                 }
@@ -2733,9 +2732,7 @@
                 }
                 if (floorlist1.length != 0) {
                     switch_num1++;
-                    //node(cxt, firstlocationx, firstlocationy, floorlist1[0]["switch_details"], switch_num1, switch_num2);
-
-                    from_node = create_container_sw(scene, floorlist1[0]["switch_details"],firstlocationx, firstlocationy, 72, 72, switch_num1 );
+                    from_node = create_container_sw(scene, floorlist1[0]["switch_details"],firstlocationx, firstlocationy, 72, 72, switch_num1, switch_num2, floor1);
                     floorlist1[0]["node"] = from_node;
                     floorlist1[0]["x"] = firstlocationx;
                     floorlist1[0]["y"] = firstlocationy;
@@ -2745,9 +2742,8 @@
                     floorlist1[j]["x"] = firstlocationx + j * 72 + 100 * j;
                     floorlist1[j]["y"] = firstlocationy;
 
-                    from_node = create_container_sw(scene, floorlist1[j]["switch_details"],floorlist1[j]["x"],floorlist1[j]["y"], 72, 72, switch_num1 );
+                    from_node = create_container_sw(scene, floorlist1[j]["switch_details"],floorlist1[j]["x"],floorlist1[j]["y"], 72, 72, switch_num1, switch_num2, floor1);
                     floorlist1[j]["node"] = from_node;
-                    //node(cxt, floorlist1[j]["x"], floorlist1[j]["y"], floorlist1[j]["switch_details"], switch_num1, switch_num2);
                 }
 
 
@@ -2780,7 +2776,6 @@
                                                         "dst_port": origin_switch_link_list[n]["link_details"][p]["remportid"],
                                                         "link_details": origin_switch_link_list[n]["link_details"][p]
                                                     });
-                                                    //line_h(cxt, floorlist2[m]["x"] + 36 + floorlist2[m]["markup"] * 5, floorlist2[m]["y"] + floorlist2[m]["markup"] * 5, floorlist2[b]["x"] + 36 + floorlist2[b]["markup"] * 5, floorlist2[m]["y"] - 5 - mark2 * 5, connectmessage);
                                                     add_switch_linkline(scene, floorlist2[m]["node"], floorlist2[b]["node"], "94,94,94", '');	
                                                     floorlist2[m]["markup"] = floorlist2[m]["markup"] + 1;
                                                     floorlist2[b]["markup"] = floorlist2[b]["markup"] + 1;
@@ -2807,7 +2802,6 @@
                                                         });
                                                         src1.push(origin_switch_link_list[n]["link_details"][p]["locportid"]);
                                                         dst1.push(origin_switch_link_list[n]["link_details"][p]["remportid"]);
-                                                        //line_circle(cxt, floorlist2[m]["x"] + 68 - floorlist2[m]["markcircle"] * 4, floorlist2[m]["y"] + 78 + floorlist2[m]["markcircle"] * 8, 8 + floorlist2[m]["markcircle"] * 8, 0.56, floorlist2[m]["markcircle"] * 5, floorlist2[m]["markcircle"] * 7, connectmessage);
                                                         add_switch_linkline(scene, floorlist2[m]["node"], floorlist2[m]["node"], "94,94,94", '');	
                                                         floorlist2[m]["markcircle"] = floorlist2[m]["markcircle"] + 1;
 
@@ -2830,8 +2824,6 @@
                                                 "dst_port": origin_switch_link_list[n]["link_details"][p]["remportid"],
                                                 "link_details": origin_switch_link_list[n]["link_details"][p]
                                             });
-                                            //line_switch(cxt, floorlist2[m]["x"] +46 + floorlist2[m]["markh"] * 5, floorlist2[m]["y"] + floorlist2[m]["markh"] * 5, floorlist1[c]["x"] + 36, floorlist1[c]["y"] + 78, connectmessage);
-                                            //line_switch(cxt, floorlist2[m]["x"] + 20 + floorlist2[m]["markh"] * 10, floorlist2[m]["y"], floorlist1[c]["x"] + 36, floorlist1[c]["y"] + 78, connectmessage);
                                             add_switch_linkline(scene, floorlist2[m]["node"], floorlist1[c]["node"], "94,94,94", '');	
 
                                             floorlist2[m]["markh"] = floorlist2[m]["markh"] + 1;
@@ -2873,7 +2865,6 @@
                                                     "link_details": origin_switch_link_list[e]["link_details"][f]
                                                 });
 
-                                                //line_h(cxt, floorlist1[d]["x"] + 36 + floorlist1[d]["markup"] * 5, floorlist1[d]["y"] + floorlist1[d]["markup"] * 5, floorlist1[h]["x"] + 36 + floorlist1[h]["markup"] * 5, floorlist1[d]["y"] - 10 - mark1 * 5, connectmessage);
                                                 add_switch_linkline(scene, floorlist1[d]["node"], floorlist1[h]["node"], "94,94,94", '');	
                                                 floorlist1[d]["markup"] = floorlist1[d]["markup"] + 1;
                                                 floorlist1[h]["markup"] = floorlist1[h]["markup"] + 1;
@@ -2899,7 +2890,6 @@
                                                     });
                                                     src.push(origin_switch_link_list[e]["link_details"][f]["locportid"]);
                                                     dst.push(origin_switch_link_list[e]["link_details"][f]["remportid"]);
-                                                    //line_circle(cxt, floorlist1[d]["x"] + 68 - floorlist1[d]["markcircle"] * 7, floorlist1[d]["y"] + 78 + floorlist1[d]["markcircle"] * 8, 8 + floorlist1[d]["markcircle"] * 8, 0.58, 5 + floorlist1[d]["markcircle"] * 5, floorlist1[d]["markcircle"] * 5, connectmessage);
                                                     add_switch_linkline(scene, floorlist1[d]["node"], floorlist1[d]["node"], "94,94,94", '');	
                                                     floorlist1[d]["markcircle"] = floorlist1[d]["markcircle"] + 1;
                                                     mark1 = mark1 + 1;
@@ -2999,7 +2989,6 @@
 
                             racklist[0]["mark"] = racklist[0]["mark"] + 1;
                             floorlist2[q]["mark"]++;
-                            //line_rack(cxt, racklist[0]["x"] + 2 + (racklist[0]["mark"] - 1) * d, firstLocationY, floorlist2[q]["x"] + 36, floorlist2[q]["y"] + 78, connectmessage, 'solid');
                             add_switch_linkline(scene, floorlist2[q]["node"], racklist[0]["node"],  "94,94,94", '');	
 
                         }
@@ -3022,7 +3011,6 @@
                             }
                             racklist[0]["mark"] = racklist[0]["mark"] + 1;
                             floorlist1[q]["mark"]++;
-                            //line_rack(cxt, racklist[0]["x"] + 2 + (racklist[0]["mark"] - 1) * d, firstLocationY, floorlist1[q]["x"] + 36, floorlist1[q]["y"] + 78, connectmessage, 'solid');
                             add_switch_linkline(scene, floorlist1[q]["node"], racklist[0]["node"], "94,94,94", '');	
                         }
                     }
@@ -3071,7 +3059,6 @@
                                 }
                                 racklist[j]["mark"] = racklist[j]["mark"] + 1;
                                 floorlist2[n]["markdown"] = floorlist2[n]["markdown"] + 1;
-                                //line_rack(cxt, racklist[j]["x"] + 2 + (racklist[j]["mark"] - 1) * port_distance, firstLocationY, floorlist2[n]["x"] + 36, floorlist2[n]["y"] + 78, connectmessage, 'solid');
                                 add_switch_linkline(scene, floorlist2[n]["node"], racklist[j]["node"], "94,94,94", '');	
                             }
                         }
@@ -3098,7 +3085,6 @@
                                 });
                                 racklist[j]["mark"] = racklist[j]["mark"] + 1;
                                 floorlist1[a]["markdown"] = floorlist1[a]["markdown"] + 1;
-                                //line_rack(cxt, racklist[j]["x"] + 2 + (racklist[j]["mark"] - 1) * port_distance, firstLocationY, floorlist1[a]["x"] + 36, floorlist1[a]["y"] + 78, connectmessage, 'solid');
                                 add_switch_linkline(scene, floorlist1[a]["node"], racklist[j]["node"], "94,94,94", '');	
                             }
                         }
@@ -3184,7 +3170,6 @@
                                                         if (racklist[cc]["mark"] == lens) {
                                                             x1 = racklist[cc]["x"] + 2 + port_distance / 2 + (racklist[cc]["mark"] - 1) * port_distance - 3 * port_distance / 4;
                                                         }
-                                                        //line_rack(cxt, x1, firstLocationY, floorlist1[ff]["x"] + 36, floorlist1[ff]["y"] + 78, connectmessage, 'dotted');
                                                         add_switch_linkline(scene, floorlist2[0]["node"], floorlist2[n]["node"], "94,94,94", '');	
                                                     }
 
