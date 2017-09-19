@@ -1,3 +1,3 @@
 # topo_simple
 
-![topology](./topology.JPG =1600*868)
+![topology-w868](./topology.JPG)
