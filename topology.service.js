@@ -1105,7 +1105,7 @@
                 var linkTopo = new JTopo.Link(from_link_node, to_link_node, conf.link_text);
 
                 line_popup_switch_to_switch_click(linkTopo, conf);
-console.log(linkline_color);
+
                 linkTopo.strokeColor = linkline_color;
                 linkTopo.dashedPattern = line_count;
                 linkTopo.bundleGap = 7; 
