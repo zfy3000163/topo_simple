@@ -23,6 +23,7 @@
     function DrawTopology(createhostDetailAction, hostLoginAction, hostRebootAction, switchDetailAction, switchLoginAction, lenovoTrafficsAction) {
         this.drawPhysicaltopology = function (data) {
 
+            //鼠标移动到交换机弹出框信息
             function switch_popup_handler(event, switch_details){
                 document.getElementById("bl_1").style.display = "block";
                 document.getElementById("table").style.display = "block";
@@ -75,6 +76,7 @@
             }
 
 
+            //鼠标移动到host‘s node时，弹出框显示详情
             function server_popup_handler(event, server_details, conf_switch_lists){
 
                 var switch_list = conf_switch_lists.switch_list;
@@ -240,6 +242,7 @@
                 $("#bl_1").show();
             }    
 
+            //鼠标双击交换机连接机架的连线时的弹出框
             function line_switch_to_server_popup_click(event, conf){
                 var connectmessage = conf.details;
                 var colorgray = 0;
@@ -345,9 +348,14 @@
                         bl.deleteRow(bl.rows.length - 1);
                     }
                 }
+
+
+                $("#bl_1").show();
+
             }
 
 
+            //鼠标双击交换机连接交换机的连线时的弹出框
             function line_switch_to_switch_popup_click(event, conf){
                 var connectmessage = conf.details;
 
@@ -422,6 +430,8 @@
                     }
 
                 }
+
+                $("#bl_1").show();
             }
 
             function switch_popup_mouseover(node, details){
@@ -530,7 +540,7 @@
                 container_server.visible = 0;
                 container_server.textPosition = "Middle_Left";
                 container_server.textOffsetY = -9;
-                container_server.font = "1px Consolas";
+                container_server.font = "10px Consolas";
                 container_server.fontColor = "0,0,0";
                 container_server.fillColor = "188,211,229";
                 container_server.borderWidth= conf.borderwidth;
@@ -547,7 +557,7 @@
                 var text_node = new JTopo.Node(LINKLINE_NAME_TO);
                 text_node.textPosition = "Middle_Center";
                 text_node.textOffsetY = 0;
-                text_node.font = "1px bold Consolas";
+                text_node.font = "10px bold Consolas";
                 text_node.fillColor = "143,188,143";
                 text_node.setBound(conf.x, conf.y, conf.w, 45);   
                 text_node.borderRadius = 8;
@@ -573,7 +583,7 @@
                 container_server.text = name;
                 container_server.textPosition = "Middle_Left";
                 container_server.textOffsetY = 0;
-                container_server.font = "1px Consolas";
+                container_server.font = "11px Consolas";
                 container_server.fontColor = "0,0,0";
                 container_server.fillColor = "188,211,229";
                 container_server.borderWidth= conf.borderwidth;
@@ -595,7 +605,7 @@
                 var text_node = new JTopo.Node(LINKLINE_NAME_TO);
                 text_node.textPosition = "Middle_Center";
                 text_node.textOffsetY = 0;
-                text_node.font = "1px bold Consolas";
+                text_node.font = "11px bold Consolas";
                 text_node.fillColor = "143,188,143";
                 text_node.setBound(conf.x, conf.y, conf.w, 45);   
                 text_node.borderRadius = 8;
@@ -826,7 +836,7 @@
 
 
 
-            function create_container_sw(scene, switch_details, x, y, w, h, floor1_number, floor2_number, floor1){
+            function create_switch(scene, switch_details, x, y, w, h, floor1_number, floor2_number, floor1){
                 var container_fillcolor = "230,230,250";
                 var container_obj = new JTopo.Container();
                 container_obj.layout = JTopo.layout.GridLayout(0, 1);
@@ -1055,95 +1065,47 @@
                 scene.add(linkTopo);
             }
 
+            function hex_to_rgb(hex_color){
+                var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+                var sColor = hex_color.toLowerCase();
+                if(sColor && reg.test(sColor)){
+                    if(sColor.length === 4){
+                        var sColorNew = "#";
+                        for(var i=1; i<4; i+=1){
+                            sColorNew += sColor.slice(i,i+1).concat(sColor.slice(i,i+1));        
+                        }
+                        sColor = sColorNew;
+                    }
+                    var sColorChange = [];
+                    for(var i=1; i<7; i+=2){
+                        sColorChange.push(parseInt("0x"+sColor.slice(i,i+2)));        
+                    }
+                    return "" + sColorChange.join(",") + "";
+                }else{
+                    return sColor;        
+                }
+            }
+
             function linkline_switch_to_switch(scene, node_from, node_to, conf){
                 var linkline_color = "";
-                var colorred = 0;
-                var coloryellow = 0;
-                var status = 0;
-                var colorgreen = 0;
-                var colorgray = 0;
-                var origin_switch_link_list = conf.origin_switch_link_list;
                 var connectmessage = conf.details;
 
-                for (var i = 0; i < origin_switch_link_list.length; i++) {
-                    if (connectmessage[0]["switch_ip"] == origin_switch_link_list[i]["switch_ip"]) {
-                        for (var j = 0; j < connectmessage[0]["racklist"]["serverlist"].length; j++) {
-                            for (var p = 0; p < origin_switch_link_list[i]["link_details"].length; p++) {
-                                if (connectmessage[0]["racklist"]["serverlist"][j]["chassisid"] == origin_switch_link_list[i]["link_details"][p]["remchassisid"] && connectmessage[0]["tuplelist"]["eth_name"] == origin_switch_link_list[i]["link_details"][p]["remportiddesc"]) {
-
-                                    if (origin_switch_link_list[i]["link_details"][p]["color"] == "red") {
-                                        colorred = 1;
-                                    }
-                                    if (origin_switch_link_list[i]["link_details"][p]["color"] == "#7CFC00") {
-                                        coloryellow = 1;
-                                    }
-                                    if (origin_switch_link_list[i]["link_details"][p]["color"] == "#2E8B57") {
-
-                                        colorgreen = 1;
-                                    }
-                                    if (origin_switch_link_list[i]["link_details"][p]["color"] == "#5E5E5E") {
-                                        colorgray = 1;
-                                    }
-                                    if (conf.line_style == "dotted") {
-                                        if (origin_switch_link_list[i]["link_details"][p]["status"] == "3" || origin_switch_link_list[i]["link_details"][p]["status"] == 3) {
-                                            status = 1;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                if (connectmessage[0]['link_details']['status'] == '3') {
+                    var line_count = 4;
+                    var color = connectmessage[0]["link_details"]["color"];
+                    linkline_color = hex_to_rgb(color);
                 }
-                if (status == 0) {
-                    if (colorred == 0 && coloryellow == 0 && colorgreen == 0 && colorgray == 1) {
-
-                        linkline_color = "94,94,94"; 
-                    }
-                    if (colorred == 1) {
-
-                        linkline_color = "255,0,0"; 
-                    }
-                    if (colorred == 0 && coloryellow == 0 && colorgreen == 1) {
-
-                        linkline_color = "46,139,87"; 
-                    }
-                    if (colorred == 0 && coloryellow == 1) {
-
-                        linkline_color = "124,252,0"; 
-                    }
+                if (connectmessage[0]['link_details']['status'] == "1") {
+                    var color = connectmessage[0]["link_details"]["color"];
+                    linkline_color = hex_to_rgb(color);
                 }
-                if (status == 1) {
-
-                    if (colorred == 0 && coloryellow == 0 && colorgreen == 0 && colorgray == 1) {
-
-                        var line_count = 4;
-                        linkline_color = "94,94,94"; 
-                    }
-                    if (colorred == 1) {
-
-                        var line_count = 4;
-                        linkline_color = "255,0,0"; 
-                    }
-                    if (colorred == 0 && coloryellow == 0 && colorgreen == 1) {
-
-                        var line_count = 4;
-                        linkline_color = "46,139,87"; 
-                    }
-                    if (colorred == 0 && coloryellow == 1) {
-
-                        var line_count = 4;
-                        linkline_color = "124,252,0"; 
-                    }
-
-                }
-
 
                 var from_link_node = get_container_child_from(node_from);
                 var to_link_node = get_container_child_to(node_to); 
                 var linkTopo = new JTopo.Link(from_link_node, to_link_node, conf.link_text);
 
                 line_popup_switch_to_switch_click(linkTopo, conf);
-
+console.log(linkline_color);
                 linkTopo.strokeColor = linkline_color;
                 linkTopo.dashedPattern = line_count;
                 linkTopo.bundleGap = 7; 
@@ -2472,7 +2434,7 @@
                         floorlist2[i]["x"] = orign + 72 * i + 100 * i;
                         floorlist2[i]["y"] = 100 + 30 * 2 + 30;
 
-                        from_node = create_container_sw(scene, floorlist2[i]["switch_details"],floorlist2[i]["x"],floorlist2[i]["y"], 72, 72, switch_num1, switch_num2, floor1);
+                        from_node = create_switch(scene, floorlist2[i]["switch_details"],floorlist2[i]["x"],floorlist2[i]["y"], 72, 72, switch_num1, switch_num2, floor1);
                         floorlist2[i]["node"] = from_node;
 
                     }
@@ -2491,7 +2453,7 @@
                     }
                     if (floorlist1.length != 0) {
                         switch_num1++;
-                        from_node = create_container_sw(scene, floorlist1[0]["switch_details"],firstlocationx, firstlocationy, 72, 72, switch_num1, switch_num2, floor1);
+                        from_node = create_switch(scene, floorlist1[0]["switch_details"],firstlocationx, firstlocationy, 72, 72, switch_num1, switch_num2, floor1);
                         floorlist1[0]["node"] = from_node;
                         floorlist1[0]["x"] = firstlocationx;
                         floorlist1[0]["y"] = firstlocationy;
@@ -2501,7 +2463,7 @@
                         floorlist1[j]["x"] = firstlocationx + j * 72 + 100 * j;
                         floorlist1[j]["y"] = firstlocationy;
 
-                        from_node = create_container_sw(scene, floorlist1[j]["switch_details"],floorlist1[j]["x"],floorlist1[j]["y"], 72, 72, switch_num1, switch_num2, floor1);
+                        from_node = create_switch(scene, floorlist1[j]["switch_details"],floorlist1[j]["x"],floorlist1[j]["y"], 72, 72, switch_num1, switch_num2, floor1);
                         floorlist1[j]["node"] = from_node;
                     }
 
@@ -2781,6 +2743,7 @@
 
                                 var linkline_conf={"details": connectmessage, 
                                     "line_text": '',  
+                                    "line_style": 'solid',
                                     "origin_switch_link_list": origin_switch_link_list
                                 };
                                 linkline_switch_to_server(scene, floorlist2[q]["node"], racklist[0]["node"], linkline_conf);	
@@ -2809,6 +2772,7 @@
 
                                 var linkline_conf={"details": connectmessage, 
                                     "line_text": '',  
+                                    "line_style": 'solid',
                                     "origin_switch_link_list": origin_switch_link_list
                                 };
                                 linkline_switch_to_server(scene, floorlist1[q]["node"], racklist[0]["node"], linkline_conf);	
@@ -2863,6 +2827,7 @@
 
                                     var linkline_conf={"details": connectmessage, 
                                         "line_text": '',  
+                                        "line_style": 'solid',
                                         "origin_switch_link_list": origin_switch_link_list
                                     };
                                     linkline_switch_to_server(scene, floorlist2[n]["node"], racklist[j]["node"], linkline_conf);	
@@ -2895,6 +2860,7 @@
 
                                     var linkline_conf={"details": connectmessage, 
                                         "line_text": '',  
+                                        "line_style": 'solid',
                                         "origin_switch_link_list": origin_switch_link_list
                                     };
                                     linkline_switch_to_server(scene, floorlist1[a]["node"], racklist[j]["node"], linkline_conf);	
@@ -2958,9 +2924,10 @@
 
                                                             var linkline_conf={"details": connectmessage, 
                                                                 "line_text": '',  
+                                                                "line_style": 'dotted',
                                                                 "origin_switch_link_list": origin_switch_link_list
                                                             };
-                                                            linkline_switch_to_switch(scene, floorlist2[0]["node"], floorlist2[ff]["node"], linkline_conf);	
+                                                            linkline_switch_to_server(scene, floorlist2[0]["node"], floorlist2[ff]["node"], linkline_conf);	
                                                         }
 
                                                     }
@@ -2991,9 +2958,10 @@
 
                                                             var linkline_conf={"details": connectmessage, 
                                                                 "line_text": '',  
+                                                                "line_style": 'dotted',
                                                                 "origin_switch_link_list": origin_switch_link_list
                                                             };
-                                                            linkline_switch_to_switch(scene, floorlist2[0]["node"], floorlist1[ff]["node"], linkline_conf);	
+                                                            linkline_switch_to_server(scene, floorlist2[0]["node"], floorlist1[ff]["node"], linkline_conf);	
                                                         }
 
                                                     }
