@@ -188,7 +188,7 @@
                                             if (switch_list[j]["ip"] == origin_switch_link_list[p]["switch_ip"]) {
                                                 for (var q = 0; q < origin_switch_link_list[p]["link_details"].length; q++) {
                                                     if (origin_switch_link_list[p]["link_details"][q]["remchassisid"] == server_details["chassisid"] && origin_switch_link_list[p]["link_details"][q]["remportiddesc"] == server_details['active_port_details'][cd]["eth_name"]) {
-                                                        cell34.innerHTML = "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp" + origin_switch_link_list[p]["link_details"][q]["locportid"] + "&nbsp&nbsp&nbsp&nbsp&nbsp";
+                                                        cell34.innerHTML = "&nbsp&nbsp" + origin_switch_link_list[p]["link_details"][q]["locportiddesc"] + "&nbsp&nbsp&nbsp&nbsp&nbsp";
 
                                                     }
                                                 }
@@ -208,7 +208,7 @@
                 document.getElementById("restart").style.display = "block";
                 document.getElementById("restart").style.width = "50px";
                 document.getElementById("restart").style.height = "30px";
-                document.getElementById("restart").innerHTML = gettext("reboot");
+                document.getElementById("restart").innerHTML = gettext("Reboot");
                 document.getElementById("login").style.width = "40px";
                 document.getElementById("login").style.height = "30px";
                 document.getElementById("login").style.display = "block";
@@ -245,6 +245,7 @@
             //鼠标双击交换机连接机架的连线时的弹出框
             function line_switch_to_server_popup_click(event, conf){
                 var connectmessage = conf.details;
+                var status = conf.status;
                 var colorgray = 0;
 
                 //var e = document.all ? window.event : arguments[0] ? arguments[0] : event;
@@ -291,12 +292,19 @@
                     var cell21 = row1.insertCell(row1.cells.length);
                     cell4.innerHTML = connectmessage[0]["racklist"]["serverlist"][i]["sysname"];
                     cell5.innerHTML = "&nbsp&nbsp" + connectmessage[0]["tuplelist"]["eth_name"];
-                    if (parseInt(connectmessage[0]["racklist"]["serverlist"][i]['status']) == 1) {
+                    //if (parseInt(connectmessage[0]["racklist"]["serverlist"][i]['status']) == 1) {
+                    //    cell21.innerHTML = "&nbsp&nbsp" + "active";
+                    //}
+                    //if (parseInt(connectmessage[0]["racklist"]["serverlist"][i]['status'] == 3)) {
+                    //    cell21.innerHTML = "&nbsp&nbsp" + "offline";
+                    //}
+                    if(status == 0){
                         cell21.innerHTML = "&nbsp&nbsp" + "active";
                     }
-                    if (parseInt(connectmessage[0]["racklist"]["serverlist"][i]['status'] == 3)) {
+                    if(status == 1){
                         cell21.innerHTML = "&nbsp&nbsp" + "offline";
                     }
+
                     for (var k = 0; k < origin_switch_link_list.length; k++) {
                         if (connectmessage[0]["switch_ip"] == origin_switch_link_list[k]["switch_ip"]) {
                             for (var z = 0; z < origin_switch_link_list[k]["link_details"].length; z++) {
@@ -337,7 +345,7 @@
                                 if (origin_switch_link_list[p]["link_details"][q]["remchassisid"] == connectmessage[0]["racklist"]["serverlist"][i]["chassisid"] && origin_switch_link_list[p]["link_details"][q]["remportiddesc"] == connectmessage[0]["tuplelist"]["eth_name"]) {
                                     if ($(e.target).attr('stroke-dasharray') == "8,6,2,6" && parseInt(origin_switch_link_list[p]["link_details"][q]["status"]) == 3 || $(e.target).attr('stroke-dasharray') !== "8,6,2,6" && parseInt(origin_switch_link_list[p]["link_details"][q]["status"]) == 1) {
                                         //( hover = dotted_line && origin_switch_status = 3) or (hover=solid_line && origin_switch_status = 1 )
-                                        cell6.innerHTML = origin_switch_link_list[p]["link_details"][q]["locportid"] + "&nbsp&nbsp&nbsp&nbsp&nbsp";
+                                        cell6.innerHTML = origin_switch_link_list[p]["link_details"][q]["locportiddesc"] + "&nbsp&nbsp&nbsp&nbsp&nbsp";
                                         break;
                                     }
                                 }
@@ -598,7 +606,7 @@
 
                 if (server_details["status"] == 1) {
                     var conf={'x':x,
-                        'y':y + 4,
+                        'y':y + 8,
                         'w':85,
                         'h':28,
                         'borderwidth':3,
@@ -608,7 +616,7 @@
                 }
                 if (server_details["status"] == 3) {
                     var conf={'x':x,
-                        'y':y + 4,
+                        'y':y + 8,
                         'w':85,
                         'h':28,
                         'borderwidth':1,
@@ -736,7 +744,7 @@
 
             function create_rack(scene, count, x, y, serverlist, tuplelist, conf_switch_lists){
                 var container_rack = null;
-                var rack_h = 442;
+                var rack_h = 60 * MAX_RACK_SERVER;
 
                 if (count % 10 == 0) {
 
@@ -1019,6 +1027,7 @@
                 var to_link_node = get_container_child_to(node_to); 
                 var linkTopo = new JTopo.Link(from_link_node, to_link_node, conf.link_text);
 
+                conf.status = status;
                 line_popup_switch_to_server_click(linkTopo, conf);
 
                 //linkTopo.strokeColor = JTopo.util.randomColor();
@@ -1126,6 +1135,7 @@
                 var nodetime = 1000;
                 var switch_num1 = 0;
                 var switch_num2 = switch_list.length + 1;
+                var MAX_RACK_SERVER = 5;
 
                 for (var i = 0; i < origin_switch_link_list.length; i++) {
                     for (var j = 0; j < origin_switch_link_list[i]["link_details"].length; j++) {
@@ -1810,6 +1820,8 @@
                     var widthMax = 0;
                     for (var i = 0; i < number; i++) {
                         var singleNumber = racklist[i]["serverlist"].length;
+                        if(MAX_RACK_SERVER < singleNumber)
+                            MAX_RACK_SERVER = singleNumber;
                         if (singleNumber % 10 == 0) {
                             widthMax = widthMax + 100 * (parseInt(singleNumber / 10));
                             racklist[i]["width"] = 100 * (parseInt(singleNumber / 10));
@@ -1867,7 +1879,7 @@
                                 var connectmessage = [];
 
                                 for (var bd = 0; bd < switch_list.length; bd++) {
-                                    if (switch_list[bd]["sysname"] == racklist[0]["tuplelist"][p]["remsysname"]) {
+                                    if (switch_list[bd]["chassisid"] == racklist[0]["tuplelist"][p]["remchassisid"]) {
                                         connectmessage.push({
                                             "sysname": racklist[0]["tuplelist"][p]["remsysname"],
                                             "tuplelist": racklist[0]["tuplelist"][p],
@@ -1885,6 +1897,7 @@
                                 var linkline_conf={"details": connectmessage, 
                                     "line_text": '',  
                                     "line_style": 'solid',
+                                    "status":-1,
                                     "origin_switch_link_list": origin_switch_link_list
                                 };
                                 linkline_switch_to_server(scene, floorlist2[q]["node"], racklist[0]["node"], linkline_conf);	
@@ -1897,7 +1910,7 @@
                             if (racklist[0]["tuplelist"][p]["remchassisid"] == floorlist1[q]["switch_details"]["chassisid"] && racklist[0]["tuplelist"][p]["remsysname"] == floorlist1[q]["switch_details"]["sysname"]) {
                                 var connectmessage = [];
                                 for (var bd = 0; bd < switch_list.length; bd++) {
-                                    if (switch_list[bd]["sysname"] == racklist[0]["tuplelist"][p]["remsysname"]) {
+                                    if (switch_list[bd]["chassisid"] == racklist[0]["tuplelist"][p]["remchassisid"]) {
                                         connectmessage.push({
                                             "sysname": racklist[0]["tuplelist"][p]["remsysname"],
                                             "tuplelist": racklist[0]["tuplelist"][p],
@@ -1914,6 +1927,7 @@
                                 var linkline_conf={"details": connectmessage, 
                                     "line_text": '',  
                                     "line_style": 'solid',
+                                    "status":-1,
                                     "origin_switch_link_list": origin_switch_link_list
                                 };
                                 linkline_switch_to_server(scene, floorlist1[q]["node"], racklist[0]["node"], linkline_conf);	
@@ -1950,7 +1964,7 @@
                                 if (racklist[j]["tuplelist"][m]["remchassisid"] == floorlist2[n]["switch_details"]["chassisid"] && racklist[j]["tuplelist"][m]["remsysname"] == floorlist2[n]["switch_details"]["sysname"]) {
                                     var connectmessage = [];
                                     for (var bd = 0; bd < switch_list.length; bd++) {
-                                        if (switch_list[bd]["sysname"] == racklist[j]["tuplelist"][m]["remsysname"]) {
+                                        if (switch_list[bd]["chassisid"] == racklist[j]["tuplelist"][m]["remchassisid"]) {
 
                                             connectmessage.push({
                                                 "sysname": racklist[j]["tuplelist"][m]["remsysname"],
@@ -1968,6 +1982,7 @@
 
                                     var linkline_conf={"details": connectmessage, 
                                         "line_text": '',  
+                                        "status":-1,
                                         "line_style": 'solid',
                                         "origin_switch_link_list": origin_switch_link_list
                                     };
@@ -1979,7 +1994,7 @@
                                 if (racklist[j]["tuplelist"][m]["remchassisid"] == floorlist1[a]["switch_details"]["chassisid"] && racklist[j]["tuplelist"][m]["remsysname"] == floorlist1[a]["switch_details"]["sysname"]) {
                                     var connectmessage = [];
                                     for (var bd = 0; bd < switch_list.length; bd++) {
-                                        if (switch_list[bd]["sysname"] == racklist[j]["tuplelist"][m]["remsysname"]) {
+                                        if (switch_list[bd]["chassisid"] == racklist[j]["tuplelist"][m]["remchassisid"]) {
 
                                             connectmessage.push({
                                                 "sysname": racklist[j]["tuplelist"][m]["remsysname"],
@@ -2001,6 +2016,7 @@
 
                                     var linkline_conf={"details": connectmessage, 
                                         "line_text": '',  
+                                        "status":-1,
                                         "line_style": 'solid',
                                         "origin_switch_link_list": origin_switch_link_list
                                     };
@@ -2065,6 +2081,7 @@
 
                                                             var linkline_conf={"details": connectmessage, 
                                                                 "line_text": '',  
+                                                                "status":-1,
                                                                 "line_style": 'dotted',
                                                                 "origin_switch_link_list": origin_switch_link_list
                                                             };
@@ -2099,6 +2116,7 @@
 
                                                             var linkline_conf={"details": connectmessage, 
                                                                 "line_text": '',  
+                                                                "status":-1,
                                                                 "line_style": 'dotted',
                                                                 "origin_switch_link_list": origin_switch_link_list
                                                             };
