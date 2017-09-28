@@ -274,7 +274,7 @@
                 var cell8 = row.insertCell(row.cells.length);
                 var cell20 = row.insertCell(row.cells.length);
                 cell1.innerHTML = gettext("server name") + "&nbsp&nbsp&nbsp";
-                cell2.innerHTML = "&nbsp&nbsp" + gettext("server") + "&nbsp&nbsp&nbsp" + gettext("port") + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
+                cell2.innerHTML = "&nbsp&nbsp" + gettext("server") + gettext("port") + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
                 cell3.innerHTML = gettext("switch port") + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
                 //cell7.innerHTML = gettext("traffic details") + "&nbsp&nbsp&nbsp&nbsp";
                 //cell8.innerHTML = gettext("traffic status") + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
@@ -520,59 +520,17 @@
                 container_obj.fillColor = "234,232,232";
 
                 container_obj.setBound(conf.x, conf.y, conf.w, conf.h);   
-                container_obj.borderRadius = 0;					
+                container_obj.borderRadius = 8;					
                 container_obj.borderWidth= 2;
                 container_obj.borderColor= "142,157,173";
                 container_obj.zIndex = 18;					
                 container_obj.childDragble = 0;					
                 container_obj.showSelected = 0;					
-                //container_obj.shadow= 1;					
+                container_obj.shadow= 0;					
                 scene.add(container_obj);			
 
                 return container_obj;
             }
-
-            function create_dummy_rack_server(scene, container_rack, conf){
-                //create the server
-                var container_server = new JTopo.Container();
-                container_server.layout = JTopo.layout.GridLayout(0, 4);
-                container_server.alpha = 0;
-                container_server.visible = 0;
-                container_server.textPosition = "Middle_Left";
-                container_server.textOffsetY = -9;
-                container_server.font = "10px Consolas";
-                container_server.fontColor = "0,0,0";
-                container_server.fillColor = "188,211,229";
-                container_server.borderWidth= conf.borderwidth;
-                container_server.borderColor= conf.bordercolor;
-                container_server.showSelected = false;					
-                container_server.zIndex = 19;
-                //container_server.shadow = 1;
-                container_server.setBound(conf.x, conf.y, conf.w, conf.h);
-
-                scene.add(container_server);
-                container_rack.add(container_server);
-
-                //create connect line node 
-                var text_node = new JTopo.Node(LINKLINE_NAME_TO);
-                text_node.textPosition = "Middle_Center";
-                text_node.textOffsetY = 0;
-                text_node.font = "10px bold Consolas";
-                text_node.fillColor = "143,188,143";
-                text_node.setBound(conf.x, conf.y, conf.w, 45);   
-                text_node.borderRadius = 8;
-                text_node.borderWidth= 2;
-                text_node.dragable = 0;
-                text_node.alpha = 0;
-                text_node.visible = 0;
-                text_node.zIndex = 11;
-
-                scene.add(text_node);
-                container_rack.add(text_node);
-
-                return container_server;
-            }
-
 
 
             function create_rack_server(scene, container_rack, name, conf_switch_lists, server_details, conf){
@@ -588,10 +546,11 @@
                 container_server.fillColor = "188,211,229";
                 container_server.borderWidth= conf.borderwidth;
                 container_server.borderColor= conf.bordercolor;
+                container_server.borderRadius = 5;
                 container_server.showSelected = false;					
                 container_server.zIndex = 19;
                 //container_server.scaleX = -2;
-                //container_server.shadow = 1;
+                container_server.shadow = 0;
 
                 container_server.setBound(conf.x, conf.y, conf.w, conf.h);
 
@@ -836,6 +795,7 @@
 
 
 
+            const SWITCH_WIDTH = 72, SWITCH_HEIGHT = 62;
             function create_switch(scene, switch_details, x, y, w, h, floor1_number, floor2_number, floor1){
                 var container_fillcolor = "230,230,250";
                 var container_obj = new JTopo.Container();
@@ -886,19 +846,26 @@
                 if (lenvel == 1) {
                     number = floor1_number;
                     var img_path = "dashboard/img/img_topology/switch1.png";
+                    var sw_color = "0,88,176";
                 } else {
                     number = floor2_number;
                     var img_path = "dashboard/img/img_topology/switch2.png";
+                    var sw_color = "30,124,200";
                 }
 
-                img_node.setImage(window.STATIC_URL + img_path);
+                //img_node.setImage(window.STATIC_URL + img_path);
+                img_node.fillColor = sw_color;
+                img_node.borderRadius = 10;					
+                //img_node.borderWidth = 2;					
+                //img_node.borderColor = "255,255,255";					
+                img_node.shadow = 1;
                 img_node.text = number;
                 img_node.textPosition = "Middle_Center";
                 img_node.textOffsetY = -9;
-                img_node.font = "35px Consolas";
+                img_node.font = "30px Consolas";
                 img_node.scaleX = 1;
                 img_node.zIndex = 28;
-                img_node.setBound(x, y, 72, 72);   
+                img_node.setBound(x, y, SWITCH_WIDTH, SWITCH_HEIGHT);   
 
 
                 scene.add(img_node);
@@ -921,9 +888,9 @@
                 //text_node.setSize(68, 15);
                 text_node.textPosition = "Middle_Center";
                 text_node.textOffsetY = -3;
-                text_node.font = "15px bold Consolas";
+                text_node.font = "12px bold Consolas";
                 text_node.fillColor = "35,24,21";
-                text_node.setBound(x+7, y+57, 60, 15);   
+                text_node.setBound(x+7, y+(SWITCH_HEIGHT * 0.75), SWITCH_WIDTH - 12, 15);   
                 text_node.borderRadius = 8;
                 text_node.zIndex = 29;
                 text_node.showSelected = false;					
@@ -940,7 +907,7 @@
                 link_node.font = "15px bold Consolas";
                 link_node.fillColor = "35,24,21";
                 link_node.zIndex = 14;
-                link_node.setBound(x, y+10, 68, 15);   
+                link_node.setBound(x, y+(SWITCH_HEIGHT * 0.1), SWITCH_WIDTH - 4, 15);   
                 link_node.borderRadius = 8;
                 link_node.alpha = 0;
 
@@ -955,7 +922,7 @@
                 link_node.font = "15px bold Consolas";
                 link_node.fillColor = "35,24,21";
                 link_node.zIndex = 12;
-                link_node.setBound(x, y+50, 68, 10);   
+                link_node.setBound(x, y+(SWITCH_HEIGHT * 0.7), SWITCH_WIDTH - 4, 10);   
                 link_node.borderRadius = 8;
                 link_node.alpha = 0;
 
@@ -1519,7 +1486,7 @@
 
 
                 var number1 = floorlist2.length;
-                var longMax = number1 * 72 + (number1 - 1) * 100;
+                var longMax = number1 * SWITCH_WIDTH + (number1 - 1) * 100;
                 var number = racklist.length;
                 var widthMax = 0;
 
@@ -1569,838 +1536,12 @@
                 stage.add(scene);
 
 
-                function RndNum(n) {
-                    var rnd = "";
-                    for (var i = 0; i < n; i++) rnd += Math.floor(Math.random() * 10);
-                    return rnd;
-                }
-
-                function node(cxt, x, y, switch_details, switch_num1, switch_num2) {
-
-                    var varify = 0;
-                    var lenvel = 0;
-                    for (var n = 0; n < floor1.length; n++) {
-                        if (switch_details["sysname"] == floor1[n].switch_details["sysname"]) {
-                            lenvel = 1;
-                            break;
-                        }
-                    }
-
-                    if (lenvel == 1) {
-                        var node = cxt.image(window.STATIC_URL + "dashboard/img/img_topology/switch1.png", x, y, 72, 78);
-                        cxt.text(x + 36, y + 36, switch_num1).attr({
-                            fill: "#fff",
-                            "font-size": "36px"
-                        });
-                    } else {
-                        var node = cxt.image(window.STATIC_URL + "dashboard/img/img_topology/switch2.png", x, y, 72, 78);
-                        cxt.text(x + 36, y + 36, switch_num2).attr({
-                            fill: "#fff",
-                            "font-size": "36px"
-                        });
-                    }
-
-                    var sysname = switch_details["sysdescr"].toLowerCase();
-                    var arrName = ['lenovo', 'cisco', 'huawei', 'h3c', 'dcn', 'juniper'];
-                    for (var a = 0; a < arrName.length; a++) {
-                        if (sysname.indexOf(arrName[a]) > -1) {
-                            arrName[a] = arrName[a][0].toUpperCase() + arrName[a].substring(1, arrName[a].length);
-                            cxt.rect(x + 8, y + 62, 56, 15).attr({
-                                fill: "#231815"
-                            });
-                            cxt.text(x + 36, y + 69, arrName[a]).attr({
-                                fill: "#fff",
-                                "font-size": "14px"
-                            });
-                            break;
-                        }
-                    }
-
-                    cxt.text(x + 36, y + 89, switch_details["sysname"]).attr({
-                        fill: "#3E434D",
-                        "font-size": "14px"
-                    });
-                    var move = x;
-                    if (switch_details['status'] == "3") {
-                        cxt.rect(x, y, 72, 78).attr({
-                            "stroke": "#104E8B",
-                            "stroke-dasharray": "--"
-                        });
-                    }
-                    node.hover(function (e) {
-                        var timer = setTimeout(function () {
-                            document.getElementById("bl_1").style.display = "block";
-                            document.getElementById("table").style.display = "block";
-                            document.getElementById("foot").style.display = "block";
-                            document.getElementById("tBody").style.display = "block";
-                            var div = document.getElementById("bl_1");
-                            var movey = y + 85;
-                            div.style.top = movey + "px";
-                            div.style.left = move + 45 - 100 + "px";
-                            var bl = document.getElementById("tb")
-                            var x = bl.createCaption();
-                        for (var i = bl.rows.length - 1; i >= 0; i--) {
-                            bl.deleteRow(i);
-                        }
-
-                        var row = bl.insertRow(bl.rows.length);
-                        var row1 = bl.insertRow(bl.rows.length);
-                        var row2 = bl.insertRow(bl.rows.length);
-                        var cell1 = row.insertCell(row.cells.length);
-                        var cell2 = row.insertCell(row.cells.length);
-                        var cell3 = row1.insertCell(row1.cells.length);
-                        var cell4 = row1.insertCell(row1.cells.length);
-                        var cell5 = row2.insertCell(row2.cells.length);
-                        var cell6 = row2.insertCell(row2.cells.length);
-                        x.innerHTML = switch_details["sysname"];
-                        cell1.innerHTML = gettext("ip:");
-                        cell2.innerHTML = switch_details["ip"];
-                        cell3.innerHTML = gettext("chassisid:");
-                        cell4.innerHTML = switch_details["chassisid"];
-                        cell5.innerHTML = gettext("sysname:");
-                        cell6.innerHTML = switch_details["sysname"];
-
-                        document.getElementById("m_title").innerHTML = gettext("manage the switch");
-                        document.getElementById("link").innerHTML = "»" + gettext("view switch details");
-                        document.getElementById("login").innerHTML = gettext("login the switch");
-                        document.getElementById("login").style.width = "115px";
-                        document.getElementById("shut").style.display = "none";
-                        document.getElementById("restart").style.display = "none";
-
-                        var str = RndNum(8);
-                        // document.getElementById("link").href="/horizon/admin/switch/"+str+switch_details["chassisid"]+"/detail/";
-
-                        var switch_id_fordetails = switch_details["oid"];
-                        var switch_login = switch_details["id"];
-                        document.getElementById("link").onclick = function () {
-                            (new switchDetailAction()).open(switch_details['ip'], switch_id_fordetails);
-                        }
-                        document.getElementById("login").onclick = function () {
-                            (new switchLoginAction()).open([{'id': switch_login}]);
-                        }
-                        /*                         document.getElementById("shut").onclick = function() {
-                                                   window.location.href = "/horizon/admin/switch/" + str + switch_details["chassisid"].substring(0, 2) + "%3A" + switch_details["chassisid"].substring(3, 5) + "%3A" + switch_details["chassisid"].substring(6, 8) + "%3A" + switch_details["chassisid"].substring(9, 11) + "%3A" + switch_details["chassisid"].substring(12, 14) + "%3A" + switch_details["chassisid"].substring(15, 17) + "/shutdownswitch/";
-                                                   }
-                                                   document.getElementById("restart").onclick = function() {
-                                                   window.location.href = "/horizon/admin/switch/" + str + switch_details["chassisid"].substring(0, 2) + "%3A" + switch_details["chassisid"].substring(3, 5) + "%3A" + switch_details["chassisid"].substring(6, 8) + "%3A" + switch_details["chassisid"].substring(9, 11) + "%3A" + switch_details["chassisid"].substring(12, 14) + "%3A" + switch_details["chassisid"].substring(15, 17) + "/rebootswitch/";
-                                                   }*/
-                        },
-                            nodetime); // modified 2000 to 1000  by lyj 2016/8/29
-                    },
-                        function () {
-                            clearTimeout(timer);
-                        })
-
-                }
-
-                function server(cxt, container_rack, x, y, name, conf_switch_lists, server_details) {
-                    var str = RndNum(8);
-                    var names, container_server;
-                    if (name.length > 7) {
-                        names = name.substring(0, 5) + "...";
-                    } else {
-                        names = name;
-                    }
-
-
-                    if (server_details["status"] == 1) {
-                        /*
-                           var server = cxt.rect(x, y + 4, 85, 28).attr({
-                           "stroke": "#AAC1D6",
-                           "stroke-width": 3,
-                           fill: "#BCD3E5"
-                           });
-                           */
-                        var conf={'x':x,
-                            'y':y + 4,
-                            'w':85,
-                            'h':28,
-                            'borderwidth':3,
-                            'bordercolor': "170,193,214"
-                        };
-                        container_server = create_rack_server(scene, container_rack, names, conf_switch_lists, server_details, conf);
-                    }
-                    if (server_details["status"] == 3) {
-                        /*
-                           var server = cxt.rect(x, y + 4, 85, 28).attr({
-                           "stroke": "#8EAAC1",
-                           "stroke-width": 1,
-                           "stroke-dasharray": "--",
-                           fill: "#BCD3E5"
-                           });
-                           */
-                        var conf={'x':x,
-                            'y':y + 4,
-                            'w':85,
-                            'h':28,
-                            'borderwidth':1,
-                            'bordercolor': "142,170,193"
-                        };
-                        container_server = create_rack_server(scene, container_rack, names, conf_switch_lists, server_details, conf);
-
-                    }
-
-                    var portlist = [];
-                    var c = 0;
-                    for (var i = 0; i < server_details["active_port_details"].length; i++) {
-                        if (server_details["active_port_details"][i]["eth_name"].substring(0, 3) == "eth") {
-                            var port = parseInt(server_details["active_port_details"][i]["eth_name"].substring(3, 4));
-
-                        } else {
-
-                            var port = c;
-                            c++;
-                        }
-
-                        portlist.push(port);
-                        for (var j = 0; j < switch_list.length; j++) {
-
-                            if (server_details["active_port_details"][i]["remchassisid"] == switch_list[j]["chassisid"]) {
-
-                                for (var p = 0; p < origin_switch_link_list.length; p++) {
-                                    if (switch_list[j]["ip"] == origin_switch_link_list[p]["switch_ip"]) {
-                                        for (var q = 0; q < origin_switch_link_list[p]["link_details"].length; q++) {
-
-                                            if (server_details["chassisid"] == origin_switch_link_list[p]["link_details"][q]["remchassisid"] && origin_switch_link_list[p]["link_details"][q]["remportiddesc"] == server_details["active_port_details"][i]["eth_name"]) {
-
-                                                if (port < 4) {
-                                                    /*
-                                                       cxt.rect(x + 50 + (port * 6) + 1, y + 5 + 4, 4, 4).attr({
-                                                       "fill": origin_switch_link_list[p]["link_details"][q]["color"],
-                                                       "stroke": "white",
-                                                       "stroke-width": 0
-                                                       });
-                                                       */
-
-                                                    var conf = {'x':x + 50 + (port * 6) + 1,
-                                                        'y': y + 5 + 4,
-                                                        'w': 4,
-                                                        'h': 4,
-                                                        'fillcolor': origin_switch_link_list[p]["link_details"][q]["color"]
-                                                    }; 
-                                                    //create the server's lamplet
-                                                    draw_rack_lamplet(scene, container_server, conf);
-
-                                                } else {
-                                                    /*
-                                                       cxt.rect(x + 50 + ((port - 4) * 6) + 1, y + 10 + 9 + 4, 4, 4).attr({
-                                                       "fill": origin_switch_link_list[p]["link_details"][q]["color"],
-                                                       "stroke": "white",
-                                                       "stroke-width": 0
-                                                       });
-                                                       */
-
-                                                    var conf = {'x':x + 50 + ((port - 4) * 6) + 1,
-                                                        'y': y + 10 + 9 + 4,
-                                                        'w': 4,
-                                                        'h': 4,
-                                                        'fillcolor': origin_switch_link_list[p]["link_details"][q]["color"]
-                                                    }; 
-                                                    //create the server's lamplet
-                                                    draw_rack_lamplet(scene, container_server,  conf);
-                                                }
-
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                    for (var m = 0; m < 4; m++) {
-                        var id = 0;
-                        for (var t = 0; t < portlist.length; t++) {
-                            if (m == portlist[t]) {
-                                id = 1;
-                            }
-
-                        }
-                        if (id == 0) {
-                            /*
-                               cxt.rect(x + 50 + (m * 6) + 1, y + 5 + 4, 4, 4).attr({
-                               "fill": "#8B8989",
-                               "stroke": "white",
-                               "stroke-width": 0
-                               });
-                               cxt.rect(x + 50, y + 10 + 3 + 4, 26, 2).attr({
-                               "fill": "#121217",
-                               "stroke": "white",
-                               "stroke-width": 0
-                               });
-                               */
-                            var conf = {'x': x + 50 + (m * 6) + 1,
-                                'y': y + 5 + 4,
-                                'w': 4,
-                                'h': 4,
-                                'fillcolor': "139,137,137"  
-                            }; 
-                            //create the server's lamplet
-                            draw_rack_lamplet(scene, container_server, conf);
-
-                            var conf = {'x': x + 50,
-                                'y': y + 10 + 3 + 4,
-                                'w': 26,
-                                'h': 2,
-                                'fillcolor': "18,18,23" 
-                            }; 
-                            //create the server's lamplet
-                            draw_rack_lamplet(scene, container_server, conf);
-
-                        }
-                    }
-
-                    for (var m = 0; m < 4; m++) {
-                        var id = 0;
-                        for (var t = 0; t < portlist.length; t++) {
-                            if (m == portlist[t] - 4) {
-                                id = 1;
-                            }
-
-                        }
-
-                        if (id == 0) {
-                            /*
-                               cxt.rect(x + 50 + (m * 6) + 1, y + 10 + 9 + 4, 4, 4).attr({
-                               "fill": "#8B8989",
-                               "stroke": "white",
-                               "stroke-width": 0
-                               });
-                               cxt.rect(x + 50, y + 10 + 3 + 4, 26, 2).attr({
-                               "fill": "#121217",
-                               "stroke": "white",
-                               "stroke-width": 0
-                               });
-                               */
-
-                            var conf = {'x': x + 50 + (m * 6) + 1,
-                                'y': y + 10 + 9 + 4,
-                                'w': 4,
-                                'h': 4,
-                                'fillcolor': "139,137,137" 
-                            }; 
-                            //create the server's lamplet
-                            draw_rack_lamplet(scene, container_server, conf);
-
-                            var conf = {'x': x + 50,
-                                'y': y + 10 + 3 + 4,
-                                'w': 26,
-                                'h': 2,
-                                'fillcolor': "18,18,23"  
-                            }; 
-                            //create the server's lamplet
-                            draw_rack_lamplet(scene, container_server, conf);
-                        }
-                    }
-
-                }
-
-
-                function line_switch(cxt, x1, y1, x2, y2, connectmessage) {
-                    if (connectmessage[0]['link_details']['status'] == '3') {
-                        var path = cxt.path(["M", x1, y1, "L", x2, y2, "Z"]).attr({
-                            "stroke": connectmessage[0]["link_details"]["color"],
-                            "stroke-width": 2,
-                            "stroke-dasharray": "--"
-                        });
-                    }
-                    if (connectmessage[0]['link_details']['status'] == "1") {
-                        var path = cxt.path(["M", x1, y1, "L", x2, y2, "Z"]).attr({
-                            "stroke": connectmessage[0]["link_details"]["color"],
-                            "stroke-width": 2
-                        });
-
-                    }
-                    path.hover(function (event) {
-
-                        var e = document.all ? window.event : arguments[0] ? arguments[0] : event;
-                        document.getElementById("bl_1").style.display = "block";
-                        document.getElementById("table").style.display = "none";
-                        document.getElementById("foot").style.display = "none";
-
-                        var div = document.getElementById("bl_1");
-                        var movey = (y1 + y2) / 2;
-                        var movex = (x1 + x2) / 2;
-
-                        div.style.top = e.layerY + 8 + "px" ;
-                        div.style.left = e.layerX + 8 - 100 + "px" ;
-                        var bl = document.getElementById("tb");
-                        var x = bl.createCaption();
-
-                        for (var i = bl.rows.length - 1; i >= 0; i--) {
-                            bl.deleteRow(i);
-
-                        }
-
-                        var row = bl.insertRow(bl.rows.length);
-                        var row1 = bl.insertRow(bl.rows.length);
-                        var row2 = bl.insertRow(bl.rows.length);
-                        var row3 = bl.insertRow(bl.rows.length);
-                        var row4 = bl.insertRow(bl.rows.length);
-                        var cell1 = row.insertCell(row.cells.length);
-                        var cell2 = row.insertCell(row.cells.length);
-                        var cell3 = row1.insertCell(row1.cells.length);
-                        var cell4 = row1.insertCell(row1.cells.length);
-                        var cell5 = row2.insertCell(row2.cells.length);
-                        var cell6 = row2.insertCell(row2.cells.length);
-                        var cell7 = row3.insertCell(row3.cells.length);
-                        var cell8 = row3.insertCell(row3.cells.length);
-                        var cell9 = row4.insertCell(row4.cells.length);
-                        var cell10 = row4.insertCell(row4.cells.length);
-                        x.innerHTML = gettext("link details");
-                        cell1.innerHTML = gettext("src_switch:");
-                        cell2.innerHTML = connectmessage[0]["src_switch"];
-                        cell3.innerHTML = gettext("src_port:");
-                        cell4.innerHTML = connectmessage[0]["src_port"];
-                        cell5.innerHTML = gettext("dst_switch:");
-                        cell6.innerHTML = connectmessage[0]["dst_switch"];
-                        cell7.innerHTML = gettext("dst_port:");
-                        cell8.innerHTML = connectmessage[0]["dst_port"];
-                        //cell9.innerHTML = gettext("traffic details:");
-                        if (connectmessage[0]["link_details"]["color"] == "#5E5E5E") {
-                            //cell10.innerHTML = gettext("no details");
-                        } else {
-
-                            /*                          var inputlink = "/horizon/admin/traffic/" + connectmessage[0]["link_details"]["id"] + "|input|" + connectmessage[0]["link_details"]["locportindex"] + "/detail/";
-                                                        var outputlink = "/horizon/admin/traffic/" + connectmessage[0]["link_details"]["id"] + "|output|" + connectmessage[0]["link_details"]["locportindex"] + "/detail/";
-                                                        cell10.innerHTML = ' <a style="text-decoration:underline" href=' + inputlink + '> ' + gettext("input") + '</a>' + "&nbsp&nbsp" + ' <a style="text-decoration:underline" href=' + outputlink + '>' + gettext("output") + '</a>';*/
-                            var inTrafficData = {
-                                queryType: 'realtime',
-                                ip: connectmessage[0]['link_details']["id"],
-                                locportindex: connectmessage[0]["link_details"]["locportindex"]
-                            };
-                            //cell9.innerHTML = ' <a class="traficinputDetail" style="text-decoration:underline" href="javascript:void(0);">' + gettext("input") + '</a>' + "&nbsp&nbsp" + ' <a style="text-decoration:underline" class="traficoutputDetail" href="javascript:void(0);">' + gettext("output") + '</a>' + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
-                            cell9.onclick = function (event) {
-                                event = event || window.event;
-                                var ele = event.target;
-                                if ($(ele).attr('class') == 'traficinputDetail') {
-                                    inTrafficData.direction = 'input';
-                                    (new lenovoTrafficsAction()).openDetail(inTrafficData);
-                                } else if ($(ele).attr('class') == 'traficoutputDetail') {
-                                    inTrafficData.direction = 'output';
-                                    (new lenovoTrafficsAction()).openDetail(inTrafficData);
-                                }
-                            }
-
-                        }
-
-                    })
-                }
-
-                function line_circle(cxt, x1, y1, r1, percent, a, b, connectmessage) {
-                    var drawPercent = percent >= 1 ? 0.9999 : percent;
-                    var PI = Math.PI;
-
-                    var x2 = x1 + r1 * Math.sin(2 * PI * (1 - drawPercent));
-
-                    var y2 = y1 - r1 + r1 * Math.cos(2 * PI * (1 - drawPercent));
-
-                    if (connectmessage[0]['link_details']['status'] == "1") {
-                        var path = cxt.path(["M", x1, y1, "A", r1 + a, r1 - b, "0", percent > 0.5 ? 1 : 0, "0", x2, y2]).attr({
-                            "stroke": connectmessage[0]["link_details"]["color"],
-                            "stroke-width": 2
-                        })
-                    }
-                    if (connectmessage[0]['link_details']['status'] == '3') {
-                        var path = cxt.path(["M", x1, y1, "A", r1 + a, r1 - b, "0", percent > 0.5 ? 1 : 0, "0", x2, y2]).attr({
-                            "stroke": connectmessage[0]["link_details"]["color"],
-                            "stroke-width": 2,
-                            "stroke-dasharray": "--"
-                        })
-                    }
-                    path.hover(function (event) {
-
-                        //timer = setTimeout(function() {
-
-                        var e = document.all ? window.event : arguments[0] ? arguments[0] : event;
-
-                        document.getElementById("bl_1").style.display = "block";
-                        document.getElementById("table").style.display = "none";
-                        document.getElementById("foot").style.display = "none";
-
-                        var div = document.getElementById("bl_1");
-                        var movey = (y1 + y2) / 2;
-                        var movex = (x1 + x2) / 2;
-                        //div.style.top = movey + 20+"px";
-                        //div.style.left = movex -30+ "px";
-
-                        div.style.top = e.layerY + 8 + "px" ;
-                        div.style.left = e.layerX + 8 - 100 + "px" ;
-                        var bl = document.getElementById("tb");
-                        var x = bl.createCaption();
-
-                        for (var i = bl.rows.length - 1; i >= 0; i--) {
-                            bl.deleteRow(i);
-
-                        }
-
-                        var row = bl.insertRow(bl.rows.length);
-                        var row1 = bl.insertRow(bl.rows.length);
-                        var row2 = bl.insertRow(bl.rows.length);
-                        var row3 = bl.insertRow(bl.rows.length);
-                        var row4 = bl.insertRow(bl.rows.length);
-                        var cell1 = row.insertCell(row.cells.length);
-                        var cell2 = row.insertCell(row.cells.length);
-                        var cell3 = row1.insertCell(row1.cells.length);
-                        var cell4 = row1.insertCell(row1.cells.length);
-                        var cell5 = row2.insertCell(row2.cells.length);
-                        var cell6 = row2.insertCell(row2.cells.length);
-                        var cell7 = row3.insertCell(row3.cells.length);
-                        var cell8 = row3.insertCell(row3.cells.length);
-                        var cell9 = row4.insertCell(row4.cells.length);
-                        var cell10 = row4.insertCell(row4.cells.length);
-
-                        x.innerHTML = gettext("link details");
-                        cell1.innerHTML = gettext("src_switch:");
-                        cell2.innerHTML = connectmessage[0]["src_switch"];
-                        cell3.innerHTML = gettext("src_port:");
-                        cell4.innerHTML = connectmessage[0]["src_port"];
-                        cell5.innerHTML = gettext("dst_switch:");
-                        cell6.innerHTML = connectmessage[0]["dst_switch"];
-                        cell7.innerHTML = gettext("dst_port:");
-                        cell8.innerHTML = connectmessage[0]["dst_port"];
-                        //cell9.innerHTML = gettext("traffic details");
-                        if (connectmessage[0]["link_details"]["color"] == "#5E5E5E") {
-                            //cell10.innerHTML = gettext("no details");
-                        } else {
-
-                            /*                          var inputlink = "/horizon/admin/traffic/" + connectmessage[0]["link_details"]["id"] + "|input|" + connectmessage[0]["link_details"]["locportindex"] + "/detail/";
-                                                        var outputlink = "/horizon/admin/traffic/" + connectmessage[0]["link_details"]["id"] + "|output|" + connectmessage[0]["link_details"]["locportindex"] + "/detail/";
-                                                        cell10.innerHTML = '<a style="text-decoration:underline" href=' + inputlink + '> ' + gettext("input") + '</a>' + "&nbsp&nbsp" + ' <a style="text-decoration:underline" href=' + outputlink + '>' + gettext("output") + '</a>';*/
-                            var inTrafficData = {
-                                queryType: 'realtime',
-                                ip: connectmessage[0]['link_details']["id"],
-                                locportindex: connectmessage[0]["link_details"]["locportindex"]
-                            };
-                            //cell9.innerHTML = ' <a class="traficinputDetail" style="text-decoration:underline" href="javascript:void(0);">' + gettext("input") + '</a>' + "&nbsp&nbsp" + ' <a style="text-decoration:underline" class="traficoutputDetail" href="javascript:void(0);">' + gettext("output") + '</a>' + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
-                            cell9.onclick = function (event) {
-                                event = event || window.event;
-                                var ele = event.target;
-                                if ($(ele).attr('class') == 'traficinputDetail') {
-                                    inTrafficData.direction = 'input';
-                                    (new lenovoTrafficsAction()).openDetail(inTrafficData);
-                                } else if ($(ele).attr('class') == 'traficoutputDetail') {
-                                    inTrafficData.direction = 'output';
-                                    (new lenovoTrafficsAction()).openDetail(inTrafficData);
-                                }
-                            }
-                        }
-                        //},
-                        //linetime);
-                    })
-                }
-
-                function line_rack(cxt, x1, y1, x2, y2, connectmessage, line) {
-
-                    var colorred = 0;
-                    var coloryellow = 0;
-                    var status = 0;
-                    var colorgreen = 0;
-                    var colorgray = 0;
-                    for (var i = 0; i < origin_switch_link_list.length; i++) {
-                        if (connectmessage[0]["switch_ip"] == origin_switch_link_list[i]["switch_ip"]) {
-                            for (var j = 0; j < connectmessage[0]["racklist"]["serverlist"].length; j++) {
-                                for (var p = 0; p < origin_switch_link_list[i]["link_details"].length; p++) {
-                                    if (connectmessage[0]["racklist"]["serverlist"][j]["chassisid"] == origin_switch_link_list[i]["link_details"][p]["remchassisid"] && connectmessage[0]["tuplelist"]["eth_name"] == origin_switch_link_list[i]["link_details"][p]["remportiddesc"]) {
-
-                                        if (origin_switch_link_list[i]["link_details"][p]["color"] == "red") {
-                                            colorred = 1;
-                                        }
-                                        if (origin_switch_link_list[i]["link_details"][p]["color"] == "#7CFC00") {
-                                            coloryellow = 1;
-                                        }
-                                        if (origin_switch_link_list[i]["link_details"][p]["color"] == "#2E8B57") {
-
-                                            colorgreen = 1;
-                                        }
-                                        if (origin_switch_link_list[i]["link_details"][p]["color"] == "#5E5E5E") {
-                                            colorgray = 1;
-                                        }
-                                        if (line == "dotted") {
-                                            if (origin_switch_link_list[i]["link_details"][p]["status"] == "3" || origin_switch_link_list[i]["link_details"][p]["status"] == 3) {
-                                                status = 1;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (status == 0) {
-                        if (colorred == 0 && coloryellow == 0 && colorgreen == 0 && colorgray == 1) {
-                            var path = cxt.path(["M", x1, y1, "L", x2, y2, "Z"]).attr({
-                                "stroke": "#5E5E5E",
-                                "stroke-width": 2
-                            })
-                        }
-                        if (colorred == 1) {
-                            var path = cxt.path(["M", x1, y1, "L", x2, y2, "Z"]).attr({
-                                "stroke": "red",
-                                "stroke-width": 2
-                            })
-                        }
-                        if (colorred == 0 && coloryellow == 0 && colorgreen == 1) {
-                            var path = cxt.path(["M", x1, y1, "L", x2, y2, "Z"]).attr({
-                                "stroke": "#2E8B57",
-                                "stroke-width": 2
-                            })
-                        }
-                        if (colorred == 0 && coloryellow == 1) {
-                            var path = cxt.path(["M", x1, y1, "L", x2, y2, "Z"]).attr({
-                                "stroke": "#7CFC00",
-                                "stroke-width": 2
-                            })
-                        }
-                    }
-                    if (status == 1) {
-
-                        if (colorred == 0 && coloryellow == 0 && colorgreen == 0 && colorgray == 1) {
-                            var path = cxt.path(["M", x1 + 3, y1, "L", x2, y2, "Z"]).attr({
-                                "stroke": "#5E5E5E",
-                                "stroke-dasharray": "- .",
-                                "stroke-width": 2
-                            })
-                        }
-                        if (colorred == 1) {
-                            var path = cxt.path(["M", x1, y1, "L", x2, y2, "Z"]).attr({
-                                "stroke": "red",
-                                "stroke-width": 2,
-                                "stroke-dasharray": "- ."
-                            })
-                        }
-                        if (colorred == 0 && coloryellow == 0 && colorgreen == 1) {
-                            var path = cxt.path(["M", x1, y1, "L", x2, y2, "Z"]).attr({
-                                "stroke": "#2E8B57",
-                                "stroke-width": 2,
-                                "stroke-dasharray": '- .'
-                            })
-                        }
-                        if (colorred == 0 && coloryellow == 1) {
-                            var path = cxt.path(["M", x1, y1, "L", x2, y2, "Z"]).attr({
-                                "stroke": "#7CFC00",
-                                "stroke-width": 2,
-                                "stroke-dasharray": "- ."
-                            })
-                        }
-
-                    }
-
-                    path.hover(function (event) {
-
-                        var e = document.all ? window.event : arguments[0] ? arguments[0] : event;
-
-                        //timer = setTimeout(function() {
-                        document.getElementById("bl_1").style.display = "block";
-                        document.getElementById("table").style.display = "none";
-                        document.getElementById("foot").style.display = "none";
-                        var div = document.getElementById("bl_1");
-                        //var movey = 2 / 3 * y2 + 1 / 3 * y1;
-                        //var movex = (x1 + x2) / 2;
-                        //div.style.top = movey +55+ "px";
-                        //div.style.left = movex + 5 +"px";
-                        var movey = (y1 + y2) / 2;
-                        var movex = (x1 + x2) / 2;
-
-                        div.style.top = e.layerY + 8 + "px" ;
-                        div.style.left = e.layerX + 8 - 100 + "px" ;
-
-                        var bl = document.getElementById("tb")
-                            var x = bl.createCaption();
-                        for (var i = bl.rows.length - 1; i >= 0; i--) {
-                            bl.deleteRow(i);
-                        }
-                        x.innerHTML = gettext("connected switch:") + connectmessage[0]["sysname"];
-                        var row = bl.insertRow(bl.rows.length);
-                        var row1 = bl.insertRow(bl.rows.length);
-
-                        var cell1 = row.insertCell(row.cells.length);
-                        var cell2 = row.insertCell(row.cells.length);
-                        var cell3 = row.insertCell(row.cells.length);
-                        var cell7 = row.insertCell(row.cells.length);
-                        var cell8 = row.insertCell(row.cells.length);
-                        var cell20 = row.insertCell(row.cells.length);
-                        cell1.innerHTML = gettext("server name") + "&nbsp&nbsp&nbsp";
-                        cell2.innerHTML = "&nbsp&nbsp" + gettext("server") + "&nbsp&nbsp&nbsp" + gettext("port") + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
-                        cell3.innerHTML = gettext("switch port") + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
-                        //cell7.innerHTML = gettext("traffic details") + "&nbsp&nbsp&nbsp&nbsp";
-                        //cell8.innerHTML = gettext("traffic status") + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
-                        cell20.innerHTML = gettext("link status") + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
-
-                        for (var i = 0; i < connectmessage[0]["racklist"]["serverlist"].length; i++) {
-
-                            var row1 = bl.insertRow(bl.rows.length);
-                            var cell4 = row1.insertCell(row1.cells.length);
-                            var cell5 = row1.insertCell(row1.cells.length);
-                            var cell6 = row1.insertCell(row1.cells.length);
-                            var cell9 = row1.insertCell(row1.cells.length);
-                            var cell10 = row1.insertCell(row1.cells.length);
-                            var cell21 = row1.insertCell(row1.cells.length);
-                            cell4.innerHTML = connectmessage[0]["racklist"]["serverlist"][i]["sysname"];
-                            cell5.innerHTML = "&nbsp&nbsp" + connectmessage[0]["tuplelist"]["eth_name"];
-                            //if (parseInt(connectmessage[0]["racklist"]["serverlist"][i]['status']) == 1) {
-                            //    cell21.innerHTML = "&nbsp&nbsp" + "active";
-                            //}
-                            //if (parseInt(connectmessage[0]["racklist"]["serverlist"][i]['status'] == 3)) {
-                            //    cell21.innerHTML = "&nbsp&nbsp" + "offline";
-                            //}
-                            if ( status == 0) {
-                                cell21.innerHTML = "&nbsp&nbsp" + "active";
-                            }
-                            if ( status == 1) {
-                                cell21.innerHTML = "&nbsp&nbsp" + "offline";
-                            }
-                            for (var k = 0; k < origin_switch_link_list.length; k++) {
-                                if (connectmessage[0]["switch_ip"] == origin_switch_link_list[k]["switch_ip"]) {
-                                    for (var z = 0; z < origin_switch_link_list[k]["link_details"].length; z++) {
-                                        if (connectmessage[0]["racklist"]["serverlist"][i]["chassisid"] == origin_switch_link_list[k]["link_details"][z]["remchassisid"]) {
-                                            var portindex = origin_switch_link_list[k]["link_details"][z]["locportindex"];
-                                            //cell10.innerHTML = '<div class="status"style="left:5px;width: 10px; height: 10px;background: ' + origin_switch_link_list[k]["link_details"][z]["color"] + ';-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;"></div>';
-                                            if (colorgray == 1) {
-                                                //cell9.innerHTML = "&nbsp" + gettext("no details");
-                                            } else {
-                                                var inputlink = "/horizon/admin/traffic/" + connectmessage[0]["switch_ip"] + "|input|" + portindex + "/detail/";
-                                                var outputlink = "/horizon/admin/traffic/" + connectmessage[0]["switch_ip"] + "|output|" + portindex + "/detail/"
-                                                    var inTrafficData = {
-                                                        queryType: 'realtime',
-                                                        ip: connectmessage[0]["switch_ip"],
-                                                        locportindex: portindex
-                                                    };
-                                                //cell9.innerHTML = ' <a class="traficinputDetail" style="text-decoration:underline" href="javascript:void(0);">' + gettext("input") + '</a>' + "&nbsp&nbsp" + ' <a style="text-decoration:underline" class="traficoutputDetail" href="javascript:void(0);">' + gettext("output") + '</a>' + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
-                                                cell9.onclick = function (event) {
-                                                    event = event || window.event;
-                                                    var ele = event.target;
-                                                    if ($(ele).attr('class') == 'traficinputDetail') {
-                                                        inTrafficData.direction = 'input';
-                                                        (new lenovoTrafficsAction()).openDetail(inTrafficData);
-                                                    } else if ($(ele).attr('class') == 'traficoutputDetail') {
-                                                        inTrafficData.direction = 'output';
-                                                        (new lenovoTrafficsAction()).openDetail(inTrafficData);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            for (var p = 0; p < origin_switch_link_list.length; p++) {
-                                if (connectmessage[0]["switch_ip"] == origin_switch_link_list[p]["switch_ip"]) {
-                                    for (var q = 0; q < origin_switch_link_list[p]["link_details"].length; q++) {
-                                        if (origin_switch_link_list[p]["link_details"][q]["remchassisid"] == connectmessage[0]["racklist"]["serverlist"][i]["chassisid"] && origin_switch_link_list[p]["link_details"][q]["remportiddesc"] == connectmessage[0]["tuplelist"]["eth_name"]) {
-                                            if ($(e.target).attr('stroke-dasharray') == "8,6,2,6" && parseInt(origin_switch_link_list[p]["link_details"][q]["status"]) == 3 || $(e.target).attr('stroke-dasharray') !== "8,6,2,6" && parseInt(origin_switch_link_list[p]["link_details"][q]["status"]) == 1) {
-                                                //( hover = dotted_line && origin_switch_status = 3) or (hover=solid_line && origin_switch_status = 1 )
-                                                cell6.innerHTML = origin_switch_link_list[p]["link_details"][q]["locportid"] + "&nbsp&nbsp&nbsp&nbsp&nbsp";
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            if (!cell6.innerHTML) {
-                                bl.deleteRow(bl.rows.length - 1);
-                            }
-                        }
-                        //},
-                        //linetime);
-                    })
-                }
-
-                function line_h(cxt, x1, y1, x2, y2, connectmessage) {
-                    if (connectmessage[0]['link_details']['status'] == "1") {
-                        var path = cxt.path(["M", x1, y1, "L", x1, y2, "L", x2, y2, "L", x2, y1]).attr({
-                            "stroke": connectmessage[0]["link_details"]["color"],
-                            "stroke-width": 2
-                        });
-                    }
-
-                    if (connectmessage[0]['link_details']['status'] == '3') {
-                        var path = cxt.path(["M", x1, y1, "L", x1, y2, "L", x2, y2, "L", x2, y1]).attr({
-                            "stroke": connectmessage[0]["link_details"]["color"],
-                            "stroke-width": 2,
-                            "stroke-dasharray": "--"
-                        });
-                    }
-                    path.hover(function (event) {
-
-                        //timer = setTimeout(function() {
-                        var e = document.all ? window.event : arguments[0] ? arguments[0] : event;
-
-                        document.getElementById("bl_1").style.display = "block";
-                        document.getElementById("table").style.display = "none";
-                        document.getElementById("foot").style.display = "none";
-                        var div = document.getElementById("bl_1");
-                        var movey = (y2 + y2) / 2;
-                        var movex = (x1 + x2) / 2;
-
-                        div.style.top = e.layerY + 8 + "px" ;
-                        div.style.left = e.layerX + 8 - 100 + "px" ;
-
-                        var bl = document.getElementById("tb")
-                            var x = bl.createCaption();
-                        for (var i = bl.rows.length - 1; i >= 0; i--) {
-                            bl.deleteRow(i);
-
-                        }
-                        var row = bl.insertRow(bl.rows.length);
-                        var row1 = bl.insertRow(bl.rows.length);
-                        var row2 = bl.insertRow(bl.rows.length);
-                        var row3 = bl.insertRow(bl.rows.length);
-                        var row4 = bl.insertRow(bl.rows.length);
-                        var cell1 = row.insertCell(row.cells.length);
-                        var cell2 = row.insertCell(row.cells.length);
-                        var cell3 = row1.insertCell(row1.cells.length);
-                        var cell4 = row1.insertCell(row1.cells.length);
-                        var cell5 = row2.insertCell(row2.cells.length);
-                        var cell6 = row2.insertCell(row2.cells.length);
-                        var cell7 = row3.insertCell(row3.cells.length);
-                        var cell8 = row3.insertCell(row3.cells.length);
-                        var cell9 = row4.insertCell(row4.cells.length);
-                        var cell10 = row4.insertCell(row4.cells.length);
-                        x.innerHTML = gettext("link details");
-                        cell1.innerHTML = gettext("src_switch:");
-                        cell2.innerHTML = connectmessage[0]["src_switch"];
-                        cell3.innerHTML = gettext("src_port:");
-                        cell4.innerHTML = connectmessage[0]["src_port"];
-                        cell5.innerHTML = gettext("dst_switch:");
-                        cell6.innerHTML = connectmessage[0]["dst_switch"];
-                        cell7.innerHTML = gettext("dst_port:");
-                        cell8.innerHTML = connectmessage[0]["dst_port"];
-                        //cell9.innerHTML = gettext("traffic details:");
-                        if (connectmessage[0]["link_details"]["color"] == "#5E5E5E") {
-                            //cell10.innerHTML = gettext("no details");
-                        } else {
-                            /*                          var inputlink = "/horizon/admin/traffic/" + connectmessage[0]["link_details"]["id"] + "|input|" + connectmessage[0]["link_details"]["locportindex"] + "/detail/";
-                                                        var outputlink = "/horizon/admin/traffic/" + connectmessage[0]["link_details"]["id"] + "|output|" + connectmessage[0]["link_details"]["locportindex"] + "/detail/";
-                                                        cell10.innerHTML = '<a style="text-decoration:underline" href=' + inputlink + '>' + gettext("input") + '</a>' + "&nbsp&nbsp" + ' <a style="text-decoration:underline" href=' + outputlink + '>' + gettext("output") + '</a>';*/
-                            var inTrafficData = {
-                                queryType: 'realtime',
-                                ip: connectmessage[0]['link_details']["id"],
-                                locportindex: connectmessage[0]["link_details"]["locportindex"]
-                            };
-                            cell9.innerHTML = ' <a class="traficinputDetail" style="text-decoration:underline" href="javascript:void(0);">' + gettext("input") + '</a>' + "&nbsp&nbsp" + ' <a style="text-decoration:underline" class="traficoutputDetail" href="javascript:void(0);">' + gettext("output") + '</a>' + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
-                            cell9.onclick = function (event) {
-                                event = event || window.event;
-                                var ele = event.target;
-                                if ($(ele).attr('class') == 'traficinputDetail') {
-                                    inTrafficData.direction = 'input';
-                                    (new lenovoTrafficsAction()).openDetail(inTrafficData);
-                                } else if ($(ele).attr('class') == 'traficoutputDetail') {
-                                    inTrafficData.direction = 'output';
-                                    (new lenovoTrafficsAction()).openDetail(inTrafficData);
-                                }
-                            }
-                        }
-                        //},
-                        //linetime);
-                    })
-                }
-
                 function drawOsSwitch(scene) {
                     var leftDistance = /*document.getElementById("topologyCanvas").offsetWidth -*/ document.getElementById('canvas_proton_topo').width;
 
                     var number = racklist.length;
                     var number1 = floorlist2.length;
-                    var longMax = number1 * 72 + (number1 - 1) * 100;
+                    var longMax = number1 * SWITCH_WIDTH + (number1 - 1) * 100;
                     var widthMax = 0;
                     for (var i = 0; i < number; i++) {
                         var singleNumber = racklist[i]["serverlist"].length;
@@ -2431,10 +1572,10 @@
                     for (var i = floorlist2.length - 1; i >= 0; i--) {
 
                         switch_num2--;
-                        floorlist2[i]["x"] = orign + 72 * i + 100 * i;
+                        floorlist2[i]["x"] = orign + SWITCH_WIDTH * i + 100 * i;
                         floorlist2[i]["y"] = 100 + 30 * 2 + 30;
 
-                        from_node = create_switch(scene, floorlist2[i]["switch_details"],floorlist2[i]["x"],floorlist2[i]["y"], 72, 72, switch_num1, switch_num2, floor1);
+                        from_node = create_switch(scene, floorlist2[i]["switch_details"],floorlist2[i]["x"],floorlist2[i]["y"], SWITCH_WIDTH, SWITCH_HEIGHT, switch_num1, switch_num2, floor1);
                         floorlist2[i]["node"] = from_node;
 
                     }
@@ -2443,8 +1584,8 @@
                         var maxx = floorlist2[floorlist2.length - 1]["x"];
                         var length1 = floorlist1.length;
                         var length2 = floorlist2.length;
-                        var maxlength1 = 72 * length1 + 100 * (length1 - 1);
-                        var maxlength2 = 72 * length2 + 100 * (length2 - 1);
+                        var maxlength1 = SWITCH_WIDTH * length1 + 100 * (length1 - 1);
+                        var maxlength2 = SWITCH_WIDTH * length2 + 100 * (length2 - 1);
                         var firstlocationx = minx + maxlength2 / 2 - maxlength1 / 2;
                         var firstlocationy = 40;
                     } else {
@@ -2453,17 +1594,17 @@
                     }
                     if (floorlist1.length != 0) {
                         switch_num1++;
-                        from_node = create_switch(scene, floorlist1[0]["switch_details"],firstlocationx, firstlocationy, 72, 72, switch_num1, switch_num2, floor1);
+                        from_node = create_switch(scene, floorlist1[0]["switch_details"],firstlocationx, firstlocationy, SWITCH_WIDTH, SWITCH_HEIGHT, switch_num1, switch_num2, floor1);
                         floorlist1[0]["node"] = from_node;
                         floorlist1[0]["x"] = firstlocationx;
                         floorlist1[0]["y"] = firstlocationy;
                     }
                     for (var j = 1; j < floorlist1.length; j++) {
                         switch_num1++;
-                        floorlist1[j]["x"] = firstlocationx + j * 72 + 100 * j;
+                        floorlist1[j]["x"] = firstlocationx + j * SWITCH_WIDTH + 100 * j;
                         floorlist1[j]["y"] = firstlocationy;
 
-                        from_node = create_switch(scene, floorlist1[j]["switch_details"],floorlist1[j]["x"],floorlist1[j]["y"], 72, 72, switch_num1, switch_num2, floor1);
+                        from_node = create_switch(scene, floorlist1[j]["switch_details"],floorlist1[j]["x"],floorlist1[j]["y"], SWITCH_WIDTH, SWITCH_HEIGHT, switch_num1, switch_num2, floor1);
                         floorlist1[j]["node"] = from_node;
                     }
 
@@ -2665,7 +1806,7 @@
                     var leftDistance = /*document.getElementById("topologyCanvas").offsetWidth - */document.getElementById('canvas_proton_topo').width;
                     var number = racklist.length;
                     var number1 = floorlist2.length;
-                    var longMax = number1 * 72 + (number1 - 1) * 100;
+                    var longMax = number1 * SWITCH_WIDTH + (number1 - 1) * 100;
                     var widthMax = 0;
                     for (var i = 0; i < number; i++) {
                         var singleNumber = racklist[i]["serverlist"].length;
