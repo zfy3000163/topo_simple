@@ -449,6 +449,9 @@
                 node.mouseout(function(event){
                     $("#bl_1").hide();
                 });
+                node.mousedrag(function(event){
+                    $("#bl_1").hide();
+                });
             }
 
             function line_popup_switch_to_switch_click(node, conf){
@@ -479,6 +482,9 @@
                     server_popup_handler(event, details, conf_switch_lists);
                 });
                 node.mouseout(function(event){
+                    $("#bl_1").hide();
+                });
+                node.mousedrag(function(event){
                     $("#bl_1").hide();
                 });
             }
