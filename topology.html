@@ -8,9 +8,13 @@
     <div  class="title-topWraper" id="topWraper" style="position: relative; width: 96.5%; background: #EFEFEF;" >
         <div class="title-top clearfix" style="padding-bottom: 10px;border-bottom: 0;">
             <ul class="clearfix" style="border-bottom: 1px solid #BCBCBC;">
-                <li class="first" style=" margin-bottom: 10px;"><img src="{{ STATIC_URL }}dashboard/img/img_topology/switch1.png"/><span class="title">{% trans "Level 1 Switch" %}</span></li>
+                <!--<li class="first" style=" margin-bottom: 10px;"><img src="{{ STATIC_URL }}dashboard/img/img_topology/switch1.png"/><span class="title">{% trans "Level 1 Switch" %}</span></li>
                 <li class="first"><img src="{{ STATIC_URL }}dashboard/img/img_topology/switch2.png"/><span class="title">{% trans "Level 2 Switch" %}</span></li>
                 <li class="first"><img style="width:50px;height:20px;margin-top:10px;" src="{{ STATIC_URL }}dashboard/img/img_topology/iserver.png"/><span class="title">{% trans "server" %}</span></li>
+                -->
+                <li class="first" style=" margin-bottom: 10px; margin-right: 10px; width: 52px; height: 42px; background: #0058B0; border:1px solid #999; border-radius:4px; box-shadow:inset 0 2px 2px rgba(0,0,0,0.05);  display:inline-block;" ></li><li><span> {% trans "Level 1 Switch" %}</span></li>
+                <li class="first" style=" margin-bottom: 10px; margin-right: 10px; width: 52px; height: 42px; background: #1E7CC8; border:1px solid #999; border-radius:4px; box-shadow:inset 0 2px 2px rgba(0,0,0,0.05);  display:inline-block;"</li><li><span >{% trans "Level 2 Switch" %}</span></li>
+                <li class="first"><img style="width:50px;height:20px;margin-top:10px;margin-right: 0px;" src="{{ STATIC_URL }}dashboard/img/img_topology/iserver.png"/><span class="title">&nbsp&nbsp&nbsp&nbsp {% trans "server" %}</span></li>
                 <!--<li><span class="prompt lines" style="background:#5E5E5E;"></span><span>无法获取流量</span></li>-->
                 <!--<li><span class="prompt lines" style="background: #2E8B57;"></span><span>空闲流量</span></li>-->
                 <!--<li><span class="prompt lines" style="background:#7CFC00 ;"></span><span>正常流量</span></li>-->

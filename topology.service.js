@@ -1246,7 +1246,8 @@
                             }
                         }
                     }
-                    if (d = 0) {
+
+                    if (d == 0) {
                         for (var c = 0; c < switch_list.length; c++) {
                             if (origin_switch_link_list[p]["switch_ip"] == switch_list[c]["ip"]) {
                                 floor1.push({
@@ -1269,6 +1270,7 @@
                     }
                 }
 
+                
                 for (var e = 0; e < floor2.length; e++) {
                     var count = 0;
                     for (var f = 0; f < origin_switch_link_list.length; f++) {
@@ -1285,19 +1287,20 @@
                             }
                         }
                     }
-                    if (count < (mid + 1)) {
+                    //if (count < (mid + 1)) {
                         floor3.push({
                             "switch_details": floor2[e]["switch_details"],
                             'mark': 0
-                        })
-                    } else {
-                        floor1.push({
-                            "switch_details": floor2[e]["switch_details"],
-                            'mark': 0
-                        })
-                    }
+                        });
+                    //} else {
+                    //    floor1.push({
+                    //        "switch_details": floor2[e]["switch_details"],
+                    //        'mark': 0
+                    //    })
+                    //}
 
                 }
+                
 
                 for (var i = 0; i < server_rack_list.length; i++) {
                     var serverlist = server_rack_list[i]["serverlist"];
