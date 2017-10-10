@@ -662,7 +662,7 @@
                                                     'y': (y + 5 + 4),
                                                     'w': 4,
                                                     'h': 4,
-                                                    'fillcolor': origin_switch_link_list[p]["link_details"][q]["color"]
+                                                    'fillcolor': hex_to_rgb(origin_switch_link_list[p]["link_details"][q]["color"])
                                                 }; 
                                                 //create the server's lamplet
                                                 draw_rack_lamplet(scene, container_server, conf);
@@ -672,7 +672,7 @@
                                                     'y': (y + 10 + 9 + 4),
                                                     'w': 4,
                                                     'h': 4,
-                                                    'fillcolor': origin_switch_link_list[p]["link_details"][q]["color"]
+                                                    'fillcolor': hex_to_rgb(origin_switch_link_list[p]["link_details"][q]["color"])
                                                 }; 
                                                 //create the server's lamplet
                                                 draw_rack_lamplet(scene, container_server,  conf);
