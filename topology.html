@@ -1,22 +1,73 @@
 
 {% load i18n %}
 
-
+<style>
+    #topology_span{
+        margin: 5px 0 0 5px;
+        height: 20px;
+        line-height: 20px;
+        width: 110px;
+        display: none;
+        color:#ccc;
+    }
+    #topology_menu,#host_menu{
+        display:none;
+        position: absolute;
+        top: 35px;
+        left: 21px;
+        width: auto;
+    }
+    #topology_search{
+        border: 0;
+        padding-left: 5px;
+        width: 100%;
+    }
+</style>
 <div class="page-header">
-    <h1>{% trans "Physical Topology"%} </h1>
   </div>
 <div ng-controller="adminPhyTopologyContrllor" ng-cloak >
     <div  class="title-topWraper" id="topWraper" style="position: relative; width: 96.5%; background: #EFEFEF;" >
         <div class="title-top clearfix" style="padding-bottom: 10px;border-bottom: 0;">
             <ul class="clearfix" style="border-bottom: 1px solid #BCBCBC;">
-                <li class="first" style=" margin-bottom: 10px;"><img src="{{ STATIC_URL }}dashboard/img/img_topology/switch1.png"/><span class="title">{% trans "Level 1 Switch" %}</span></li>
+                <!--<li class="first" style=" margin-bottom: 10px;"><img src="{{ STATIC_URL }}dashboard/img/img_topology/switch1.png"/><span class="title">{% trans "Level 1 Switch" %}</span></li>
                 <li class="first"><img src="{{ STATIC_URL }}dashboard/img/img_topology/switch2.png"/><span class="title">{% trans "Level 2 Switch" %}</span></li>
                 <li class="first"><img style="width:50px;height:20px;margin-top:10px;" src="{{ STATIC_URL }}dashboard/img/img_topology/iserver.png"/><span class="title">{% trans "server" %}</span></li>
+                -->
+                <li class="first" style=" margin-bottom: 10px; margin-right: 10px; width: 52px; height: 42px; background: #0058B0; border:1px solid #999; border-radius:4px; box-shadow:inset 0 2px 2px rgba(0,0,0,0.05);  display:inline-block;" ></li><li><span> {% trans "Level 1 Switch" %}</span></li>
+                <li class="first" style=" margin-bottom: 10px; margin-right: 10px; width: 52px; height: 42px; background: #1E7CC8; border:1px solid #999; border-radius:4px; box-shadow:inset 0 2px 2px rgba(0,0,0,0.05);  display:inline-block;"</li><li><span >{% trans "Level 2 Switch" %}</span></li>
+                <li class="first"><img style="width:50px;height:20px;margin-top:10px; margin-right: 0;" src="{{ STATIC_URL }}dashboard/img/img_topology/iserver.png"/><span class="title">&nbsp&nbsp {% trans "server" %}</span></li>
                 <!--<li><span class="prompt lines" style="background:#5E5E5E;"></span><span>无法获取流量</span></li>-->
                 <!--<li><span class="prompt lines" style="background: #2E8B57;"></span><span>空闲流量</span></li>-->
                 <!--<li><span class="prompt lines" style="background:#7CFC00 ;"></span><span>正常流量</span></li>-->
                 <!--<li style=" margin-bottom: 10px;"><span class="prompt lines" style="background:red ;"></span><span>过载流量</span></li>-->
+                 <div class="fr search-bar" style="position: relative">
+                    <div class="ng-scope hz-magic-search-bar" style="width: 300px">
+                        <div class="form-group has-feedback magic-search-bar" style="line-height: 30px;background-color: #ffffff">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                  <span class="fa fa-search"></span>
+                                </span>
+                                <span id="topology_span"></span>
+                                <input id="topology_search" type="text" placeholder="点击选择过滤条件"/>
+                                <a class="magic-search-clear" style="padding-right: 8px" ng-click="clearTopologySearch()" title="取消">
+                                    <span class="fi-x fa fa-times cancel"></span>
+                                </a>
+                                <!-- ngIf: filterStrings && filterFacets -->
+                                <!-- ngIf: showSettings -->
+                            </div>
+                        </div>
+                    </div>
+                     <ul id="topology_menu" class="facet-drop f-dropdown dropdown-menu ng-scope" >
+                        <li><a id="1">主机名称</a></li>
+                        <li><a id="2">虚拟机列表</a></li>
+
+                    </ul>
+                     <ul id="host_menu" class="facet-drop f-dropdown dropdown-menu ng-scope">
+                         <li ng-repeat="item in menuList" ng-click="selectHost(item)"><a>{$ item.name $}</a></li>
+                     </ul>
+                </div>
             </ul>
+
         </div>
     </div>
 
@@ -30,6 +81,7 @@
       height: 300px;
       overflow:auto;
       background: #efefef;" >
+      <canvas id="canvas_proton_topo" ></canvas>
     <div id="bl">
     <div id="bl_1" class="topologyBalloon"  >
       <a href="#close" class="closeTopologyBalloon" ng-click="hide()">&times;</a>
@@ -40,7 +92,7 @@
       <div class="title"></div>
 
     <table class="detailInfoTable"id="table">
-      <caption id="m_title" style="width: 120px">manage the switch</caption>
+      <caption id="m_title" style="width: 140px">manage the switch</caption>
       <tbody id="tBody" style="display:none"> </tbody>
       <tbody style="display: block;width:100%;">
         <tr style="width: 100%;
