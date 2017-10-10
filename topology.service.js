@@ -21,6 +21,7 @@
         .service('horizon.openstack-service-api.drawtopology', DrawTopology);
     DrawTopology.$inject = ['createhostDetailAction', 'hostLoginAction', 'hostRebootAction', 'switchDetailAction', 'switchLoginAction', 'lenovoTrafficsAction'];
     function DrawTopology(createhostDetailAction, hostLoginAction, hostRebootAction, switchDetailAction, switchLoginAction, lenovoTrafficsAction) {
+        var self = this;
         this.drawPhysicaltopology = function (data) {
 
             //鼠标移动到交换机弹出框信息
@@ -226,7 +227,7 @@
                 var hoet_id_fordetail = server_details["oid"];
                 var hoet_id_forlogin = server_details["id"];
                 document.getElementById("link").onclick = function () {
-                    (new createhostDetailAction()).open(hoet_id_fordetail);
+                    (new createhostDetailAction()).open(hoet_id_fordetail, server_details["sysname"]);
                 }
                 document.getElementById("login").onclick = function () {
                     (new hostLoginAction()).open([{'id': hoet_id_forlogin}]);
@@ -475,7 +476,7 @@
             function server_popup_mouseover(node, details, conf_switch_lists){
                 var hoet_id_fordetail = details['oid'];
                 node.click(function () {
-                    (new createhostDetailAction()).open(hoet_id_fordetail);
+                    (new createhostDetailAction()).open(hoet_id_fordetail,details['sysname'] );
                 });
 
                 node.mouseover(function(event){
@@ -565,7 +566,7 @@
                 container_server.zIndex = 19;
                 //container_server.scaleX = -2;
                 container_server.shadow = 0;
-
+                container_server.nodetype = "host";
                 container_server.setBound(conf.x, conf.y, conf.w, conf.h);
 
                 //add some mouse event
@@ -1270,7 +1271,6 @@
                     }
                 }
 
-                
                 for (var e = 0; e < floor2.length; e++) {
                     var count = 0;
                     for (var f = 0; f < origin_switch_link_list.length; f++) {
@@ -1300,7 +1300,6 @@
                     //}
 
                 }
-                
 
                 for (var i = 0; i < server_rack_list.length; i++) {
                     var serverlist = server_rack_list[i]["serverlist"];
@@ -1544,7 +1543,7 @@
                 canvas.height = 900 /*window.innerHeight*0.9*/;
                 canvas.width = window.innerWidth * 0.81;
 
-                var stage = new JTopo.Stage(canvas);
+                this.stage = new JTopo.Stage(canvas);
                 //showJTopoToobar(stage);
                 var scene = new JTopo.Scene();
                 //scene.backgroundColor = '255,250,250';
@@ -1552,8 +1551,8 @@
                 //scene.mode = "select"; //"drag"
                 scene.mode = "normal"; //"drag"
                 //stage.zoomIn(0);
-                stage.add(scene);
-
+                this.stage.add(scene);
+                self.scene = scene;
 
                 function drawOsSwitch(scene) {
                     var leftDistance = /*document.getElementById("topologyCanvas").offsetWidth -*/ document.getElementById('canvas_proton_topo').width;
