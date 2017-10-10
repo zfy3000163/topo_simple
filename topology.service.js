@@ -964,7 +964,7 @@
                             for (var p = 0; p < origin_switch_link_list[i]["link_details"].length; p++) {
                                 if (connectmessage[0]["racklist"]["serverlist"][j]["chassisid"] == origin_switch_link_list[i]["link_details"][p]["remchassisid"] && connectmessage[0]["tuplelist"]["eth_name"] == origin_switch_link_list[i]["link_details"][p]["remportiddesc"]) {
 
-                                    if (origin_switch_link_list[i]["link_details"][p]["color"] == "red") {
+                                    if (origin_switch_link_list[i]["link_details"][p]["color"] == "#FF0000") {
                                         colorred = 1;
                                     }
                                     if (origin_switch_link_list[i]["link_details"][p]["color"] == "#7CFC00") {
@@ -1154,6 +1154,9 @@
                         }
                         if (origin_switch_link_list[i]["link_details"][j]["color"] == "gray") {
                             origin_switch_link_list[i]["link_details"][j]["color"] = "#5E5E5E";
+                        }
+                        if (origin_switch_link_list[i]["link_details"][j]["color"] == "red") {
+                            origin_switch_link_list[i]["link_details"][j]["color"] = "#FF0000";
                         }
                     }
                 }
