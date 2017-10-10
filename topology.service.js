@@ -659,7 +659,7 @@
 
                                             if (port < 4) {
                                                 var conf = {'x':(x + 50 + (port * 6) + 1),
-                                                    'y': (y + 5 + 4),
+                                                    'y': (y + 5 + 4 + 4),
                                                     'w': 4,
                                                     'h': 4,
                                                     'fillcolor': hex_to_rgb(origin_switch_link_list[p]["link_details"][q]["color"])
@@ -669,7 +669,7 @@
 
                                             } else {
                                                 var conf = {'x':(x + 50 + ((port - 4) * 6) + 1),
-                                                    'y': (y + 10 + 9 + 4),
+                                                    'y': (y + 10 + 9 + 4 + 4),
                                                     'w': 4,
                                                     'h': 4,
                                                     'fillcolor': hex_to_rgb(origin_switch_link_list[p]["link_details"][q]["color"])
@@ -696,7 +696,7 @@
                     }
                     if (id == 0) {
                         var conf = {'x': (x + 50 + (m * 6) + 1),
-                            'y': y + 5 + 4,
+                            'y': (y + 5 + 4 + 4),
                             'w': 4,
                             'h': 4,
                             'fillcolor': "139,137,137"  
@@ -705,7 +705,7 @@
                         draw_rack_lamplet(scene, container_server, conf);
 
                         var conf = {'x': x + 50,
-                            'y': y + 10 + 3 + 4,
+                            'y': (y + 10 + 3 + 4 + 4),
                             'w': 26,
                             'h': 2,
                             'fillcolor': "18,18,23" 
@@ -727,7 +727,7 @@
 
                     if (id == 0) {
                         var conf = {'x': (x + 50 + (m * 6) + 1),
-                            'y': (y + 10 + 9 + 4),
+                            'y': (y + 10 + 9 + 4 + 4),
                             'w': 4,
                             'h': 4,
                             'fillcolor': "139,137,137" 
@@ -736,7 +736,7 @@
                         draw_rack_lamplet(scene, container_server, conf);
 
                         var conf = {'x': (x + 50),
-                            'y': (y + 10 + 3 + 4),
+                            'y': (y + 10 + 3 + 4 + 4),
                             'w': 26,
                             'h': 2,
                             'fillcolor': "18,18,23"  
