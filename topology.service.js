@@ -518,7 +518,7 @@
                 text_node.dragable = 0;
                 text_node.alpha = 1;
                 text_node.visible = 1;
-                text_node.zIndex = 94;
+                text_node.zIndex = 90;
 
                 scene.add(text_node);
                 container.add(text_node);
@@ -538,7 +538,7 @@
                 container_obj.borderRadius = 8;					
                 container_obj.borderWidth= 2;
                 container_obj.borderColor= "142,157,173";
-                container_obj.zIndex = 18;					
+                container_obj.zIndex = 88;					
                 container_obj.childDragble = 0;					
                 container_obj.showSelected = 0;					
                 container_obj.shadow= 0;					
@@ -563,7 +563,7 @@
                 container_server.borderColor= conf.bordercolor;
                 container_server.borderRadius = 5;
                 container_server.showSelected = false;					
-                container_server.zIndex = 19;
+                container_server.zIndex = 89;
                 //container_server.scaleX = -2;
                 container_server.shadow = 0;
                 container_server.nodetype = "host";
@@ -587,7 +587,7 @@
                 text_node.dragable = 0;
                 text_node.alpha = 1;
                 text_node.visible = 0;
-                text_node.zIndex = 11;
+                text_node.zIndex = 81;
 
                 scene.add(text_node);
                 container_rack.add(text_node);
@@ -859,11 +859,11 @@
                     }
                 }
                 if (lenvel == 1) {
-                    number = floor1_number;
+                    var number = floor1_number;
                     var img_path = "dashboard/img/img_topology/switch1.png";
                     var sw_color = "0,88,176";
                 } else {
-                    number = floor2_number;
+                    var number = floor2_number;
                     var img_path = "dashboard/img/img_topology/switch2.png";
                     var sw_color = "30,124,200";
                 }
@@ -1099,17 +1099,15 @@
                 scene.add(linkTopo);
             }
 
-
-            if (data.selection == '0') {
-
-                var origin_switch_link_list = data.origin_switch_link_list || [];
+            function init(){
+                origin_switch_link_list = data.origin_switch_link_list || [];
                 for (var aa = 0; aa < origin_switch_link_list.length; aa++) {
                     origin_switch_link_list[aa]['link_details'] = origin_switch_link_list[aa]['link_details'].filter(function (element, index, array) {
                         return (element['status'] !== "4");
                     })
                 }
 
-                var server_rack_list = data.server_rack_list || [];
+                server_rack_list = data.server_rack_list || [];
                 for (var a = 0; a < server_rack_list.length; a++) {
                     server_rack_list[a]["serverlist"] = server_rack_list[a]["serverlist"].filter(function (element, index, array) {
                         return (element['status'] !== "4");
@@ -1119,30 +1117,6 @@
                     return (element['serverlist'].length !== 0);
                 });
 
-                var switch_list = data.switch_list || [];
-                var floorlist1 = [];
-                var floorlist2 = [];
-                var racklist = [];
-                var switchlink = [];
-                var linklist = [];
-                var serverlink = [];
-                var degree = [];
-                var floor1 = [];
-                var floor2 = [];
-                var floor3 = [];
-                var d = [];
-                var floor4 = [];
-                var floor5 = [];
-                var countnum = 3;
-                var countnum1 = 10;
-                var racklist1 = [];
-                var lenovoswitch = ["G8052", "G8332", "G8124"];
-                var rackcount = 1;
-                var linetime = 200;
-                var nodetime = 1000;
-                var switch_num1 = 0;
-                var switch_num2 = switch_list.length + 1;
-                var MAX_RACK_SERVER = 5;
 
                 for (var i = 0; i < origin_switch_link_list.length; i++) {
                     for (var j = 0; j < origin_switch_link_list[i]["link_details"].length; j++) {
@@ -1197,7 +1171,7 @@
                         "switch_ip": origin_switch_link_list[m]["switch_ip"],
                     "link_details": link
                     });
-                    d.push(switch_count);
+                    d_list.push(switch_count);
                     // document.write(switch_count);
                     degree.push({
                         "ip": id,
@@ -1230,13 +1204,13 @@
                     }
                 }
 
-                quicksort(d, 0, d.length - 1);
+                quicksort(d_list, 0, d_list.length - 1);
 
-                if (d.length % 2 == 0) {
-                    var mid = d[d.length / 2 - 1];
+                if (d_list.length % 2 == 0) {
+                    var mid = d_list[d_list.length / 2 - 1];
 
                 } else {
-                    var mid = d[parseInt(d.length / 2)];
+                    var mid = d_list[parseInt(d.length / 2)];
                 }
                 for (var p = 0; p < origin_switch_link_list.length; p++) {
                     var d = 0;
@@ -1291,10 +1265,10 @@
                         }
                     }
                     //if (count < (mid + 1)) {
-                        floor3.push({
-                            "switch_details": floor2[e]["switch_details"],
-                            'mark': 0
-                        });
+                    floor3.push({
+                        "switch_details": floor2[e]["switch_details"],
+                        'mark': 0
+                    });
                     //} else {
                     //    floor1.push({
                     //        "switch_details": floor2[e]["switch_details"],
@@ -1546,7 +1520,7 @@
                 canvas.height = 900 /*window.innerHeight*0.9*/;
                 canvas.width = window.innerWidth * 0.81;
 
-                this.stage = new JTopo.Stage(canvas);
+                var stage = new JTopo.Stage(canvas);
                 //showJTopoToobar(stage);
                 var scene = new JTopo.Scene();
                 //scene.backgroundColor = '255,250,250';
@@ -1554,104 +1528,138 @@
                 //scene.mode = "select"; //"drag"
                 scene.mode = "normal"; //"drag"
                 //stage.zoomIn(0);
-                this.stage.add(scene);
+                stage.add(scene);
                 self.scene = scene;
 
-                function drawOsSwitch(scene) {
-                    var leftDistance = /*document.getElementById("topologyCanvas").offsetWidth -*/ document.getElementById('canvas_proton_topo').width;
+                return scene;
 
-                    var number = racklist.length;
-                    var number1 = floorlist2.length;
-                    var longMax = number1 * SWITCH_WIDTH + (number1 - 1) * 100;
-                    var widthMax = 0;
-                    for (var i = 0; i < number; i++) {
-                        var singleNumber = racklist[i]["serverlist"].length;
-                        if (singleNumber % 12 == 0) {
-                            widthMax = widthMax + 100 * (parseInt(singleNumber / 10));
-                            racklist[i]["width"] = 50 * (parseInt(singleNumber / 10));
-                        } else {
-                            widthMax = widthMax + 100 * (parseInt(singleNumber / 10) + 1);
-                            racklist[i]["width"] = 50 * (parseInt(singleNumber / 10) + 1);
-                        }
-                    }
+            }
 
-                    widthMax = widthMax + 100 * (number - 1);
+            function drawOsSwitch(scene) {
+                var leftDistance = /*document.getElementById("topologyCanvas").offsetWidth -*/ document.getElementById('canvas_proton_topo').width;
 
-                    if (leftDistance > 0) {
-                        var orign = (document.getElementById("canvas_proton_topo").width - longMax) / 2;
+                var number = racklist.length;
+                var number1 = floorlist2.length;
+                var longMax = number1 * SWITCH_WIDTH + (number1 - 1) * 100;
+                var widthMax = 0;
+                for (var i = 0; i < number; i++) {
+                    var singleNumber = racklist[i]["serverlist"].length;
+                    if (singleNumber % 12 == 0) {
+                        widthMax = widthMax + 100 * (parseInt(singleNumber / 10));
+                        racklist[i]["width"] = 50 * (parseInt(singleNumber / 10));
                     } else {
-                        if (longMax > widthMax) {
-                            var orign = 10;
-                        } else {
-                            var orign = 0 + (widthMax - longMax) / 2;
-                        }
+                        widthMax = widthMax + 100 * (parseInt(singleNumber / 10) + 1);
+                        racklist[i]["width"] = 50 * (parseInt(singleNumber / 10) + 1);
                     }
-                    var mark1 = 0;
-                    var mark2 = 0;
-                    var lined = [];
-                    var from_node;
-                    for (var i = floorlist2.length - 1; i >= 0; i--) {
+                }
 
-                        switch_num2--;
-                        floorlist2[i]["x"] = orign + SWITCH_WIDTH * i + 100 * i;
-                        floorlist2[i]["y"] = 100 + 30 * 2 + 30;
+                widthMax = widthMax + 100 * (number - 1);
 
-                        from_node = create_switch(scene, floorlist2[i]["switch_details"],floorlist2[i]["x"],floorlist2[i]["y"], SWITCH_WIDTH, SWITCH_HEIGHT, switch_num1, switch_num2, floor1);
-                        floorlist2[i]["node"] = from_node;
-
-                    }
-                    if (floorlist2.length > 0) {
-                        var minx = floorlist2[0]["x"];
-                        var maxx = floorlist2[floorlist2.length - 1]["x"];
-                        var length1 = floorlist1.length;
-                        var length2 = floorlist2.length;
-                        var maxlength1 = SWITCH_WIDTH * length1 + 100 * (length1 - 1);
-                        var maxlength2 = SWITCH_WIDTH * length2 + 100 * (length2 - 1);
-                        var firstlocationx = minx + maxlength2 / 2 - maxlength1 / 2;
-                        var firstlocationy = 40;
+                if (leftDistance > 0) {
+                    var orign = (document.getElementById("canvas_proton_topo").width - longMax) / 2;
+                } else {
+                    if (longMax > widthMax) {
+                        var orign = 10;
                     } else {
-                        var firstlocationx = 200;
-                        var firstlocationy = 40;
+                        var orign = 0 + (widthMax - longMax) / 2;
                     }
-                    if (floorlist1.length != 0) {
-                        switch_num1++;
-                        from_node = create_switch(scene, floorlist1[0]["switch_details"],firstlocationx, firstlocationy, SWITCH_WIDTH, SWITCH_HEIGHT, switch_num1, switch_num2, floor1);
-                        floorlist1[0]["node"] = from_node;
-                        floorlist1[0]["x"] = firstlocationx;
-                        floorlist1[0]["y"] = firstlocationy;
-                    }
-                    for (var j = 1; j < floorlist1.length; j++) {
-                        switch_num1++;
-                        floorlist1[j]["x"] = firstlocationx + j * SWITCH_WIDTH + 100 * j;
-                        floorlist1[j]["y"] = firstlocationy;
+                }
+                var mark1 = 0;
+                var mark2 = 0;
+                var lined = [];
+                var from_node;
+                for (var i = floorlist2.length - 1; i >= 0; i--) {
 
-                        from_node = create_switch(scene, floorlist1[j]["switch_details"],floorlist1[j]["x"],floorlist1[j]["y"], SWITCH_WIDTH, SWITCH_HEIGHT, switch_num1, switch_num2, floor1);
-                        floorlist1[j]["node"] = from_node;
-                    }
+                    switch_num2--;
+                    floorlist2[i]["x"] = orign + SWITCH_WIDTH * i + 100 * i;
+                    floorlist2[i]["y"] = 100 + 30 * 2 + 30;
+
+                    from_node = create_switch(scene, floorlist2[i]["switch_details"],floorlist2[i]["x"],floorlist2[i]["y"], SWITCH_WIDTH, SWITCH_HEIGHT, switch_num1, switch_num2, floor1);
+                    floorlist2[i]["node"] = from_node;
+
+                }
+                if (floorlist2.length > 0) {
+                    var minx = floorlist2[0]["x"];
+                    var maxx = floorlist2[floorlist2.length - 1]["x"];
+                    var length1 = floorlist1.length;
+                    var length2 = floorlist2.length;
+                    var maxlength1 = SWITCH_WIDTH * length1 + 100 * (length1 - 1);
+                    var maxlength2 = SWITCH_WIDTH * length2 + 100 * (length2 - 1);
+                    var firstlocationx = minx + maxlength2 / 2 - maxlength1 / 2;
+                    var firstlocationy = 40;
+                } else {
+                    var firstlocationx = 200;
+                    var firstlocationy = 40;
+                }
+                if (floorlist1.length != 0) {
+                    switch_num1++;
+                    from_node = create_switch(scene, floorlist1[0]["switch_details"],firstlocationx, firstlocationy, SWITCH_WIDTH, SWITCH_HEIGHT, switch_num1, switch_num2, floor1);
+                    floorlist1[0]["node"] = from_node;
+                    floorlist1[0]["x"] = firstlocationx;
+                    floorlist1[0]["y"] = firstlocationy;
+                }
+                for (var j = 1; j < floorlist1.length; j++) {
+                    switch_num1++;
+                    floorlist1[j]["x"] = firstlocationx + j * SWITCH_WIDTH + 100 * j;
+                    floorlist1[j]["y"] = firstlocationy;
+
+                    from_node = create_switch(scene, floorlist1[j]["switch_details"],floorlist1[j]["x"],floorlist1[j]["y"], SWITCH_WIDTH, SWITCH_HEIGHT, switch_num1, switch_num2, floor1);
+                    floorlist1[j]["node"] = from_node;
+                }
 
 
 
-                    for (var m = 0; m < floorlist2.length; m++) {
-                        var src1 = [];
-                        var dst1 = [];
-                        for (var n = 0; n < origin_switch_link_list.length; n++) {
-                            if (floorlist2[m]["switch_details"]["ip"] == origin_switch_link_list[n]["switch_ip"]) {
-                                for (var p = 0; p < origin_switch_link_list[n]["link_details"].length; p++) {
-                                    var id = 0;
-                                    for (var a = 0; a < lined.length; a++) {
-                                        if (origin_switch_link_list[n]["link_details"][p]["remsysname"] == lined[a]) {
-                                            id = 1;
-                                        }
+                for (var m = 0; m < floorlist2.length; m++) {
+                    var src1 = [];
+                    var dst1 = [];
+                    for (var n = 0; n < origin_switch_link_list.length; n++) {
+                        if (floorlist2[m]["switch_details"]["ip"] == origin_switch_link_list[n]["switch_ip"]) {
+                            for (var p = 0; p < origin_switch_link_list[n]["link_details"].length; p++) {
+                                var id = 0;
+                                for (var a = 0; a < lined.length; a++) {
+                                    if (origin_switch_link_list[n]["link_details"][p]["remsysname"] == lined[a]) {
+                                        id = 1;
                                     }
-                                    if (id == 0) {
-                                        if (floorlist2[m]["switch_details"]["status"] !== "3" || ( floorlist2[m]["switch_details"]["status"] == "3" && floorlist2[m-1]["switch_details"]["status"] == "3" ) ) {
-                                            for (var b = 0; b < floorlist2.length; b++) {
+                                }
+                                if (id == 0) {
+                                    if (floorlist2[m]["switch_details"]["status"] !== "3" || ( floorlist2[m]["switch_details"]["status"] == "3" && floorlist2[m-1]["switch_details"]["status"] == "3" ) ) {
+                                        for (var b = 0; b < floorlist2.length; b++) {
 
-                                                if (origin_switch_link_list[n]["link_details"][p]["remsysname"] == floorlist2[b]["switch_details"]["sysname"]) {
+                                            if (origin_switch_link_list[n]["link_details"][p]["remsysname"] == floorlist2[b]["switch_details"]["sysname"]) {
 
-                                                    if (b != m) {
+                                                if (b != m) {
 
-                                                        var connectmessage = [];
+                                                    var connectmessage = [];
+                                                    connectmessage.push({
+                                                        "src_switch": floorlist2[m]["switch_details"]["sysname"],
+                                                        "src_port": origin_switch_link_list[n]["link_details"][p]["locportid"],
+                                                        "dst_switch": floorlist2[b]["switch_details"]["sysname"],
+                                                        "dst_port": origin_switch_link_list[n]["link_details"][p]["remportid"],
+                                                        "link_details": origin_switch_link_list[n]["link_details"][p]
+                                                    });
+
+                                                    var linkline_conf={"details": connectmessage, 
+                                                        "line_text": '',  
+                                                        "origin_switch_link_list": origin_switch_link_list
+                                                    };
+                                                    linkline_switch_to_switch(scene, floorlist2[m]["node"], floorlist2[b]["node"], linkline_conf);	
+
+                                                    floorlist2[m]["markup"] = floorlist2[m]["markup"] + 1;
+                                                    floorlist2[b]["markup"] = floorlist2[b]["markup"] + 1;
+                                                    mark2 = mark2 + 1;
+
+                                                }
+                                                if (b == m) {
+                                                    var vb = 0
+                                                        for (var sr = 0; sr < src1.length; sr++) {
+                                                            for (var ds = 0; ds < dst1.length; ds++) {
+                                                                if (origin_switch_link_list[n]["link_details"][p]["locportid"] == dst1[ds] && origin_switch_link_list[n]["link_details"][p]["remportid"] == src1[sr]) {
+                                                                    vb = 1;
+                                                                }
+                                                            }
+                                                        }
+                                                    var connectmessage = [];
+                                                    if (vb == 0) {
                                                         connectmessage.push({
                                                             "src_switch": floorlist2[m]["switch_details"]["sysname"],
                                                             "src_port": origin_switch_link_list[n]["link_details"][p]["locportid"],
@@ -1659,106 +1667,105 @@
                                                             "dst_port": origin_switch_link_list[n]["link_details"][p]["remportid"],
                                                             "link_details": origin_switch_link_list[n]["link_details"][p]
                                                         });
+                                                        src1.push(origin_switch_link_list[n]["link_details"][p]["locportid"]);
+                                                        dst1.push(origin_switch_link_list[n]["link_details"][p]["remportid"]);
 
                                                         var linkline_conf={"details": connectmessage, 
                                                             "line_text": '',  
                                                             "origin_switch_link_list": origin_switch_link_list
                                                         };
-                                                        linkline_switch_to_switch(scene, floorlist2[m]["node"], floorlist2[b]["node"], linkline_conf);	
 
-                                                        floorlist2[m]["markup"] = floorlist2[m]["markup"] + 1;
-                                                        floorlist2[b]["markup"] = floorlist2[b]["markup"] + 1;
+                                                        linkline_switch_to_switch(scene, floorlist2[m]["node"], floorlist2[m]["node"], linkline_conf);	
+
+                                                        floorlist2[m]["markcircle"] = floorlist2[m]["markcircle"] + 1;
+
                                                         mark2 = mark2 + 1;
-
                                                     }
-                                                    if (b == m) {
-                                                        var vb = 0
-                                                            for (var sr = 0; sr < src1.length; sr++) {
-                                                                for (var ds = 0; ds < dst1.length; ds++) {
-                                                                    if (origin_switch_link_list[n]["link_details"][p]["locportid"] == dst1[ds] && origin_switch_link_list[n]["link_details"][p]["remportid"] == src1[sr]) {
-                                                                        vb = 1;
-                                                                    }
-                                                                }
-                                                            }
-                                                        var connectmessage = [];
-                                                        if (vb == 0) {
-                                                            connectmessage.push({
-                                                                "src_switch": floorlist2[m]["switch_details"]["sysname"],
-                                                                "src_port": origin_switch_link_list[n]["link_details"][p]["locportid"],
-                                                                "dst_switch": floorlist2[b]["switch_details"]["sysname"],
-                                                                "dst_port": origin_switch_link_list[n]["link_details"][p]["remportid"],
-                                                                "link_details": origin_switch_link_list[n]["link_details"][p]
-                                                            });
-                                                            src1.push(origin_switch_link_list[n]["link_details"][p]["locportid"]);
-                                                            dst1.push(origin_switch_link_list[n]["link_details"][p]["remportid"]);
-
-                                                            var linkline_conf={"details": connectmessage, 
-                                                                "line_text": '',  
-                                                                "origin_switch_link_list": origin_switch_link_list
-                                                            };
-
-                                                            linkline_switch_to_switch(scene, floorlist2[m]["node"], floorlist2[m]["node"], linkline_conf);	
-
-                                                            floorlist2[m]["markcircle"] = floorlist2[m]["markcircle"] + 1;
-
-                                                            mark2 = mark2 + 1;
-                                                        }
-                                                    }
-
                                                 }
 
                                             }
-                                        }
-                                        for (var c = 0; c < floorlist1.length; c++) {
-                                            if (origin_switch_link_list[n]["link_details"][p]["remsysname"] == floorlist1[c]["switch_details"]["sysname"]) {
-                                                var connectmessage = [];
 
+                                        }
+                                    }
+                                    for (var c = 0; c < floorlist1.length; c++) {
+                                        if (origin_switch_link_list[n]["link_details"][p]["remsysname"] == floorlist1[c]["switch_details"]["sysname"]) {
+                                            var connectmessage = [];
+
+                                            connectmessage.push({
+                                                "src_switch": floorlist2[m]["switch_details"]["sysname"],
+                                                "src_port": origin_switch_link_list[n]["link_details"][p]["locportid"],
+                                                "dst_switch": floorlist1[c]["switch_details"]["sysname"],
+                                                "dst_port": origin_switch_link_list[n]["link_details"][p]["remportid"],
+                                                "link_details": origin_switch_link_list[n]["link_details"][p]
+                                            });
+
+                                            var linkline_conf={"details": connectmessage, 
+                                                "line_text": '',  
+                                                "origin_switch_link_list": origin_switch_link_list
+                                            };
+
+                                            linkline_switch_to_switch(scene, floorlist1[c]["node"], floorlist2[m]["node"], linkline_conf);	
+
+                                            floorlist2[m]["markh"] = floorlist2[m]["markh"] + 1;
+                                            floorlist1[c]["markh"] = floorlist1[c]["markh"] + 1;
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if(floorlist2[m]["switch_details"]["status"] !== "3"){
+                        lined.push(floorlist2[m]["switch_details"]["sysname"]);
+                    }
+                }
+                for (var d = 0; d < floorlist1.length; d++) {
+                    var src = [];
+                    var dst = [];
+
+                    for (var e = 0; e < origin_switch_link_list.length; e++) {
+                        if (floorlist1[d]["switch_details"]["ip"] == origin_switch_link_list[e]["switch_ip"]) {
+                            for (var f = 0; f < origin_switch_link_list[e]["link_details"].length; f++) {
+                                var id1 = 0;
+                                for (var g = 0; g < lined.length; g++) {
+                                    if (origin_switch_link_list[e]["link_details"][f]["remsysname"] == lined[g]) {
+                                        id1 = 1;
+                                    }
+                                }
+                                if (id1 == 0 && floorlist1[d]["switch_details"]["status"] !== "3") {
+                                    for (var h = 0; h < floorlist1.length; h++) {
+                                        if (origin_switch_link_list[e]["link_details"][f]["remsysname"] == floorlist1[h]["switch_details"]["sysname"]) {
+                                            if (d != h) {
+                                                var connectmessage = [];
                                                 connectmessage.push({
-                                                    "src_switch": floorlist2[m]["switch_details"]["sysname"],
-                                                    "src_port": origin_switch_link_list[n]["link_details"][p]["locportid"],
-                                                    "dst_switch": floorlist1[c]["switch_details"]["sysname"],
-                                                    "dst_port": origin_switch_link_list[n]["link_details"][p]["remportid"],
-                                                    "link_details": origin_switch_link_list[n]["link_details"][p]
+                                                    "src_switch": floorlist1[d]["switch_details"]["sysname"],
+                                                    "src_port": origin_switch_link_list[e]["link_details"][f]["locportid"],
+                                                    "dst_switch": floorlist1[h]["switch_details"]["sysname"],
+                                                    "dst_port": origin_switch_link_list[e]["link_details"][f]["remportid"],
+                                                    "link_details": origin_switch_link_list[e]["link_details"][f]
                                                 });
 
                                                 var linkline_conf={"details": connectmessage, 
                                                     "line_text": '',  
                                                     "origin_switch_link_list": origin_switch_link_list
                                                 };
+                                                linkline_switch_to_switch(scene, floorlist1[d]["node"], floorlist1[h]["node"], linkline_conf);	
 
-                                                linkline_switch_to_switch(scene, floorlist1[c]["node"], floorlist2[m]["node"], linkline_conf);	
-
-                                                floorlist2[m]["markh"] = floorlist2[m]["markh"] + 1;
-                                                floorlist1[c]["markh"] = floorlist1[c]["markh"] + 1;
-
+                                                floorlist1[d]["markup"] = floorlist1[d]["markup"] + 1;
+                                                floorlist1[h]["markup"] = floorlist1[h]["markup"] + 1;
+                                                mark1 = mark1 + 1;
                                             }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if(floorlist2[m]["switch_details"]["status"] !== "3"){
-                            lined.push(floorlist2[m]["switch_details"]["sysname"]);
-                        }
-                    }
-                    for (var d = 0; d < floorlist1.length; d++) {
-                        var src = [];
-                        var dst = [];
-
-                        for (var e = 0; e < origin_switch_link_list.length; e++) {
-                            if (floorlist1[d]["switch_details"]["ip"] == origin_switch_link_list[e]["switch_ip"]) {
-                                for (var f = 0; f < origin_switch_link_list[e]["link_details"].length; f++) {
-                                    var id1 = 0;
-                                    for (var g = 0; g < lined.length; g++) {
-                                        if (origin_switch_link_list[e]["link_details"][f]["remsysname"] == lined[g]) {
-                                            id1 = 1;
-                                        }
-                                    }
-                                    if (id1 == 0 && floorlist1[d]["switch_details"]["status"] !== "3") {
-                                        for (var h = 0; h < floorlist1.length; h++) {
-                                            if (origin_switch_link_list[e]["link_details"][f]["remsysname"] == floorlist1[h]["switch_details"]["sysname"]) {
-                                                if (d != h) {
-                                                    var connectmessage = [];
+                                            if (d == h) {
+                                                var connectmessage = [];
+                                                var hh = 0
+                                                    for (var sr = 0; sr < src.length; sr++) {
+                                                        for (var ds = 0; ds < dst.length; ds++) {
+                                                            if (origin_switch_link_list[e]["link_details"][f]["locportid"] == dst[ds] && origin_switch_link_list[e]["link_details"][f]["remportid"] == src[sr]) {
+                                                                hh = 1;
+                                                            }
+                                                        }
+                                                    }
+                                                if (hh == 0) {
                                                     connectmessage.push({
                                                         "src_switch": floorlist1[d]["switch_details"]["sysname"],
                                                         "src_port": origin_switch_link_list[e]["link_details"][f]["locportid"],
@@ -1766,398 +1773,391 @@
                                                         "dst_port": origin_switch_link_list[e]["link_details"][f]["remportid"],
                                                         "link_details": origin_switch_link_list[e]["link_details"][f]
                                                     });
+                                                    src.push(origin_switch_link_list[e]["link_details"][f]["locportid"]);
+                                                    dst.push(origin_switch_link_list[e]["link_details"][f]["remportid"]);
 
                                                     var linkline_conf={"details": connectmessage, 
                                                         "line_text": '',  
                                                         "origin_switch_link_list": origin_switch_link_list
                                                     };
-                                                    linkline_switch_to_switch(scene, floorlist1[d]["node"], floorlist1[h]["node"], linkline_conf);	
+                                                    linkline_switch_to_switch(scene, floorlist1[d]["node"], floorlist1[d]["node"], linkline_conf);	
 
-                                                    floorlist1[d]["markup"] = floorlist1[d]["markup"] + 1;
-                                                    floorlist1[h]["markup"] = floorlist1[h]["markup"] + 1;
+                                                    floorlist1[d]["markcircle"] = floorlist1[d]["markcircle"] + 1;
                                                     mark1 = mark1 + 1;
                                                 }
-                                                if (d == h) {
-                                                    var connectmessage = [];
-                                                    var hh = 0
-                                                        for (var sr = 0; sr < src.length; sr++) {
-                                                            for (var ds = 0; ds < dst.length; ds++) {
-                                                                if (origin_switch_link_list[e]["link_details"][f]["locportid"] == dst[ds] && origin_switch_link_list[e]["link_details"][f]["remportid"] == src[sr]) {
-                                                                    hh = 1;
-                                                                }
-                                                            }
-                                                        }
-                                                    if (hh == 0) {
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if(floorlist1[d]["switch_details"]["status"] !== "3") {
+                        lined.push(floorlist1[d]["switch_details"]["sysname"]);
+                    }
+                }
+
+
+            }
+
+            function drawOsRack(scene) {
+                var racklist = racklist1;
+                var container_rack = null;
+                var leftDistance = /*document.getElementById("topologyCanvas").offsetWidth - */document.getElementById('canvas_proton_topo').width;
+                var number = racklist.length;
+                var number1 = floorlist2.length;
+                var longMax = number1 * SWITCH_WIDTH + (number1 - 1) * 100;
+                var widthMax = 0;
+                for (var i = 0; i < number; i++) {
+                    var singleNumber = racklist[i]["serverlist"].length;
+                    if(MAX_RACK_SERVER < singleNumber)
+                        MAX_RACK_SERVER = singleNumber;
+                    if (singleNumber % 10 == 0) {
+                        widthMax = widthMax + 100 * (parseInt(singleNumber / 10));
+                        racklist[i]["width"] = 100 * (parseInt(singleNumber / 10));
+                    } else {
+                        widthMax = widthMax + 100 * (parseInt(singleNumber / 10) + 1);
+                        racklist[i]["width"] = 100 * (parseInt(singleNumber / 10) + 1);
+                    }
+                }
+
+
+                widthMax = widthMax + 100 * (number - 1);
+                var firstLocationX = 0;
+                if (leftDistance > 0) {
+                    firstLocationX = (document.getElementById("canvas_proton_topo").width - widthMax) / 2;
+                } else {
+                    if (longMax > widthMax) {
+                        firstLocationX = 0 + (longMax - widthMax) / 2;
+                    } else {
+                        firstLocationX = 10;
+                    }
+                }
+
+
+                //var firstLocationY = 130 + floorlist2[0]["y"] + 30;
+                var firstLocationY = 130 + floorlist2[0]["y"] + 70;
+                racklist[0]["x"] = firstLocationX;
+                racklist[0]["y"] = firstLocationY;
+
+                var conf_switch_lists = {"switch_list": switch_list,
+                    "origin_switch_link_list": origin_switch_link_list 
+                };
+                container_rack = create_rack(scene, racklist[0]["serverlist"].length, firstLocationX, firstLocationY, racklist[0]["serverlist"], racklist[0]["tuplelist"], conf_switch_lists);
+                racklist[0]["node"] = container_rack;
+                var lineNumber1 = racklist[0]["tuplelist"].length;
+
+                for (var mn = 0; mn < racklist[0]['serverlist'].length; mn++) {
+                    if (racklist[0]['serverlist'][mn]['status'] == 3 || racklist[0]['serverlist'][mn]['status'] == "3") {
+                        racklist[0]['status'] = '3';
+                    }
+                }
+                var widthRack = 96;
+                var len = racklist[0].serverlist.length;
+                widthRack = widthRack * Math.ceil(len / 10);
+                var lens = racklist[0].tuplelist.length - 1;
+                lens = ( lens===0 ? 1 : lens );
+                var d = widthRack / lens;
+                for (var mn = 0; mn < racklist[0]['serverlist'].length; mn++) {
+                    if (racklist[0]['serverlist'][mn]['status'] == 3 || racklist[0]['serverlist'][mn]['status'] == "3") {
+                        racklist[0]['status'] = '3';
+                    }
+                };
+                for (var p = 0; p < lineNumber1; p++) {
+                    for (var q = 0; q < floorlist2.length; q++) {
+                        if (racklist[0]["tuplelist"][p]["remchassisid"] == floorlist2[q]["switch_details"]["chassisid"] && racklist[0]["tuplelist"][p]["remsysname"] == floorlist2[q]["switch_details"]["sysname"]) {
+                            var connectmessage = [];
+
+                            for (var bd = 0; bd < switch_list.length; bd++) {
+                                if (switch_list[bd]["chassisid"] == racklist[0]["tuplelist"][p]["remchassisid"]) {
+                                    connectmessage.push({
+                                        "sysname": racklist[0]["tuplelist"][p]["remsysname"],
+                                        "tuplelist": racklist[0]["tuplelist"][p],
+                                        "racklist": racklist[0],
+                                        'status': racklist[0]['status'],
+                                        "switch_ip": switch_list[bd]["ip"]
+                                    });
+                                }
+                            }
+
+                            racklist[0]["mark"] = racklist[0]["mark"] + 1;
+                            floorlist2[q]["mark"]++;
+
+
+                            var linkline_conf={"details": connectmessage, 
+                                "line_text": '',  
+                                "line_style": 'solid',
+                                "status":-1,
+                                "origin_switch_link_list": origin_switch_link_list
+                            };
+                            linkline_switch_to_server(scene, floorlist2[q]["node"], racklist[0]["node"], linkline_conf);	
+
+                        }
+
+                    }
+                    for (var q = 0; q < floorlist1.length; q++) {
+
+                        if (racklist[0]["tuplelist"][p]["remchassisid"] == floorlist1[q]["switch_details"]["chassisid"] && racklist[0]["tuplelist"][p]["remsysname"] == floorlist1[q]["switch_details"]["sysname"]) {
+                            var connectmessage = [];
+                            for (var bd = 0; bd < switch_list.length; bd++) {
+                                if (switch_list[bd]["chassisid"] == racklist[0]["tuplelist"][p]["remchassisid"]) {
+                                    connectmessage.push({
+                                        "sysname": racklist[0]["tuplelist"][p]["remsysname"],
+                                        "tuplelist": racklist[0]["tuplelist"][p],
+                                        "racklist": racklist[0],
+                                        'status': racklist[0]['status'],
+                                        "switch_ip": switch_list[bd]["ip"]
+                                    });
+                                }
+                            }
+                            racklist[0]["mark"] = racklist[0]["mark"] + 1;
+                            floorlist1[q]["mark"]++;
+
+
+                            var linkline_conf={"details": connectmessage, 
+                                "line_text": '',  
+                                "line_style": 'solid',
+                                "status":-1,
+                                "origin_switch_link_list": origin_switch_link_list
+                            };
+                            linkline_switch_to_server(scene, floorlist1[q]["node"], racklist[0]["node"], linkline_conf);	
+                        }
+                    }
+                }
+
+
+                var mark = 100 + (longMax - widthMax) / 2;
+                var port_distance = 0;
+                for (var j = 1; j < number; j++) {
+                    var widthRack = 96;
+                    var lens;
+                    var len = racklist[j].serverlist.length;
+                    widthRack = widthRack * Math.ceil(len / 10);
+                    lens = racklist[j].tuplelist.length - 1;
+                    lens = ( lens===0 ? 1 : lens );
+                    port_distance = widthRack / lens;
+                    container_rack = create_rack(scene, racklist[j]["serverlist"].length, 100 + racklist[j - 1]["width"] + racklist[j - 1]["x"], firstLocationY, racklist[j]["serverlist"], racklist[j]["tuplelist"], conf_switch_lists);
+                    racklist[j]["node"] = container_rack;
+
+                    racklist[j]["x"] = 100 + racklist[j - 1]["width"] + racklist[j - 1]["x"];
+                    racklist[j]["y"] = firstLocationY;
+
+                    mark = mark + racklist[j - 1]["width"] + 100;
+                    var lineNumber = racklist[j]["tuplelist"].length;
+                    for (var mn = 0; mn < racklist[j]['serverlist'].length; mn++) {
+                        if (racklist[j]['serverlist'][mn]['status'] == 3 || racklist[j]['serverlist'][mn]['status'] == "3") {
+                            racklist[j]['status'] = '3';
+                        }
+                    }
+                    for (var m = 0; m < lineNumber; m++) {
+                        for (var n = 0; n < floorlist2.length; n++) {
+                            if (racklist[j]["tuplelist"][m]["remchassisid"] == floorlist2[n]["switch_details"]["chassisid"] && racklist[j]["tuplelist"][m]["remsysname"] == floorlist2[n]["switch_details"]["sysname"]) {
+                                var connectmessage = [];
+                                for (var bd = 0; bd < switch_list.length; bd++) {
+                                    if (switch_list[bd]["chassisid"] == racklist[j]["tuplelist"][m]["remchassisid"]) {
+
+                                        connectmessage.push({
+                                            "sysname": racklist[j]["tuplelist"][m]["remsysname"],
+                                            "tuplelist": racklist[j]["tuplelist"][m],
+                                            "racklist": racklist[j],
+                                            'status': racklist[j]['status'],
+                                            "switch_ip": switch_list[bd]["ip"]
+                                        });
+
+                                    }
+                                }
+                                racklist[j]["mark"] = racklist[j]["mark"] + 1;
+                                floorlist2[n]["markdown"] = floorlist2[n]["markdown"] + 1;
+
+
+                                var linkline_conf={"details": connectmessage, 
+                                    "line_text": '',  
+                                    "status":-1,
+                                    "line_style": 'solid',
+                                    "origin_switch_link_list": origin_switch_link_list
+                                };
+                                linkline_switch_to_server(scene, floorlist2[n]["node"], racklist[j]["node"], linkline_conf);	
+                            }
+                        }
+                        for (var a = 0; a < floorlist1.length; a++) {
+
+                            if (racklist[j]["tuplelist"][m]["remchassisid"] == floorlist1[a]["switch_details"]["chassisid"] && racklist[j]["tuplelist"][m]["remsysname"] == floorlist1[a]["switch_details"]["sysname"]) {
+                                var connectmessage = [];
+                                for (var bd = 0; bd < switch_list.length; bd++) {
+                                    if (switch_list[bd]["chassisid"] == racklist[j]["tuplelist"][m]["remchassisid"]) {
+
+                                        connectmessage.push({
+                                            "sysname": racklist[j]["tuplelist"][m]["remsysname"],
+                                            "tuplelist": racklist[j]["tuplelist"][m],
+                                            "racklist": racklist[j],
+                                            'status': racklist[j]['status'],
+                                            "switch_ip": switch_list[bd]["ip"]
+                                        });
+                                    }
+                                }
+
+                                connectmessage.push({
+                                    "sysname": racklist[j]["tuplelist"][m]["remsysname"],
+                                    "racklist": racklist[j]
+                                });
+                                racklist[j]["mark"] = racklist[j]["mark"] + 1;
+                                floorlist1[a]["markdown"] = floorlist1[a]["markdown"] + 1;
+
+
+                                var linkline_conf={"details": connectmessage, 
+                                    "line_text": '',  
+                                    "status":-1,
+                                    "line_style": 'solid',
+                                    "origin_switch_link_list": origin_switch_link_list
+                                };
+                                linkline_switch_to_server(scene, floorlist1[a]["node"], racklist[j]["node"], linkline_conf);	
+                            }
+                        }
+                    }
+                }
+
+                var stringlist = [];
+                for (var ccd = 0; ccd < racklist.length; ccd++) {
+                    racklist[ccd]["mark"] = 0;
+                }
+                for (var aa = 0; aa < origin_switch_link_list.length; aa++) {
+                    for (var bb = 0; bb < origin_switch_link_list[aa]['link_details'].length; bb++) {
+                        if (origin_switch_link_list[aa]['link_details'][bb]['status'] == '3' || origin_switch_link_list[aa]['link_details'][bb]['status'] == 3) {
+                            for (var cc = 0; cc < racklist.length; cc++) {
+                                var widthRack = 96;
+                                var lens;
+                                var len = racklist[cc].serverlist.length;
+                                widthRack = widthRack * Math.ceil(len / 10);
+                                lens = racklist[cc].tuplelist.length - 1;
+                                lens = ( lens===0 ? 1 : lens );
+                                port_distance = widthRack / lens;
+                                //racklist[cc]["mark"]=0;
+                                for (var dd = 0; dd < racklist[cc]['serverlist'].length; dd++) {
+                                    if (racklist[cc]['status'] == "1" || racklist[cc]['status'] == 1) {
+                                        var sting = origin_switch_link_list[aa]['link_details'][bb]['locchassisid'] + origin_switch_link_list[aa]['link_details'][bb]['remportiddesc'] + cc;
+                                        if (origin_switch_link_list[aa]['link_details'][bb]['remchassisid'] == racklist[cc]['serverlist'][dd]['chassisid'] && origin_switch_link_list[aa]['link_details'][bb]['remsysname'] == racklist[cc]['serverlist'][dd]['sysname']) {
+                                            var id = 0;
+                                            for (var mn = 0; mn < stringlist.length; mn++) {
+                                                if (sting == stringlist[mn]) {
+                                                    id = 1;
+                                                }
+                                            }
+                                            if (id == 0) {
+                                                stringlist.push(sting);
+                                                for (var ff = 0; ff < floorlist2.length; ff++) {
+                                                    if (origin_switch_link_list[aa]['link_details'][bb]['locchassisid'] == floorlist2[ff]["switch_details"]["chassisid"] && origin_switch_link_list[aa]['link_details'][bb]['locsysname'] == floorlist2[ff]["switch_details"]["sysname"]) {
+                                                        var connectmessage = [];
+                                                        var tuplelist = {
+                                                            "remsysname": floorlist2[ff]["switch_details"]['sysname'],
+                                                            'remchassisid': floorlist2[ff]["switch_details"]['chassisid'],
+                                                            'eth_name': origin_switch_link_list[aa]['link_details'][bb]['remportiddesc']
+                                                        };
+
                                                         connectmessage.push({
-                                                            "src_switch": floorlist1[d]["switch_details"]["sysname"],
-                                                            "src_port": origin_switch_link_list[e]["link_details"][f]["locportid"],
-                                                            "dst_switch": floorlist1[h]["switch_details"]["sysname"],
-                                                            "dst_port": origin_switch_link_list[e]["link_details"][f]["remportid"],
-                                                            "link_details": origin_switch_link_list[e]["link_details"][f]
+                                                            "sysname": floorlist2[ff]["switch_details"]["sysname"],
+                                                            'tuplelist': tuplelist,
+                                                            "racklist": racklist[cc],
+                                                            'status': '3',
+                                                            "switch_ip": floorlist2[ff]["switch_details"]['ip']
                                                         });
-                                                        src.push(origin_switch_link_list[e]["link_details"][f]["locportid"]);
-                                                        dst.push(origin_switch_link_list[e]["link_details"][f]["remportid"]);
+
+                                                        racklist[cc]["mark"] = racklist[cc]["mark"] + 1;
+                                                        floorlist2[ff]["markdown"] = floorlist2[ff]["markdown"] + 1;
+                                                        var x1 = racklist[cc]["x"] + 2 + port_distance / 2 + (racklist[cc]["mark"] - 1) * port_distance;
+                                                        if (racklist[cc]["mark"] == lens) {
+                                                            x1 = racklist[cc]["x"] + 2 + port_distance / 2 + (racklist[cc]["mark"] - 1) * port_distance - 3 * port_distance / 4;
+                                                        }
+
 
                                                         var linkline_conf={"details": connectmessage, 
                                                             "line_text": '',  
+                                                            "status":-1,
+                                                            "line_style": 'dotted',
                                                             "origin_switch_link_list": origin_switch_link_list
                                                         };
-                                                        linkline_switch_to_switch(scene, floorlist1[d]["node"], floorlist1[d]["node"], linkline_conf);	
-
-                                                        floorlist1[d]["markcircle"] = floorlist1[d]["markcircle"] + 1;
-                                                        mark1 = mark1 + 1;
+                                                        linkline_switch_to_server(scene, floorlist2[0]["node"], floorlist2[ff]["node"], linkline_conf);	
                                                     }
+
                                                 }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if(floorlist1[d]["switch_details"]["status"] !== "3") {
-                            lined.push(floorlist1[d]["switch_details"]["sysname"]);
-                        }
-                    }
+                                                for (var ff = 0; ff < floorlist1.length; ff++) {
+                                                    if (origin_switch_link_list[aa]['link_details'][bb]['locchassisid'] == floorlist1[ff]["switch_details"]["chassisid"] && origin_switch_link_list[aa]['link_details'][bb]['locsysname'] == floorlist1[ff]["switch_details"]["sysname"]) {
+                                                        var connectmessage = [];
+                                                        var tuplelist = {
+                                                            "remsysname": floorlist1[ff]["switch_details"]['sysname'],
+                                                            'remchassisid': floorlist1[ff]["switch_details"]['chassisid'],
+                                                            'eth_name': origin_switch_link_list[aa]['link_details'][bb]['remportiddesc']
+                                                        };
 
+                                                        connectmessage.push({
+                                                            "sysname": floorlist1[ff]["switch_details"]["sysname"],
+                                                            'tuplelist': tuplelist,
+                                                            "racklist": racklist[cc],
+                                                            'status': '3',
+                                                            "switch_ip": floorlist1[ff]["switch_details"]['ip']
+                                                        });
 
-                }
-
-                function drawOsRack(scene, racklist) {
-                    var container_rack = null;
-                    var leftDistance = /*document.getElementById("topologyCanvas").offsetWidth - */document.getElementById('canvas_proton_topo').width;
-                    var number = racklist.length;
-                    var number1 = floorlist2.length;
-                    var longMax = number1 * SWITCH_WIDTH + (number1 - 1) * 100;
-                    var widthMax = 0;
-                    for (var i = 0; i < number; i++) {
-                        var singleNumber = racklist[i]["serverlist"].length;
-                        if(MAX_RACK_SERVER < singleNumber)
-                            MAX_RACK_SERVER = singleNumber;
-                        if (singleNumber % 10 == 0) {
-                            widthMax = widthMax + 100 * (parseInt(singleNumber / 10));
-                            racklist[i]["width"] = 100 * (parseInt(singleNumber / 10));
-                        } else {
-                            widthMax = widthMax + 100 * (parseInt(singleNumber / 10) + 1);
-                            racklist[i]["width"] = 100 * (parseInt(singleNumber / 10) + 1);
-                        }
-                    }
-
-
-                    widthMax = widthMax + 100 * (number - 1);
-                    var firstLocationX = 0;
-                    if (leftDistance > 0) {
-                        firstLocationX = (document.getElementById("canvas_proton_topo").width - widthMax) / 2;
-                    } else {
-                        if (longMax > widthMax) {
-                            firstLocationX = 0 + (longMax - widthMax) / 2;
-                        } else {
-                            firstLocationX = 10;
-                        }
-                    }
-
-
-                    //var firstLocationY = 130 + floorlist2[0]["y"] + 30;
-                    var firstLocationY = 130 + floorlist2[0]["y"] + 70;
-                    racklist[0]["x"] = firstLocationX;
-                    racklist[0]["y"] = firstLocationY;
-
-                    var conf_switch_lists = {"switch_list": switch_list,
-                        "origin_switch_link_list": origin_switch_link_list 
-                    };
-                    container_rack = create_rack(scene, racklist[0]["serverlist"].length, firstLocationX, firstLocationY, racklist[0]["serverlist"], racklist[0]["tuplelist"], conf_switch_lists);
-                    racklist[0]["node"] = container_rack;
-                    var lineNumber1 = racklist[0]["tuplelist"].length;
-
-                    for (var mn = 0; mn < racklist[0]['serverlist'].length; mn++) {
-                        if (racklist[0]['serverlist'][mn]['status'] == 3 || racklist[0]['serverlist'][mn]['status'] == "3") {
-                            racklist[0]['status'] = '3';
-                        }
-                    }
-                    var widthRack = 96;
-                    var len = racklist[0].serverlist.length;
-                    widthRack = widthRack * Math.ceil(len / 10);
-                    var lens = racklist[0].tuplelist.length - 1;
-                    lens = ( lens===0 ? 1 : lens );
-                    var d = widthRack / lens;
-                    for (var mn = 0; mn < racklist[0]['serverlist'].length; mn++) {
-                        if (racklist[0]['serverlist'][mn]['status'] == 3 || racklist[0]['serverlist'][mn]['status'] == "3") {
-                            racklist[0]['status'] = '3';
-                        }
-                    };
-                    for (var p = 0; p < lineNumber1; p++) {
-                        for (var q = 0; q < floorlist2.length; q++) {
-                            if (racklist[0]["tuplelist"][p]["remchassisid"] == floorlist2[q]["switch_details"]["chassisid"] && racklist[0]["tuplelist"][p]["remsysname"] == floorlist2[q]["switch_details"]["sysname"]) {
-                                var connectmessage = [];
-
-                                for (var bd = 0; bd < switch_list.length; bd++) {
-                                    if (switch_list[bd]["chassisid"] == racklist[0]["tuplelist"][p]["remchassisid"]) {
-                                        connectmessage.push({
-                                            "sysname": racklist[0]["tuplelist"][p]["remsysname"],
-                                            "tuplelist": racklist[0]["tuplelist"][p],
-                                            "racklist": racklist[0],
-                                            'status': racklist[0]['status'],
-                                            "switch_ip": switch_list[bd]["ip"]
-                                        });
-                                    }
-                                }
-
-                                racklist[0]["mark"] = racklist[0]["mark"] + 1;
-                                floorlist2[q]["mark"]++;
-
-
-                                var linkline_conf={"details": connectmessage, 
-                                    "line_text": '',  
-                                    "line_style": 'solid',
-                                    "status":-1,
-                                    "origin_switch_link_list": origin_switch_link_list
-                                };
-                                linkline_switch_to_server(scene, floorlist2[q]["node"], racklist[0]["node"], linkline_conf);	
-
-                            }
-
-                        }
-                        for (var q = 0; q < floorlist1.length; q++) {
-
-                            if (racklist[0]["tuplelist"][p]["remchassisid"] == floorlist1[q]["switch_details"]["chassisid"] && racklist[0]["tuplelist"][p]["remsysname"] == floorlist1[q]["switch_details"]["sysname"]) {
-                                var connectmessage = [];
-                                for (var bd = 0; bd < switch_list.length; bd++) {
-                                    if (switch_list[bd]["chassisid"] == racklist[0]["tuplelist"][p]["remchassisid"]) {
-                                        connectmessage.push({
-                                            "sysname": racklist[0]["tuplelist"][p]["remsysname"],
-                                            "tuplelist": racklist[0]["tuplelist"][p],
-                                            "racklist": racklist[0],
-                                            'status': racklist[0]['status'],
-                                            "switch_ip": switch_list[bd]["ip"]
-                                        });
-                                    }
-                                }
-                                racklist[0]["mark"] = racklist[0]["mark"] + 1;
-                                floorlist1[q]["mark"]++;
-
-
-                                var linkline_conf={"details": connectmessage, 
-                                    "line_text": '',  
-                                    "line_style": 'solid',
-                                    "status":-1,
-                                    "origin_switch_link_list": origin_switch_link_list
-                                };
-                                linkline_switch_to_server(scene, floorlist1[q]["node"], racklist[0]["node"], linkline_conf);	
-                            }
-                        }
-                    }
-
-
-                    var mark = 100 + (longMax - widthMax) / 2;
-                    var port_distance = 0;
-                    for (var j = 1; j < number; j++) {
-                        var widthRack = 96;
-                        var lens;
-                        var len = racklist[j].serverlist.length;
-                        widthRack = widthRack * Math.ceil(len / 10);
-                        lens = racklist[j].tuplelist.length - 1;
-                        lens = ( lens===0 ? 1 : lens );
-                        port_distance = widthRack / lens;
-                        container_rack = create_rack(scene, racklist[j]["serverlist"].length, 100 + racklist[j - 1]["width"] + racklist[j - 1]["x"], firstLocationY, racklist[j]["serverlist"], racklist[j]["tuplelist"], conf_switch_lists);
-                        racklist[j]["node"] = container_rack;
-
-                        racklist[j]["x"] = 100 + racklist[j - 1]["width"] + racklist[j - 1]["x"];
-                        racklist[j]["y"] = firstLocationY;
-
-                        mark = mark + racklist[j - 1]["width"] + 100;
-                        var lineNumber = racklist[j]["tuplelist"].length;
-                        for (var mn = 0; mn < racklist[j]['serverlist'].length; mn++) {
-                            if (racklist[j]['serverlist'][mn]['status'] == 3 || racklist[j]['serverlist'][mn]['status'] == "3") {
-                                racklist[j]['status'] = '3';
-                            }
-                        }
-                        for (var m = 0; m < lineNumber; m++) {
-                            for (var n = 0; n < floorlist2.length; n++) {
-                                if (racklist[j]["tuplelist"][m]["remchassisid"] == floorlist2[n]["switch_details"]["chassisid"] && racklist[j]["tuplelist"][m]["remsysname"] == floorlist2[n]["switch_details"]["sysname"]) {
-                                    var connectmessage = [];
-                                    for (var bd = 0; bd < switch_list.length; bd++) {
-                                        if (switch_list[bd]["chassisid"] == racklist[j]["tuplelist"][m]["remchassisid"]) {
-
-                                            connectmessage.push({
-                                                "sysname": racklist[j]["tuplelist"][m]["remsysname"],
-                                                "tuplelist": racklist[j]["tuplelist"][m],
-                                                "racklist": racklist[j],
-                                                'status': racklist[j]['status'],
-                                                "switch_ip": switch_list[bd]["ip"]
-                                            });
-
-                                        }
-                                    }
-                                    racklist[j]["mark"] = racklist[j]["mark"] + 1;
-                                    floorlist2[n]["markdown"] = floorlist2[n]["markdown"] + 1;
-
-
-                                    var linkline_conf={"details": connectmessage, 
-                                        "line_text": '',  
-                                        "status":-1,
-                                        "line_style": 'solid',
-                                        "origin_switch_link_list": origin_switch_link_list
-                                    };
-                                    linkline_switch_to_server(scene, floorlist2[n]["node"], racklist[j]["node"], linkline_conf);	
-                                }
-                            }
-                            for (var a = 0; a < floorlist1.length; a++) {
-
-                                if (racklist[j]["tuplelist"][m]["remchassisid"] == floorlist1[a]["switch_details"]["chassisid"] && racklist[j]["tuplelist"][m]["remsysname"] == floorlist1[a]["switch_details"]["sysname"]) {
-                                    var connectmessage = [];
-                                    for (var bd = 0; bd < switch_list.length; bd++) {
-                                        if (switch_list[bd]["chassisid"] == racklist[j]["tuplelist"][m]["remchassisid"]) {
-
-                                            connectmessage.push({
-                                                "sysname": racklist[j]["tuplelist"][m]["remsysname"],
-                                                "tuplelist": racklist[j]["tuplelist"][m],
-                                                "racklist": racklist[j],
-                                                'status': racklist[j]['status'],
-                                                "switch_ip": switch_list[bd]["ip"]
-                                            });
-                                        }
-                                    }
-
-                                    connectmessage.push({
-                                        "sysname": racklist[j]["tuplelist"][m]["remsysname"],
-                                        "racklist": racklist[j]
-                                    });
-                                    racklist[j]["mark"] = racklist[j]["mark"] + 1;
-                                    floorlist1[a]["markdown"] = floorlist1[a]["markdown"] + 1;
-
-
-                                    var linkline_conf={"details": connectmessage, 
-                                        "line_text": '',  
-                                        "status":-1,
-                                        "line_style": 'solid',
-                                        "origin_switch_link_list": origin_switch_link_list
-                                    };
-                                    linkline_switch_to_server(scene, floorlist1[a]["node"], racklist[j]["node"], linkline_conf);	
-                                }
-                            }
-                        }
-                    }
-
-                    var stringlist = [];
-                    for (var ccd = 0; ccd < racklist.length; ccd++) {
-                        racklist[ccd]["mark"] = 0;
-                    }
-                    for (var aa = 0; aa < origin_switch_link_list.length; aa++) {
-                        for (var bb = 0; bb < origin_switch_link_list[aa]['link_details'].length; bb++) {
-                            if (origin_switch_link_list[aa]['link_details'][bb]['status'] == '3' || origin_switch_link_list[aa]['link_details'][bb]['status'] == 3) {
-                                for (var cc = 0; cc < racklist.length; cc++) {
-                                    var widthRack = 96;
-                                    var lens;
-                                    var len = racklist[cc].serverlist.length;
-                                    widthRack = widthRack * Math.ceil(len / 10);
-                                    lens = racklist[cc].tuplelist.length - 1;
-                                    lens = ( lens===0 ? 1 : lens );
-                                    port_distance = widthRack / lens;
-                                    //racklist[cc]["mark"]=0;
-                                    for (var dd = 0; dd < racklist[cc]['serverlist'].length; dd++) {
-                                        if (racklist[cc]['status'] == "1" || racklist[cc]['status'] == 1) {
-                                            var sting = origin_switch_link_list[aa]['link_details'][bb]['locchassisid'] + origin_switch_link_list[aa]['link_details'][bb]['remportiddesc'] + cc;
-                                            if (origin_switch_link_list[aa]['link_details'][bb]['remchassisid'] == racklist[cc]['serverlist'][dd]['chassisid'] && origin_switch_link_list[aa]['link_details'][bb]['remsysname'] == racklist[cc]['serverlist'][dd]['sysname']) {
-                                                var id = 0;
-                                                for (var mn = 0; mn < stringlist.length; mn++) {
-                                                    if (sting == stringlist[mn]) {
-                                                        id = 1;
-                                                    }
-                                                }
-                                                if (id == 0) {
-                                                    stringlist.push(sting);
-                                                    for (var ff = 0; ff < floorlist2.length; ff++) {
-                                                        if (origin_switch_link_list[aa]['link_details'][bb]['locchassisid'] == floorlist2[ff]["switch_details"]["chassisid"] && origin_switch_link_list[aa]['link_details'][bb]['locsysname'] == floorlist2[ff]["switch_details"]["sysname"]) {
-                                                            var connectmessage = [];
-                                                            var tuplelist = {
-                                                                "remsysname": floorlist2[ff]["switch_details"]['sysname'],
-                                                                'remchassisid': floorlist2[ff]["switch_details"]['chassisid'],
-                                                                'eth_name': origin_switch_link_list[aa]['link_details'][bb]['remportiddesc']
-                                                            };
-
-                                                            connectmessage.push({
-                                                                "sysname": floorlist2[ff]["switch_details"]["sysname"],
-                                                                'tuplelist': tuplelist,
-                                                                "racklist": racklist[cc],
-                                                                'status': '3',
-                                                                "switch_ip": floorlist2[ff]["switch_details"]['ip']
-                                                            });
-
-                                                            racklist[cc]["mark"] = racklist[cc]["mark"] + 1;
-                                                            floorlist2[ff]["markdown"] = floorlist2[ff]["markdown"] + 1;
-                                                            var x1 = racklist[cc]["x"] + 2 + port_distance / 2 + (racklist[cc]["mark"] - 1) * port_distance;
-                                                            if (racklist[cc]["mark"] == lens) {
-                                                                x1 = racklist[cc]["x"] + 2 + port_distance / 2 + (racklist[cc]["mark"] - 1) * port_distance - 3 * port_distance / 4;
-                                                            }
-
-
-                                                            var linkline_conf={"details": connectmessage, 
-                                                                "line_text": '',  
-                                                                "status":-1,
-                                                                "line_style": 'dotted',
-                                                                "origin_switch_link_list": origin_switch_link_list
-                                                            };
-                                                            linkline_switch_to_server(scene, floorlist2[0]["node"], floorlist2[ff]["node"], linkline_conf);	
+                                                        racklist[cc]["mark"] = racklist[cc]["mark"] + 1;
+                                                        floorlist1[ff]["markdown"] = floorlist1[ff]["markdown"] + 1;
+                                                        var x1 = racklist[cc]["x"] + 2 + port_distance / 2 + (racklist[cc]["mark"] - 1) * port_distance;
+                                                        if (racklist[cc]["mark"] == lens) {
+                                                            x1 = racklist[cc]["x"] + 2 + port_distance / 2 + (racklist[cc]["mark"] - 1) * port_distance - 3 * port_distance / 4;
                                                         }
 
-                                                    }
-                                                    for (var ff = 0; ff < floorlist1.length; ff++) {
-                                                        if (origin_switch_link_list[aa]['link_details'][bb]['locchassisid'] == floorlist1[ff]["switch_details"]["chassisid"] && origin_switch_link_list[aa]['link_details'][bb]['locsysname'] == floorlist1[ff]["switch_details"]["sysname"]) {
-                                                            var connectmessage = [];
-                                                            var tuplelist = {
-                                                                "remsysname": floorlist1[ff]["switch_details"]['sysname'],
-                                                                'remchassisid': floorlist1[ff]["switch_details"]['chassisid'],
-                                                                'eth_name': origin_switch_link_list[aa]['link_details'][bb]['remportiddesc']
-                                                            };
 
-                                                            connectmessage.push({
-                                                                "sysname": floorlist1[ff]["switch_details"]["sysname"],
-                                                                'tuplelist': tuplelist,
-                                                                "racklist": racklist[cc],
-                                                                'status': '3',
-                                                                "switch_ip": floorlist1[ff]["switch_details"]['ip']
-                                                            });
-
-                                                            racklist[cc]["mark"] = racklist[cc]["mark"] + 1;
-                                                            floorlist1[ff]["markdown"] = floorlist1[ff]["markdown"] + 1;
-                                                            var x1 = racklist[cc]["x"] + 2 + port_distance / 2 + (racklist[cc]["mark"] - 1) * port_distance;
-                                                            if (racklist[cc]["mark"] == lens) {
-                                                                x1 = racklist[cc]["x"] + 2 + port_distance / 2 + (racklist[cc]["mark"] - 1) * port_distance - 3 * port_distance / 4;
-                                                            }
-
-
-                                                            var linkline_conf={"details": connectmessage, 
-                                                                "line_text": '',  
-                                                                "status":-1,
-                                                                "line_style": 'dotted',
-                                                                "origin_switch_link_list": origin_switch_link_list
-                                                            };
-                                                            linkline_switch_to_server(scene, floorlist2[0]["node"], floorlist1[ff]["node"], linkline_conf);	
-                                                        }
-
+                                                        var linkline_conf={"details": connectmessage, 
+                                                            "line_text": '',  
+                                                            "status":-1,
+                                                            "line_style": 'dotted',
+                                                            "origin_switch_link_list": origin_switch_link_list
+                                                        };
+                                                        linkline_switch_to_server(scene, floorlist2[0]["node"], floorlist1[ff]["node"], linkline_conf);	
                                                     }
 
                                                 }
+
                                             }
-
-
                                         }
 
+
                                     }
+
                                 }
-
                             }
-
 
                         }
 
-                    }
-                }
 
-                drawOsSwitch(scene);
-                drawOsRack(scene, racklist1);
+                    }
+
+                }
             }
 
 
+            //main begin
+            var origin_switch_link_list,server_rack_list; 
+            var switch_list = data.switch_list || [];
+            var floorlist1 = [];
+            var floorlist2 = [];
+            var racklist = [];
+            var switchlink = [];
+            var linklist = [];
+            var serverlink = [];
+            var degree = [];
+            var floor1 = [];
+            var floor2 = [];
+            var floor3 = [];
+            var d_list = [];
+            var racklist1 = [];
+            var rackcount = 1;
+            var switch_num1 = 0;
+            var switch_num2 = switch_list.length + 1;
+            var MAX_RACK_SERVER = 5;
+
+            if (data.selection == '0' && data.server_rack_list.length != 0 && data.origin_switch_link_list.length != 0 ) {
+                var scene = init();
+                drawOsSwitch(scene);
+                drawOsRack(scene);
+            }
 
         }
     }
