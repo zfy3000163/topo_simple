@@ -2153,7 +2153,7 @@
             var switch_num2 = switch_list.length + 1;
             var MAX_RACK_SERVER = 5;
 
-            if (data.selection == '0' && data.server_rack_list.length != 0 && data.origin_switch_link_list.length != 0 ) {
+            if (data.selection == '0') {
                 var scene = init();
                 drawOsSwitch(scene);
                 drawOsRack(scene);
