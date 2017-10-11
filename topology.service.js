@@ -31,10 +31,10 @@
                 document.getElementById("foot").style.display = "block";
                 document.getElementById("tBody").style.display = "none";
                 var div = document.getElementById("bl_1");
-                var movey = event.offsetTop;
-                var movex = event.offsetLeft;
-                div.style.top = movey + 20 + "px";
-                div.style.left = movex - 100 + "px";
+                var movey = event.target.y;
+                var movex = event.target.x
+                div.style.top = movey + 60 + "px";
+                div.style.left = movex - 50 + "px";
                 var bl = document.getElementById("tb")
                     var x = bl.createCaption();
                 for (var i = bl.rows.length - 1; i >= 0; i--) {
@@ -216,10 +216,10 @@
                 document.getElementById("shut").style.display = "none";
                 document.getElementById("login").innerHTML = gettext("login");
                 var div = document.getElementById("bl_1");
-                var movey = event.offsetTop;
-                var movex = event.offsetLeft;
-                div.style.top = movey + 5 + "px";
-                div.style.left = movex - 100 + "px";
+                var movey = event.target.y;
+                var movex = event.target.x;
+                div.style.top = movey + 32 + "px";
+                div.style.left = movex - 50 + "px";
                 var str = RndNum(8);
 
 
@@ -519,6 +519,7 @@
                 text_node.alpha = 1;
                 text_node.visible = 1;
                 text_node.zIndex = 90;
+                text_node.showSelected = 0;					
 
                 scene.add(text_node);
                 container.add(text_node);
