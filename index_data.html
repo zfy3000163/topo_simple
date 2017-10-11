@@ -1,8 +1,8 @@
-<!DOCUMENT>
 <html>
 <head>
 <title>canvas test</title>
 <link type="text/css" rel="stylesheet" href="base.css" />
+<link type="text/css"  href="_network_topology.css" />
 <script type="text/javascript" src="jquery-3.2.1.js"></script>
 <script type="text/javascript" src="jtopo-0.4.8-min.js"></script>
 <script type="text/javascript">
@@ -23,17 +23,18 @@
 
             //鼠标移动到交换机弹出框信息
             function switch_popup_handler(event, switch_details){
-                document.getElementById("bl_1").style.display = "block";
+                
+                document.getElementById("contextmenu").style.display = "block";
                 document.getElementById("table").style.display = "block";
                 document.getElementById("foot").style.display = "block";
                 document.getElementById("tBody").style.display = "none";
-                var div = document.getElementById("bl_1");
-                var movey = event.offsetTop;
-                var movex = event.offsetLeft;
-                div.style.top = movey + 20 + "px";
-                div.style.left = movex - 100 + "px";
+                var div = document.getElementById("contextmenu");
+                var movey = event.target.y;
+                var movex = event.target.x;
+                div.style.top = movey + 60 + "px";
+                div.style.left = movex - 50 + "px";
                 var bl = document.getElementById("tb")
-                    var x = bl.createCaption();
+                var x = bl.createCaption();
                 for (var i = bl.rows.length - 1; i >= 0; i--) {
                     bl.deleteRow(i);
                 }
@@ -59,7 +60,9 @@
                 document.getElementById("login").style.width = "115px";
                 document.getElementById("shut").style.display = "none";
                 document.getElementById("restart").style.display = "none";
+                
 
+                
                 var switch_id_fordetails = switch_details["oid"];
                 var switch_login = switch_details["id"];
                 document.getElementById("link").onclick = function () {
@@ -68,9 +71,25 @@
                 document.getElementById("login").onclick = function () {
                     (new switchLoginAction()).open([{'id': switch_login}]);
                 }
+                
 
+                
+                $("#contextmenu").show();
+                
+                /*
+                $("#contextmenu").css({
+                        top: event.target.y + 60,
+                        left:event.target.x
+                }).show();
+                
+                $("#contextmenu").css({
+                        top: event.target.y + 60,
+                        left:event.target.x
+                        }).show();
+                */
+                
+                
 
-                $("#bl_1").show();
             }
 
 
@@ -80,7 +99,7 @@
                 var switch_list = conf_switch_lists.switch_list;
                 var origin_switch_link_list = conf_switch_lists.origin_switch_link_list;
 
-                document.getElementById("bl_1").style.display = "block";
+                document.getElementById("contextmenu").style.display = "block";
                 document.getElementById("table").style.display = "block";
                 document.getElementById("foot").style.display = "block";
                 document.getElementById("tBody").style.display = "block";
@@ -212,11 +231,11 @@
                 document.getElementById("login").style.display = "block";
                 document.getElementById("shut").style.display = "none";
                 document.getElementById("login").innerHTML = gettext("login");
-                var div = document.getElementById("bl_1");
-                var movey = event.offsetTop;
-                var movex = event.offsetLeft;
-                div.style.top = movey + 5 + "px";
-                div.style.left = movex - 100 + "px";
+                var div = document.getElementById("contextmenu");
+                var movey = event.target.y;
+                var movex = event.target.x;
+                div.style.top = movey + 32 + "px";
+                div.style.left = movex - 50 + "px";
                 var str = RndNum(8);
 
 
@@ -237,7 +256,7 @@
                 }
 
 
-                $("#bl_1").show();
+                $("#contextmenu").show();
             }    
 
             //鼠标双击交换机连接机架的连线时的弹出框
@@ -249,10 +268,10 @@
                 //var e = document.all ? window.event : arguments[0] ? arguments[0] : event;
                 var e = event;
 
-                document.getElementById("bl_1").style.display = "block";
+                document.getElementById("contextmenu").style.display = "block";
                 document.getElementById("table").style.display = "none";
                 document.getElementById("foot").style.display = "none";
-                var div = document.getElementById("bl_1");
+                var div = document.getElementById("contextmenu");
 
                 div.style.top = e.layerY + 8 + "px" ;
                 div.style.left = e.layerX + 8 - 100 + "px" ;
@@ -356,7 +375,7 @@
                 }
 
 
-                $("#bl_1").show();
+                $("#contextmenu").show();
 
             }
 
@@ -366,11 +385,11 @@
                 var connectmessage = conf.details;
 
                 var e = event;/*document.all ? window.event : arguments[0] ? arguments[0] : event;*/
-                document.getElementById("bl_1").style.display = "block";
+                document.getElementById("contextmenu").style.display = "block";
                 document.getElementById("table").style.display = "none";
                 document.getElementById("foot").style.display = "none";
 
-                var div = document.getElementById("bl_1");
+                var div = document.getElementById("contextmenu");
                 var movey = event.offsetTop;
                 var movex = event.offsetLeft;
 
@@ -437,18 +456,20 @@
 
                 }
 
-                $("#bl_1").show();
+                $("#contextmenu").show();
             }
 
             function switch_popup_mouseover(node, details){
                 node.mouseover(function(event){
                     switch_popup_handler(event, details);
                 });
+
                 node.mouseout(function(event){
-                    $("#bl_1").hide();
+                    $("#contextmenu").hide();
                 });
+
                 node.mousedrag(function(event){
-                    $("#bl_1").hide();
+                    $("#contextmenu").hide();
                 });
             }
 
@@ -457,7 +478,7 @@
                     line_switch_to_switch_popup_click(event, conf);
                 });
                 node.mouseout(function(event){
-                    $("#bl_1").hide();
+                    $("#contextmenu").hide();
                 });
             }
 
@@ -466,7 +487,7 @@
                     line_switch_to_server_popup_click(event, conf);
                 });
                 node.mouseout(function(event){
-                    $("#bl_1").hide();
+                    $("#contextmenu").hide();
                 });
             }
 
@@ -480,10 +501,10 @@
                     server_popup_handler(event, details, conf_switch_lists);
                 });
                 node.mouseout(function(event){
-                    $("#bl_1").hide();
+                    $("#contextmenu").hide();
                 });
                 node.mousedrag(function(event){
-                    $("#bl_1").hide();
+                    $("#contextmenu").hide();
                 });
             }
 
@@ -516,6 +537,7 @@
                 text_node.alpha = 1;
                 text_node.visible = 1;
                 text_node.zIndex = 94;
+                text_node.showSelected = 0;					
 
                 scene.add(text_node);
                 container.add(text_node);
@@ -535,7 +557,7 @@
                 container_obj.borderRadius = 8;					
                 container_obj.borderWidth= 2;
                 container_obj.borderColor= "142,157,173";
-                container_obj.zIndex = 18;					
+                container_obj.zIndex = 88;					
                 container_obj.childDragble = 0;					
                 container_obj.showSelected = 0;					
                 container_obj.shadow= 0;					
@@ -560,7 +582,7 @@
                 container_server.borderColor= conf.bordercolor;
                 container_server.borderRadius = 5;
                 container_server.showSelected = false;					
-                container_server.zIndex = 19;
+                container_server.zIndex = 89;
                 //container_server.scaleX = -2;
                 container_server.shadow = 0;
                 container_server.nodetype = "host";
@@ -584,7 +606,7 @@
                 text_node.dragable = 0;
                 text_node.alpha = 1;
                 text_node.visible = 0;
-                text_node.zIndex = 11;
+                text_node.zIndex = 81;
 
                 scene.add(text_node);
                 container_rack.add(text_node);
@@ -2179,62 +2201,106 @@ $(document).ready(function(){
     background: #efefef;" >
     <canvas id="canvas_proton_topo" ></canvas>
 </div>
-<div id="bl">
-    <div id="bl_1" class="topologyBalloon"  >
-        <a href="#close" class="closeTopologyBalloon" ng-click="hide()">&times;</a>
-        <div class="contentBody">
-            <table id="tb"class="detailInfoTable">
-            </table>
-            <div class="portTableHeader">
-                <div class="title"></div>
 
-                <table class="detailInfoTable"id="table">
-                    <caption id="m_title" style="width: 140px">manage the switch</caption>
-                    <tbody id="tBody" style="display:none"> </tbody>
-                    <tbody style="display: block;width:100%;">
-                    <tr style="width: 100%;
-                        display: block;
-                        display: flex;
-                        flex-flow: nowrap row;
-                        justify-content: space-around;">
-                        <td>
-                            <button id="login"  onclick="location.href=''" class="login" style="background-color:#5CACEE;border-color:#63B8FF;width:80px;color:#FFFFFF;margin-top:10px;margin-right:10px;-moz-border-radius: 5px; height:35px;     /* Gecko browsers */
-                                -webkit-border-radius: 5px;
-                                border-radius:5px;  font-size:10pt  ">login</button>
-                        </td>
-                        <td>
-                            <button id="shut"onclick="location.href=''" class="shut off"style="background-color:#5CACEE;border-color:#63B8FF;width:90px;color:#FFFFFF;margin-top:10px;margin-right:10px;-moz-border-radius: 5px; height:35px;     /* Gecko browsers */
-                                -webkit-border-radius: 5px;
-                                border-radius:5px;   font-size:10pt  ">shut off</button>
-                        </td>
-                        <td>
-                            <button id="restart"onclick="location.href=''"class="restart"style="background-color:#5CACEE;border-color:#63B8FF;color:#FFFFFF;width:80px;margin-top:10px;margin-right:10px;-moz-border-radius: 5px; height:35px;     /* Gecko browsers */
-                                -webkit-border-radius: 5px;
-                                border-radius:5px; font-size:10pt    ">Reboot</button>
-                        </td>
+<div id="contextmenu" class="topologyBalloon"  >
+      <div class="contentBody">
+        <table id="tb"class="detailInfoTable">
+       </table>
+       <div class="portTableHeader">
+      <div class="title"></div>
+
+    <table class="detailInfoTable"id="table">
+      <caption id="m_title" style="width: 140px">manage the switch</caption>
+      <tbody id="tBody" style="display:none"> </tbody>
+      <tbody style="display: block;width:100%;">
+        <tr style="width: 100%;
+        display: block;
+        display: flex;
+        flex-flow: nowrap row;
+        justify-content: space-around;">
+          <td>
+            <button id="login"  onclick="location.href=''" class="login" style="background-color:#5CACEE;border-color:#63B8FF;width:80px;color:#FFFFFF;margin-top:10px;margin-right:10px;-moz-border-radius: 5px; height:35px;     /* Gecko browsers */
+       -webkit-border-radius: 5px;
+       border-radius:5px;  font-size:10pt  ">login</button>
+          </td>
+          <td>
+              <button id="shut"onclick="location.href=''" class="shut off"style="background-color:#5CACEE;border-color:#63B8FF;width:90px;color:#FFFFFF;margin-top:10px;margin-right:10px;-moz-border-radius: 5px; height:35px;     /* Gecko browsers */
+       -webkit-border-radius: 5px;
+       border-radius:5px;   font-size:10pt  ">shut off</button>
+          </td>
+          <td>
+              <button id="restart"onclick="location.href=''"class="restart"style="background-color:#5CACEE;border-color:#63B8FF;color:#FFFFFF;width:80px;margin-top:10px;margin-right:10px;-moz-border-radius: 5px; height:35px;     /* Gecko browsers */
+       -webkit-border-radius: 5px;
+       border-radius:5px; font-size:10pt    ">Reboot</button>
+          </td>
 
 
-                    </tr>
+        </tr>
 
-                    </tbody>
-                </table>
-            </div>
-            <div class="footer"id="foot">
-                <div class="footerInner">
-                    <div class="cell link">
-                        <a href=""id="link">» view switch detail</a>      </div>
-                </div>
-            </div>
+      </tbody>
+    </table>
+      </div>
+      <div class="footer"id="foot">
+        <div class="footerInner">
+          <div class="cell link">
+            <a href=""id="link">» view switch detail</a>      </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+      <div class="nodata"style="font-size: 150%;
+        text-align: center;
+        padding-top: 150px;
+        display: none; ">{% blocktrans %}There are no networks, routers, or connected instances to display.{% endblocktrans %}</div>
+    </div>
+</div>
+
+
+<!--
+<div id="contextmenu" class="topologyBalloon >
+    <table id="tb">
+    </table>
+        <table id="table">
+        <caption id="m_title" style="width: 140px">manage the switch</caption>
+        <tbody id="tBody" style="display:none"> </tbody>
+        <tbody style="display: block;width:100%;">
+        <tr style="width: 100%;
+            display: block;
+            display: flex;
+            flex-flow: nowrap row;
+            justify-content: space-around;">
+            <td>
+                <button id="login"  onclick="location.href=''" style="background-color:#5CACEE;border-color:#63B8FF;width:80px;color:#FFFFFF;margin-top:10px;margin-right:10px;-moz-border-radius: 5px; height:35px;     /* Gecko browsers */
+                    -webkit-border-radius: 5px;
+                    border-radius:5px;  font-size:10pt  ">login</button>
+            </td>
+            <td>
+                <button id="shut"onclick="location.href=''" style="background-color:#5CACEE;border-color:#63B8FF;width:90px;color:#FFFFFF;margin-top:10px;margin-right:10px;-moz-border-radius: 5px; height:35px;     /* Gecko browsers */
+                    -webkit-border-radius: 5px;
+                    border-radius:5px;   font-size:10pt  ">shut off</button>
+            </td>
+            <td>
+                <button id="restart"onclick="location.href=''" style="background-color:#5CACEE;border-color:#63B8FF;color:#FFFFFF;width:80px;margin-top:10px;margin-right:10px;-moz-border-radius: 5px; height:35px;     /* Gecko browsers */
+                    -webkit-border-radius: 5px;
+                    border-radius:5px; font-size:10pt    ">Reboot</button>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
+    <div id="foot">
+        <div >
+            <div >
+                <a href=""id="link">» view switch detail</a>      </div>
         </div>
     </div>
-</div>
 
-<div class="nodata"style="font-size: 150%;
-    text-align: center;
-    padding-top: 150px;
-    display: none; ">{% blocktrans %}There are no networks, routers, or connected instances to display.{% endblocktrans %}</div>
-    </div>
 </div>
+-->
+
+
 
 </body>
 </html>
