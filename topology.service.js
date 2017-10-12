@@ -518,7 +518,7 @@
                 text_node.dragable = 0;
                 text_node.alpha = 1;
                 text_node.visible = 1;
-                text_node.zIndex = 90;
+                text_node.zIndex = 89;
                 text_node.showSelected = 0;					
 
                 scene.add(text_node);
