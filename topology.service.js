@@ -880,7 +880,7 @@
                 img_node.textOffsetY = -9;
                 img_node.font = "30px Consolas";
                 img_node.scaleX = 1;
-                img_node.zIndex = 28;
+                img_node.zIndex = 29;
                 img_node.setBound(x, y, SWITCH_WIDTH, SWITCH_HEIGHT);   
 
 
