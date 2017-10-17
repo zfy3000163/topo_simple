@@ -1100,7 +1100,48 @@
                 scene.add(linkTopo);
             }
 
+            function usage_no_data(scene, w, h){
+                var container_backgroud = new JTopo.Container();
+                container_backgroud.alpha = 1;
+                container_backgroud.text = "No Data";
+                container_backgroud.textPosition = "Middle_Center";
+                container_backgroud.textOffsetY = -5;
+                container_backgroud.font = "60px Consolas";
+                container_backgroud.fontColor = "0,0,0";
+                container_backgroud.fillColor = "239,239,239";
+                container_backgroud.showSelected = false;					
+                container_backgroud.zIndex = 89;
+                container_backgroud.shadow = 0;
+                container_backgroud.setSize(w,h);
+
+                scene.add(container_backgroud);
+                container_rack.add(container_backgroud);
+            }
+
             function init(){
+
+                document.getElementById('topologyCanvas').scrollTop = 150;
+                document.getElementById('topologyCanvas').scrollLeft = 200;
+                var canvas = document.getElementById('canvas_proton_topo');
+                canvas.height = 900 /*window.innerHeight*0.9*/;
+                canvas.width = window.innerWidth * 0.81;
+
+                var stage = new JTopo.Stage(canvas);
+                //showJTopoToobar(stage);
+                var scene = new JTopo.Scene();
+                //scene.backgroundColor = '255,250,250';
+                //scene.alpha = 100;
+                //scene.mode = "select"; //"drag"
+                scene.mode = "normal"; //"drag"
+                //stage.zoomIn(0);
+                stage.add(scene);
+                self.scene = scene;
+
+                //check the data
+                if(data.origin_switch_link_list.length ==0 && data.server_rack_list.length ==0){
+                    usage_no_data(scene, canvas.width, canvas.height);
+                }
+
                 origin_switch_link_list = data.origin_switch_link_list || [];
                 for (var aa = 0; aa < origin_switch_link_list.length; aa++) {
                     origin_switch_link_list[aa]['link_details'] = origin_switch_link_list[aa]['link_details'].filter(function (element, index, array) {
@@ -1499,8 +1540,6 @@
                 }
                 widthMax = widthMax + 100 * (number - 1);
 
-                document.getElementById('topologyCanvas').scrollTop = 150;
-                document.getElementById('topologyCanvas').scrollLeft = 200;
 
 
                 if (longMax > widthMax) {
@@ -1517,21 +1556,7 @@
                     }
                 }
 
-                var canvas = document.getElementById('canvas_proton_topo');
-                canvas.height = 900 /*window.innerHeight*0.9*/;
-                canvas.width = window.innerWidth * 0.81;
-
-                var stage = new JTopo.Stage(canvas);
-                //showJTopoToobar(stage);
-                var scene = new JTopo.Scene();
-                //scene.backgroundColor = '255,250,250';
-                //scene.alpha = 100;
-                //scene.mode = "select"; //"drag"
-                scene.mode = "normal"; //"drag"
-                //stage.zoomIn(0);
-                stage.add(scene);
-                self.scene = scene;
-
+                
                 return scene;
 
             }
