@@ -1211,7 +1211,7 @@
                     var mid = d_list[d_list.length / 2 - 1];
 
                 } else {
-                    var mid = d_list[parseInt(d.length / 2)];
+                    var mid = d_list[parseInt(d_list.length / 2)];
                 }
                 for (var p = 0; p < origin_switch_link_list.length; p++) {
                     var d = 0;
