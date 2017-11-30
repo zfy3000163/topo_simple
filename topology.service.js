@@ -515,11 +515,12 @@
                 text_node.fillColor = conf.fillcolor;
                 text_node.setBound(conf.x, conf.y, conf.w, conf.h);   
                 //text_node.borderRadius = 8;
-                text_node.dragable = 0;
                 text_node.alpha = 1;
-                text_node.visible = 1;
                 text_node.zIndex = 89;
-                text_node.showSelected = 0;					
+                text_node.showSelected = false;					
+                text_node.editAble = 0;
+                text_node.dragable = 0;
+                text_node.selected = 0;
 
                 scene.add(text_node);
                 container.add(text_node);
@@ -553,8 +554,8 @@
                 //create the server
                 var container_server = new JTopo.Container();
                 container_server.layout = JTopo.layout.GridLayout(0, 4);
-                container_server.alpha = 1;
-                container_server.text = name;
+                container_server.alpha = 0;
+                //container_server.text = name;
                 container_server.textPosition = "Middle_Left";
                 container_server.textOffsetY = 0;
                 container_server.font = "11px Consolas";
@@ -562,18 +563,41 @@
                 container_server.fillColor = "188,211,229";
                 container_server.borderWidth= conf.borderwidth;
                 container_server.borderColor= conf.bordercolor;
-                container_server.borderRadius = 5;
+                //container_server.borderRadius = 5;
                 container_server.showSelected = false;					
-                container_server.zIndex = 89;
+                container_server.zIndex = 90;
                 //container_server.scaleX = -2;
                 container_server.shadow = 0;
-                container_server.nodetype = "host";
+                //container_server.nodetype = "host";
                 container_server.setBound(conf.x, conf.y, conf.w, conf.h);
 
                 //add some mouse event
                 server_popup_mouseover(container_server, server_details, conf_switch_lists);
 
                 scene.add(container_server);
+
+                var container_server_dummy = new JTopo.Container();
+                container_server_dummy.layout = JTopo.layout.GridLayout(0, 4);
+                container_server_dummy.alpha = 1;
+                container_server_dummy.text = name;
+                container_server_dummy.textPosition = "Middle_Left";
+                container_server_dummy.textOffsetY = 0;
+                container_server_dummy.font = "11px Consolas";
+                container_server_dummy.fontColor = "0,0,0";
+                container_server_dummy.fillColor = "188,211,229";
+                container_server_dummy.borderWidth= conf.borderwidth;
+                container_server_dummy.borderColor= conf.bordercolor;
+                container_server_dummy.borderRadius = 5;
+                container_server_dummy.showSelected = false;					
+                container_server_dummy.zIndex = 89;
+                //container_server.scaleX = -2;
+                container_server_dummy.shadow = 0;
+                container_server_dummy.nodetype = "host";
+                container_server_dummy.setBound(conf.x, conf.y, conf.w, conf.h);
+
+                scene.add(container_server_dummy);
+
+                container_rack.add(container_server_dummy);
                 container_rack.add(container_server);
 
                 //create connect line node 
