@@ -911,12 +911,14 @@
                 scene.add(img_node);
                 container_obj.add(img_node);
 
+                var logo_flag = 0; 
                 var sysname = switch_details["sysdescr"].toLowerCase();
                 var arrName = ['lenovo', 'cisco', 'huawei', 'h3c', 'dcn', 'juniper'];
                 for (var a = 0; a < arrName.length; a++) {
                     if (sysname.indexOf(arrName[a]) > -1) {
                         arrName[a] = arrName[a][0].toUpperCase() + arrName[a].substring(1, arrName[a].length);
                         var brand = arrName[a];
+                        logo_flag = 1;
                         break;
                     }
                 }
@@ -924,7 +926,7 @@
 
                 /*create text_node*/
                 var text_node = new JTopo.Node(brand);
-                text_node.alpha = 1;
+                text_node.alpha = logo_flag;
                 //text_node.setSize(68, 15);
                 text_node.textPosition = "Middle_Center";
                 text_node.textOffsetY = -3;
